@@ -103,6 +103,11 @@ vaka listesi, izlenen hisseler, sayfa bağlantıları.
 `build/` altındaki üç HTML dosyası son üretilen çıktılardır ve doğrudan
 tarayıcıda açılabilir.
 
+## Lisans
+
+MIT. Kod serbestçe kullanılabilir. Üretilen analizler ve sayfalar kamuya açık
+veriye dayanır; doğruluk garantisi verilmez.
+
 ## Veri kaynakları
 
 TEFAS (`fonFiyatBilgiGetir`, `fonBilgiGetir`, `fonUnvanAra`), İş Yatırım açık
