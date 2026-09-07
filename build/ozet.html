@@ -1,0 +1,448 @@
+<title>Say&#305; De&#287;il, Soru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&family=Fraunces:opsz,wght@9..144,600..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f1f5fb; --surface:#ffffff; --surface-2:#e8eef8; --surface-3:#dbe5f4;
+  --ink:#0b1524; --ink-2:#3a4a63; --ink-3:#63758f;
+  --rule:#d3dfee; --rule-soft:#e5ecf7;
+  --accent:#1d4ed8; --accent-soft:#e8effd;
+  --pos:#047857; --neg:#dc2626; --uyari:#b45309;
+  --grad:linear-gradient(96deg,#2563eb 0%,#7c3aed 55%,#0e8ea8 100%);
+  --shadow:0 1px 2px rgba(11,21,36,.05), 0 12px 32px -20px rgba(11,21,36,.35);
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:44px; --s6:64px; --s7:88px;
+  --fs-h1:clamp(34px,5.6vw,58px); --fs-h2:clamp(22px,2.6vw,28px); --fs-h3:18px;
+  --fs-body:17px; --fs-sm:14.5px; --fs-xs:12.5px;
+  --r-sm:8px; --r-md:12px; --r-lg:18px; --r-pill:999px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#070c16; --surface:#0f1826; --surface-2:#172234; --surface-3:#213047;
+  --ink:#eef4fd; --ink-2:#b2c2da; --ink-3:#8395b2;
+  --rule:#25334a; --rule-soft:#1b2637;
+  --accent:#7fa8ff; --accent-soft:#152238;
+  --pos:#3ddc84; --neg:#ff5c5c; --uyari:#e0a52c;
+  --grad:linear-gradient(96deg,#5b93ff 0%,#8343f6 55%,#32a3bd 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 32px -20px rgba(0,0,0,.85);
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#070c16; --surface:#0f1826; --surface-2:#172234; --surface-3:#213047;
+  --ink:#eef4fd; --ink-2:#b2c2da; --ink-3:#8395b2;
+  --rule:#25334a; --rule-soft:#1b2637;
+  --accent:#7fa8ff; --accent-soft:#152238;
+  --pos:#3ddc84; --neg:#ff5c5c; --uyari:#e0a52c;
+  --grad:linear-gradient(96deg,#5b93ff 0%,#8343f6 55%,#32a3bd 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 32px -20px rgba(0,0,0,.85);
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);margin:0;font-size:var(--fs-body);
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif;line-height:1.68;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:var(--s6) 28px var(--s7)}
+.kol{max-width:68ch}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+a{color:var(--accent);text-underline-offset:2px}
+.tape{height:6px;border-radius:3px;background:var(--grad);margin-bottom:var(--s5)}
+.kicker{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent);font-weight:500}
+h1{font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:var(--fs-h1);line-height:.98;
+  letter-spacing:-.025em;margin:var(--s2) 0 0;background:var(--grad);
+  -webkit-background-clip:text;background-clip:text;color:transparent;text-wrap:balance;
+  max-width:16ch}
+@supports not (background-clip:text){h1{color:var(--ink);background:none}}
+.dek{color:var(--ink-2);font-size:clamp(17px,2vw,20px);line-height:1.55;margin:var(--s3) 0 0;
+  max-width:60ch}
+.kunye{display:flex;flex-wrap:wrap;gap:var(--s1);margin-top:var(--s4)}
+.rozet{display:inline-flex;align-items:center;gap:7px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:var(--r-pill);padding:6px 14px;
+  font-size:var(--fs-xs);color:var(--ink-2);font-family:"IBM Plex Mono",monospace}
+.rozet b{color:var(--ink);font-weight:600}
+section{margin-top:var(--s7)}
+.bas{display:flex;align-items:baseline;gap:14px;margin-bottom:var(--s3)}
+.bas .no{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);color:var(--ink-3);
+  letter-spacing:.1em;padding-top:6px}
+h2{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:var(--fs-h2);line-height:1.15;
+  letter-spacing:-.015em;margin:0;text-wrap:balance}
+h3{font-family:"Archivo";font-variation-settings:"wdth" 108;font-weight:700;font-size:var(--fs-h3);
+  margin:var(--s5) 0 var(--s2)}
+p{margin:0 0 var(--s2)}
+.kol p:last-child{margin-bottom:0}
+strong{font-weight:700}
+.vakalar{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:var(--s2);
+  margin-top:var(--s3)}
+.vaka{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-lg);
+  padding:var(--s3);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px}
+.vaka .kod{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;color:var(--ink)}
+.vaka .kur{font-size:var(--fs-xs);color:var(--ink-3);margin-top:-6px}
+.vaka .mek{font-size:var(--fs-sm);color:var(--ink-2);line-height:1.5;flex:1}
+.vaka .sor{font-size:var(--fs-sm);color:var(--ink);border-top:1px solid var(--rule-soft);
+  padding-top:9px;line-height:1.5}
+.vaka .sor b{color:var(--accent)}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--s2);
+  margin:var(--s3) 0}
+.s{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-md);
+  padding:var(--s2) var(--s3);box-shadow:var(--shadow)}
+.s .l{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-3)}
+.s .v{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:700;margin-top:4px;
+  line-height:1.1}
+.s .n{font-size:var(--fs-xs);color:var(--ink-3);margin-top:4px;line-height:1.45}
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--r-md);
+  background:var(--surface);box-shadow:var(--shadow);margin:var(--s3) 0}
+table{border-collapse:collapse;width:100%;font-size:var(--fs-sm);min-width:520px}
+th,td{padding:12px 16px;text-align:right;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+th{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:600;background:var(--surface-2);border-bottom:1.5px solid var(--rule)}
+th:first-child,td:first-child{text-align:left}
+td{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:none}
+.pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+.muted{color:var(--ink-3)}
+.kutu{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--accent);
+  border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--shadow);margin:var(--s3) 0;
+  max-width:72ch}
+.kutu.uy{border-left-color:var(--uyari)}
+.kutu.ne{border-left-color:var(--neg)}
+.kutu .bl{font-family:"Archivo";font-weight:700;font-size:var(--fs-sm);margin-bottom:7px}
+.kutu p{font-size:var(--fs-sm);color:var(--ink-2);margin-bottom:var(--s1)}
+.kutu p:last-child{margin-bottom:0}
+.hata{border-top:1px solid var(--rule);padding:var(--s3) 0;display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:var(--s3);align-items:start}
+.hata:last-of-type{border-bottom:1px solid var(--rule)}
+.hata .ne{font-weight:600;font-size:var(--fs-sm);line-height:1.5}
+.hata .ne span{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--neg);font-weight:600;margin-bottom:5px}
+.hata .nas{font-size:var(--fs-sm);color:var(--ink-2);line-height:1.55}
+ul{margin:0 0 var(--s2);padding-left:20px} li{margin-bottom:7px}
+.bag{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s3)}
+.bag a{display:flex;flex-direction:column;gap:3px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:var(--r-md);padding:14px 20px;text-decoration:none;box-shadow:var(--shadow);
+  min-width:210px}
+.bag a:hover{border-color:var(--accent)}
+.bag .t{font-weight:700;font-size:var(--fs-sm);color:var(--ink)}
+.bag .a{font-size:var(--fs-xs);color:var(--ink-3)}
+footer{margin-top:var(--s7);padding-top:var(--s3);border-top:1px solid var(--rule);
+  font-size:var(--fs-xs);color:var(--ink-3);max-width:80ch;line-height:1.6}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:680px){
+  .wrap{padding:var(--s5) 18px var(--s6)}
+  .hata{grid-template-columns:1fr;gap:var(--s1)}
+  section{margin-top:var(--s6)}
+}
+
+.ust{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:saturate(180%) blur(10px);-webkit-backdrop-filter:saturate(180%) blur(10px);
+  border-bottom:1px solid var(--rule)}
+@supports not (backdrop-filter:blur(1px)){.ust{background:var(--paper)}}
+.ust-sabit{position:static;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--paper)}
+.ust-ic{max-width:1280px;margin:0 auto;padding:9px 28px;display:flex;align-items:center;gap:var(--s2)}
+.ust-ad{font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:15px;letter-spacing:-.01em;
+  color:var(--ink);text-decoration:none;white-space:nowrap}
+.ust-ad:hover{color:var(--accent)}
+.ust-bag{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+.ust-bag a{font-size:13px;color:var(--ink-3);text-decoration:none;padding:6px 12px;
+  border-radius:var(--r-pill);white-space:nowrap;font-weight:500}
+.ust-bag a:hover{color:var(--ink);background:var(--surface-2)}
+.ust-bag a[aria-current="page"]{color:var(--accent);background:var(--accent-soft);font-weight:600}
+.atla{position:absolute;left:-9999px;top:0;background:var(--accent);color:#fff;padding:10px 16px;
+  border-radius:0 0 var(--r-sm) 0;z-index:99;text-decoration:none;font-size:14px}
+.atla:focus{left:0}
+@media (max-width:660px){
+  .ust-ic{padding:8px 16px;gap:var(--s1)}
+  .ust-ad{font-size:14px}
+  .ust-bag a{padding:6px 9px;font-size:12.5px}
+}
+
+@media (max-width:700px){
+  /* Genis veri tablolari telefonda yatay kaydirmaya mahkumdu (min-width:940px).
+     Burada her satir bir karta donusuyor; sutun basligi td'nin data-l
+     ozniteliginden ::before ile geliyor. */
+  table{min-width:0!important;width:100%}
+  .tbl,.tbl-scroll{overflow-x:visible;max-height:none}
+  thead{position:absolute!important;width:1px;height:1px;overflow:hidden;
+    clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+  tbody tr{display:block;border-bottom:1px solid var(--rule);padding:14px 2px}
+  tbody tr:last-child{border-bottom:none}
+  tbody td{display:flex!important;justify-content:space-between;align-items:baseline;
+    gap:var(--s2);border:none;padding:4px 14px;text-align:right;white-space:normal;
+    position:static!important;background:none!important;min-width:0}
+  tbody td[data-l]:not([data-l=""])::before{content:attr(data-l);flex:0 1 auto;
+    text-align:left;font-family:"IBM Plex Mono",monospace;font-size:11px;
+    letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);
+    font-weight:600;padding-top:3px;white-space:normal}
+  /* Fon adi hucresi: etiketsiz, tam genislik, kirpilmadan sarsin */
+  tbody td.hucre-ad,tbody td[data-l="Fon"],tbody td[data-l="Kurucu"],
+  tbody td[data-l="\00d6 l\00e7 \00fc t"]{display:block!important;text-align:left;
+    padding:0 14px 10px}
+  tbody td.hucre-ad::before,tbody td[data-l="Fon"]::before,
+  tbody td[data-l="Kurucu"]::before,tbody td[data-l="\00d6 l\00e7 \00fc t"]::before{display:none}
+  .fon-ad{max-width:none;white-space:normal;overflow:visible;text-overflow:clip;
+    margin-top:3px}
+  /* Onay kutusu sutunu: kartin ustune, etiketsiz */
+  tbody td.sec-h{display:block!important;padding:0 14px 8px;width:auto}
+  tbody td.sec-h::before{display:none}
+  /* Kivilcim satiri: etiket solda, grafik saga yaslanip daralsin */
+  .kv{width:120px;height:24px;flex:none}
+  /* Cok sutunlu kiyas tablolari: hucre icerigi sarabilsin */
+  tbody td{word-break:break-word}
+  .kaydir-not,.tbl-scroll::after{display:none!important}
+}
+
+@media (max-width:700px){
+  .sekmeler{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    flex-wrap:nowrap}
+  .sekmeler::-webkit-scrollbar{display:none}
+  .sekme{flex:none;padding:10px 13px;font-size:13.5px}
+  .figs,.pf-ozet,.sayilar,.funds{grid-template-columns:1fr!important}
+  .chart-holder{overflow-x:auto}
+}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;
+  scroll-behavior:auto!important}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+
+</style>
+
+<a class="atla" href="#ana">&#304;&#231;eri&#287;e atla</a>
+<header class="ust"><div class="ust-ic"><a class="ust-ad" href="https://claude.ai/code/artifact/66640998-fd3e-4a4b-a555-7a40e5f1df3d">Serbest Fon Laboratuvar&#305;</a><nav class="ust-bag" aria-label="Sayfalar"><a href="https://claude.ai/code/artifact/66640998-fd3e-4a4b-a555-7a40e5f1df3d" aria-current="page">&#214;zet</a><a href="https://claude.ai/code/artifact/10fe73cc-5153-4697-8fcb-3381f8cc008d" target="_blank" rel="noopener">Rapor</a><a href="https://claude.ai/code/artifact/bbf84a7a-8da6-4bcf-af2b-9d9579decd42" target="_blank" rel="noopener">Taray&#305;c&#305;</a></nav></div></header>
+<div class="wrap" lang="tr">
+<main id="ana">
+<div class="tape"></div>
+<div class="kicker">TEFAS &#183; serbest fon evreni &#183; proje &#246;zeti</div>
+<h1>Say&#305; De&#287;il, Soru</h1>
+<p class="dek">&#304;ki fonu incelemek i&#231;in ba&#351;lad&#305;; 1.209 fonluk bir taray&#305;c&#305;ya, alt&#305; vaka incelemesine ve her i&#351; g&#252;n&#252; kendini yenileyen bir boru hatt&#305;na d&#246;n&#252;&#351;t&#252;. Ortaya &#231;&#305;kan as&#305;l bulgu tek tek fonlar de&#287;il, <strong>bir fonun rakamlar&#305;n&#305;n o fon hakk&#305;nda ne kadar az &#351;ey s&#246;yledi&#287;i</strong> oldu.</p>
+<div class="kunye">
+  <span class="rozet">Veri kesimi <b>04.09.2026</b></span>
+  <span class="rozet">Evren <b>1.209 serbest fon</b></span>
+  <span class="rozet">Kod <b>2.680 sat&#305;r Python</b></span>
+  <span class="rozet">Test <b>24</b></span>
+  <span class="rozet">Ba&#287;&#305;ml&#305;l&#305;k <b>yok</b></span>
+</div>
+
+<section>
+  <div class="bas"><span class="no">01</span><h2>Nereden ba&#351;lad&#305;, nereye geldi</h2></div>
+  <div class="kol">
+    <p>Soru basitti: TLY ve DFI adl&#305; iki serbest fon, ayn&#305; kategoride, neredeyse ayn&#305; oynakl&#305;kta ve ola&#287;an&#252;st&#252; getirilerle duruyordu. Bu getiri nereden geliyor?</p>
+    <p>Cevab&#305; bulmak i&#231;in kurulan y&#246;ntem &#8212; <em>getiriyi par&#231;alar&#305;na ay&#305;r, ka&#231; g&#252;ne ba&#287;l&#305; oldu&#287;una bak, oynakl&#305;&#287;&#305;n y&#246;n&#252;n&#252; &#246;l&#231;, sonra portf&#246;y&#252;n i&#231;ine bak</em> &#8212; iki fon i&#231;in yaz&#305;lm&#305;&#351;t&#305;. Sonra ayn&#305; y&#246;ntem evrenin tamam&#305;na uyguland&#305;. Bug&#252;n elde &#252;&#231; &#351;ey var:</p>
+    <ul>
+      <li><strong>Rapor</strong> &#8212; alt&#305; fonun ayr&#305;nt&#305;l&#305; incelemesi, KAP bildirimleri ve portf&#246;y da&#287;&#305;l&#305;m raporlar&#305;yla do&#287;rulanm&#305;&#351;.</li>
+      <li><strong>Taray&#305;c&#305;</strong> &#8212; 1.209 fonun tamam&#305;; e&#351;ikleri kullan&#305;c&#305; oynat&#305;yor, kurucu baz&#305;nda da&#287;&#305;l&#305;m, fon kar&#351;&#305;la&#351;t&#305;rma, portf&#246;y ve &#246;ng&#246;r&#252;lebilirlik sekmeleri.</li>
+      <li><strong>Boru hatt&#305;</strong> &#8212; her i&#351; g&#252;n&#252; 09:03'te TEFAS'tan veriyi tazeleyen, tahminleri puanlayan ve sayfalar&#305; yeniden yay&#305;nlayan zamanlanm&#305;&#351; g&#246;rev.</li>
+    </ul>
+    <p>Ba&#351;tan sona tek bir kural korundu: <strong>ara&#231; h&#252;k&#252;m vermez, soru &#252;retir.</strong> Hi&#231;bir &#246;l&#231;&#252;t tek ba&#351;&#305;na bir kusur kan&#305;t&#305; de&#287;il; liste yaln&#305;zca "bunu neden b&#246;yle?" diye sorulacak fonlar&#305; daralt&#305;yor. Cevap her zaman fonun KAP bildirimlerinde ve portf&#246;y raporlar&#305;nda &#8212; tabloda de&#287;il.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">02</span><h2>Alt&#305; vaka, alt&#305; ayr&#305; mekanizma</h2></div>
+  <div class="kol">
+    <p>Taray&#305;c&#305;n&#305;n "sessiz y&#252;kseli&#351;" &#246;l&#231;&#252;t&#252; &#8212; 6 ayda getiri &#8805;%30, oynakl&#305;k &#8804;%25, g&#252;nlerin &#8804;%20'si eksi &#8212; 12 fon buldu. En u&#231;takiler tek tek incelendi. Hepsi ayn&#305; sinyali veriyordu; <strong>hi&#231;birinin sebebi ayn&#305; de&#287;ildi.</strong></p>
+  </div>
+  <div class="vakalar">
+    <div class="vaka">
+      <div class="kod">DFI</div><div class="kur">Atlas Portf&#246;y</div>
+      <div class="mek">Getirisinin a&#287;&#305;rl&#305;&#287;&#305; tek bir hissede: IEYHO, fonun %55'i. Fon do&#287;ru de&#287;erliyor; ola&#287;and&#305;&#351;&#305; olan hissenin kendi borsa fiyat&#305;. IEYHO'nun fiili dola&#351;&#305;m oran&#305; Aral&#305;k 2025'te <span class="num">%69</span>'dan <span class="num">%33</span>'e d&#252;&#351;t&#252; ve fiyat&#305; ayn&#305; ay karakter de&#287;i&#351;tirdi.</div>
+      <div class="sor"><b>Soru:</b> Serbest dola&#351;&#305;m&#305; incelmi&#351; bir pay&#305;n borsa fiyat&#305;, fonun net varl&#305;k de&#287;eri i&#231;in ne kadar ba&#287;&#305;ms&#305;z bir referans?</div>
+    </div>
+    <div class="vaka">
+      <div class="kod">TLY</div><div class="kur">Tera Portf&#246;y</div>
+      <div class="mek">Be&#351; &#351;irkette kontrol b&#252;y&#252;kl&#252;&#287;&#252;nde pay, toplam <span class="num">%67,9</span>; &#252;&#231;&#252; grup i&#231;i. Grubun arac&#305; kurumu ve &#252;&#231; fonu birlikte TRHOL'&#252;n <span class="num">%73,30</span>'&#252;n&#252; tutuyor.</div>
+      <div class="sor"><b>Soru:</b> Bir &#351;irketin paylar&#305;n&#305;n d&#246;rtte &#252;&#231;&#252; tek bir grubun elindeyse, kalan dola&#351;&#305;mda olu&#351;an fiyat neyi &#246;l&#231;er?</div>
+    </div>
+    <div class="vaka">
+      <div class="kod">TMV</div><div class="kur">Tera Portf&#246;y</div>
+      <div class="mek">49 hisse ve t&#252;revlerle k&#305;sa vadeli algoritmik i&#351;lem. Tan&#305; &#246;l&#231;&#252;tlerinin hi&#231;birine tak&#305;lm&#305;yor: yumu&#351;atma imzas&#305; yok, getirisi geni&#351; tabana yay&#305;lm&#305;&#351;. Aral&#305;k 2025'te oynakl&#305;&#287;&#305; <em>y&#252;kselmi&#351;</em> &mdash; DFI'nin tam tersi.</div>
+      <div class="sor"><b>Not:</b> %5 e&#351;i&#287;ini a&#351;an tek bildirimi yine grup holdingi TRHOL'de: fonun %12,4'&#252;.</div>
+    </div>
+    <div class="vaka">
+      <div class="kod">PBE</div><div class="kur">Pusula Portf&#246;y</div>
+      <div class="mek">Varl&#305;k da&#287;&#305;l&#305;m&#305; iki sat&#305;r: <span class="num">+%544</span> VDMK, <span class="num">&#8722;%444</span> repo. 5,4 kat kald&#305;ra&#231;l&#305; ta&#351;&#305;ma. 168 g&#252;nde <strong>3 eksi g&#252;n</strong>. P&#252;r&#252;zs&#252;zl&#252;k anomali de&#287;il &mdash; VDMK borsada i&#351;lem g&#246;rmez, tahakkukla de&#287;erlenir.</div>
+      <div class="sor"><b>Soru:</b> G&#252;nl&#252;k oynakl&#305;kta g&#246;r&#252;nmeyen kald&#305;ra&#231; riski nerede g&#246;r&#252;n&#252;r? Fonlama kesildi&#287;inde, bir anda.</div>
+    </div>
+    <div class="vaka">
+      <div class="kod">PHN &amp; PKZ</div><div class="kur">Pusula Portf&#246;y</div>
+      <div class="mek">PBE'nin karde&#351;leri ve tam z&#305;dd&#305;: y&#305;ll&#305;k oynakl&#305;k <span class="num">%100</span>, evrenin 1. ve 2. s&#305;ras&#305;. Bu yaz&#305; yaz&#305;l&#305;rken d&#246;rt g&#252;nde <span class="num neg">&#8722;%61</span> ve <span class="num neg">&#8722;%34</span> kaybettiler; BIST 100 ayn&#305; g&#252;nlerde <span class="num">&#8722;%1,5</span>. PKZ'nin d&#252;&#351;&#252;&#351;&#252; d&#246;rt g&#252;n &#252;st &#252;ste tam i&#351;lem marj&#305;nda.</div>
+      <div class="sor"><b>Soru:</b> 710 pay&#305;n yaln&#305;zca d&#246;rd&#252; ayn&#305; d&#246;rt g&#252;nde taban fiyattayd&#305;. Hangileri tutuluyor? <b>Cevaplayamad&#305;k.</b></div>
+    </div>
+    <div class="vaka" style="background:var(--accent-soft);border-color:var(--accent)">
+      <div class="kod">Ortak sonu&#231;</div><div class="kur">alt&#305; vakan&#305;n s&#246;yledi&#287;i</div>
+      <div class="mek">Ayn&#305; kategori, ayn&#305; sinyal, ayn&#305; ola&#287;an&#252;st&#252; rakamlar &mdash; ve birbiriyle alakas&#305;z yap&#305;lar: bir hisse anomalisi, kontrol paylar&#305;, algoritmik i&#351;lem, kald&#305;ra&#231;l&#305; ta&#351;&#305;ma, yo&#287;un hisse bahisleri.</div>
+      <div class="sor"><b>Metrik yap&#305;y&#305; g&#246;stermez.</b> Yap&#305;y&#305; g&#246;rmek i&#231;in portf&#246;ye bakmak gerekir.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">03</span><h2>As&#305;l bulgu tek tek fonlarda de&#287;ildi</h2></div>
+  <div class="kol">
+    <p>Bir fonun k&#252;nyesinde "son 1 y&#305;ll&#305;k kategori derecesi: <span class="num">2 / 1.333</span>" yazar. Tek ba&#351;&#305;na okununca bu bir ba&#351;ar&#305; belgesidir. Ayn&#305; kurucunun di&#287;er fonlar&#305;yla birlikte okununca ba&#351;ka bir &#351;ey s&#246;yler.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Kurucu</th><th>Serbest fon</th><th>En iyi</th><th>En k&#246;t&#252;</th><th>Yay&#305;l&#305;m</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Kurucu">Pusula</td><td data-l="Serbest fon">12</td><td data-l="En iyi" class="pos">+2.990%</td><td data-l="En k&#246;t&#252;" class="neg">&#8722;89%</td><td data-l="Yay&#305;l&#305;m"><strong>1.909%</strong></td></tr>
+        <tr><td data-l="Kurucu">Tera</td><td data-l="Serbest fon">6</td><td data-l="En iyi" class="pos">+690%</td><td data-l="En k&#246;t&#252;" class="neg">&#8722;78%</td><td data-l="Yay&#305;l&#305;m"><strong>584%</strong></td></tr>
+        <tr><td data-l="Kurucu">Atlas</td><td data-l="Serbest fon">21</td><td data-l="En iyi" class="pos">+1.026%</td><td data-l="En k&#246;t&#252;" class="neg">&#8722;58%</td><td data-l="Yay&#305;l&#305;m"><strong>447%</strong></td></tr>
+        <tr><td data-l="Kurucu">Pardus</td><td data-l="Serbest fon">51</td><td data-l="En iyi" class="pos">+1.146%</td><td data-l="En k&#246;t&#252;" class="neg">&#8722;100%</td><td data-l="Yay&#305;l&#305;m"><strong>299%</strong></td></tr>
+        <tr><td data-l="Kurucu" class="muted">Sekt&#246;r ortancas&#305; <span class="muted">44 kurucu</span></td><td data-l="Serbest fon" class="muted">&#8212;</td><td data-l="En iyi" class="muted">&#8212;</td><td data-l="En k&#246;t&#252;" class="muted">&#8212;</td><td data-l="Yay&#305;l&#305;m" class="muted">47%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kol">
+    <p>&#199;ok say&#305;da yo&#287;un ve birbirinden ba&#287;&#305;ms&#305;z bahis yapan bir ev, <strong>hi&#231;bir beceri olmasa bile</strong> listenin hem tepesinde hem dibinde fon bulundurur. Tepedeki fonu tek ba&#351;&#305;na g&#246;rmek, listenin geri kalan&#305;n&#305; g&#246;rmemektir.</p>
+    <p>Bunu test etmek i&#231;in Pardus'un <strong>51 serbest fonunun tamam&#305;</strong> incelendi. Fonlar farkl&#305; tarihlerde kuruldu&#287;u i&#231;in do&#287;rudan k&#305;yaslanamaz &mdash; ama ayn&#305; hafta a&#231;&#305;lanlar k&#305;yaslanabilir. 2025 Temmuz'unda 13 g&#252;n i&#231;inde alt&#305; fon a&#231;&#305;lm&#305;&#351;: sonu&#231;lar&#305; <span class="num pos">+%2.623</span> ile <span class="num neg">&#8722;%99</span> aras&#305;nda.</p>
+  </div>
+  <div class="sayilar">
+    <div class="s"><div class="l">Nakdi ge&#231;en</div><div class="v neg">19 / 51</div><div class="n">Pardus fonlar&#305;n&#305;n %63'&#252;, kendi &#246;mr&#252; boyunca para piyasas&#305; fonunun alt&#305;nda kald&#305;</div></div>
+    <div class="s"><div class="l">Medyan y&#305;ll&#305;k</div><div class="v">%39</div><div class="n">ayn&#305; pencerelerde nakit %49</div></div>
+    <div class="s"><div class="l">Zirvesinin yar&#305;s&#305;ndan a&#351;a&#287;&#305;da</div><div class="v neg">22 / 51</div><div class="n">bug&#252;n itibar&#305;yla</div></div>
+    <div class="s"><div class="l">Bug&#252;nk&#252; b&#252;y&#252;kl&#252;kle</div><div class="v pos">+716%</div><div class="n">ayn&#305; 51 fon</div></div>
+    <div class="s"><div class="l">Ba&#351;lang&#305;&#231; b&#252;y&#252;kl&#252;&#287;&#252;yle</div><div class="v neg">&#8722;54%</div><div class="n">ayn&#305; 51 fon <em>(kaba tahmin)</em></div></div>
+  </div>
+  <div class="kutu uy">
+    <div class="bl">Son iki rakam&#305;n fark&#305; hile de&#287;il, mekanik</div>
+    <p>Kaybeden fonlar k&#252;&#231;&#252;ld&#252;&#287;&#252; i&#231;in <strong>bug&#252;nk&#252; a&#287;&#305;rl&#305;kta neredeyse hi&#231; yer kaplam&#305;yor.</strong> Bug&#252;ne bakan biri <span class="num">+%716</span> g&#246;r&#252;r; paran&#305;n girdi&#287;i andaki b&#252;y&#252;kl&#252;&#287;e bakan biri eksi g&#246;r&#252;r.</p>
+    <p>&#304;kinci rakam kaba bir tahmindir (fona giri&#351;-&#231;&#305;k&#305;&#351; olmad&#305;&#287;&#305;n&#305; varsayar) ve bilinen iki yanl&#305;l&#305;&#287;&#305;n ikisi de onu <strong>iyimser</strong> tarafa iter: kazanan fonlar&#305;n bug&#252;nk&#252; b&#252;y&#252;kl&#252;&#287;&#252;n&#252;n &#246;nemli k&#305;sm&#305; sonradan gelen parad&#305;r, <span class="num">&#8722;%100</span>'e giden iki fon ise hesab&#305;n tamamen d&#305;&#351;&#305;nda kal&#305;r.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">04</span><h2>Ertesi g&#252;n&#252; tahmin denemesi ve d&#252;r&#252;st cevab&#305;</h2></div>
+  <div class="kol">
+    <p>D&#246;rt &#351;effaf model &mdash; hep art&#305;, d&#252;n&#252; tekrarla, AR(1), 20 g&#252;n ortalamas&#305; &mdash; evrenin tamam&#305;nda, ileriye bakmayan y&#252;r&#252;yen testle denendi. &#214;l&#231;&#252; ham isabet de&#287;il <strong>beceri = isabet &#8722; taban oran</strong>: g&#252;nlerinin %98'i art&#305; olan bir fonda "hep art&#305; de" demek %98 tutturur ve s&#305;f&#305;r bilgi ta&#351;&#305;r.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Beceri da&#287;&#305;l&#305;m&#305;</th><th>G&#246;zlem</th><th>Rastgele model</th><th></th></tr></thead>
+      <tbody>
+        <tr><td data-l="Beceri da&#287;&#305;l&#305;m&#305;">%90'l&#305;k dilim</td><td data-l="G&#246;zlem">+2,5%</td><td data-l="Rastgele model">+2,5%</td><td data-l="" class="muted">ay&#305;rt edilemiyor</td></tr>
+        <tr><td data-l="Beceri da&#287;&#305;l&#305;m&#305;">%95'lik dilim</td><td data-l="G&#246;zlem">+5,0%</td><td data-l="Rastgele model">+5,0%</td><td data-l="" class="muted">ay&#305;rt edilemiyor</td></tr>
+        <tr><td data-l="Beceri da&#287;&#305;l&#305;m&#305;">beceri &gt; +%5 olan fon</td><td data-l="G&#246;zlem">60</td><td data-l="Rastgele model">61</td><td data-l="" class="muted">&#351;ansla a&#231;&#305;klan&#305;yor</td></tr>
+        <tr><td data-l="Beceri da&#287;&#305;l&#305;m&#305;">beceri &gt; +%10 olan fon</td><td data-l="G&#246;zlem">18</td><td data-l="Rastgele model">2</td><td data-l="" class="neg">&#351;anstan fazla</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kol">
+    <p><strong>Y&#246;n tahmininde sistematik beceri yok.</strong> Orta dilimlerde g&#246;zlemlenen da&#287;&#305;l&#305;m, ayn&#305; fonlara rastgele tahmin yapan modellerin &#252;retti&#287;iyle &#252;st &#252;ste biniyor. U&#231; kuyruktaki fazlal&#305;k gizlenmiyor &mdash; ama o da "model &#231;al&#305;&#351;&#305;yor" demek de&#287;il; o fonlar&#305;n fiyat serisinin kendi i&#231;inde mekanik bir &#246;r&#252;nt&#252; ta&#351;&#305;d&#305;&#287;&#305; demek.</p>
+    <p>Denemenin as&#305;l &#231;&#305;kt&#305;s&#305; beklenmedik bir yerden geldi: <strong>taban oran&#305;n kendisi bir te&#351;his.</strong> Bir fonun g&#252;nlerinin ne kadar&#305;n&#305;n art&#305; oldu&#287;u, o fonun canl&#305; bir piyasaya g&#246;re i&#351;aretlenip i&#351;aretlenmedi&#287;ini s&#246;yl&#252;yor.</p>
+  </div>
+  <div class="sayilar">
+    <div class="s"><div class="l">BIST 100 endeks fonu</div><div class="v">%51</div><div class="n">yaz&#305; tura &#8212; olmas&#305; gerekti&#287;i gibi</div></div>
+    <div class="s"><div class="l">Evren medyan&#305;</div><div class="v">%72</div><div class="n">1.170 serbest fon</div></div>
+    <div class="s"><div class="l">G&#252;nlerinin &#8805;%90'&#305; art&#305;</div><div class="v" style="color:var(--uyari)">220 fon</div><div class="n">12 ayl&#305;k pencerede</div></div>
+    <div class="s"><div class="l">Hi&#231; eksi g&#252;n&#252; yok</div><div class="v neg">89 fon</div><div class="n">12 ayda tek bir eksi g&#252;n bile de&#287;il</div></div>
+    <div class="s"><div class="l">Oynak ama art&#305;</div><div class="v neg">9 fon</div><div class="n">oynakl&#305;&#287;&#305; &#8805;%15 oldu&#287;u h&#226;lde g&#252;nlerinin &#8805;%85'i art&#305;</div></div>
+  </div>
+  <div class="kol">
+    <p>Son sat&#305;r as&#305;l soruyu ta&#351;&#305;yor. Para piyasas&#305; fonlar&#305;n&#305;n her g&#252;n art&#305; yapmas&#305; ola&#287;an; tahakkukla de&#287;erleniyorlar. Ama <strong>y&#305;ll&#305;k %38 oynakl&#305;&#287;a sahip olup g&#252;nlerinin %94'&#252;nde art&#305; yapan bir hisse fonu</strong> (DFI), hisse fiyatlar&#305;n&#305;n yapmad&#305;&#287;&#305; bir &#351;ey yap&#305;yor demektir.</p>
+    <p>Bug&#252;nden itibaren ileriye d&#246;n&#252;k bir sicil de tutuluyor: her i&#351; g&#252;n&#252;, piyasa kapal&#305;yken 1.170 fon i&#231;in ertesi g&#252;n tahmini yaz&#305;l&#305;yor ve bir sonraki g&#252;n ger&#231;ekle&#351;enle puanlan&#305;yor. Tahminler yaz&#305;ld&#305;ktan sonra de&#287;i&#351;tirilmiyor. Geriye d&#246;n&#252;k test "hi&#231;bir model taban oran&#305; ge&#231;emiyor" diyor; sicil bunu ya do&#287;rulayacak ya &#231;&#252;r&#252;tecek.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">05</span><h2>Y&#246;ntemin kendi sicili</h2></div>
+  <div class="kol">
+    <p>Bu b&#246;l&#252;m &#231;o&#287;u analizde bulunmaz, ama en &#231;ok bilgi ta&#351;&#305;yan b&#246;l&#252;m o. Proje boyunca <strong>yanl&#305;&#351; sonu&#231;lara var&#305;ld&#305; ve d&#252;zeltildi.</strong> A&#351;a&#287;&#305;da on iki kay&#305;t var; her biri, <em>nas&#305;l yakaland&#305;&#287;&#305;yla</em> birlikte. Yakalanma bi&#231;imi en az hatan&#305;n kendisi kadar &#246;nemli: bir k&#305;sm&#305; bakarak, bir k&#305;sm&#305; ancak test yaz&#305;l&#305;nca g&#246;r&#252;ld&#252;.</p>
+  </div>
+
+  <div class="hata">
+    <div class="ne"><span>ilk sonu&#231;</span>"DFI piyasan&#305;n tersine konumlanm&#305;&#351;"</div>
+    <div class="nas">Tam d&#246;nem yakalama oranlar&#305;n&#305;n ikisi de pozitifti; &#231;&#246;k&#252;&#351; alt penceresi ayr&#305; hesaplan&#305;nca y&#252;kseli&#351; yakalamas&#305; <span class="num">&#8722;%38</span>, d&#252;&#351;&#252;&#351; yakalamas&#305; <span class="num">+%94</span> &#231;&#305;kt&#305;. <strong>Alt pencereyi ayr&#305; hesaplamamak.</strong></div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>ilk sonu&#231;</span>DFI'nin rejim de&#287;i&#351;imi May&#305;s 2023'te</div>
+    <div class="nas">Maksimum d&#252;&#351;&#252;&#351;&#252;n dip tarihi "d&#252;&#351;meyi b&#305;rakt&#305;" ile "karakter de&#287;i&#351;tirdi"yi kar&#305;&#351;t&#305;r&#305;yordu. Y&#305;l y&#305;l yakalama tablosu &#231;&#305;kar&#305;l&#305;nca d&#246;n&#252;&#351;&#252;n <strong>2025'te</strong> oldu&#287;u g&#246;r&#252;ld&#252;. Rapora ayr&#305; bir d&#252;zeltme kutusu eklendi.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>ilk sonu&#231;</span>Tera'n&#305;n TRHOL pay&#305; %11,33</div>
+    <div class="nas">Ortakl&#305;k tablosunda negatif nominalli ikinci bir sat&#305;r g&#246;zden ka&#231;m&#305;&#351;t&#305;. Net pay <span class="num">%8,06</span>. Ayn&#305; kontrolde DSTKF'nin asl&#305;nda daha b&#252;y&#252;k oldu&#287;u ortaya &#231;&#305;kt&#305;.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>eksik</span>TLY'nin en b&#252;y&#252;k pozisyonu atland&#305;</div>
+    <div class="nas">Yaln&#305;zca 31.12.2025 denetlenmi&#351; raporuna bak&#305;lm&#305;&#351;t&#305;. OZATD 2026'da al&#305;nm&#305;&#351; ve fonun <span class="num">%26,4</span>'&#252; &mdash; yani en b&#252;y&#252;k kalemi. Tek bir tarihe bakman&#305;n maliyeti.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>yanl&#305;&#351; pencere</span>Taban oran&#305; 120 g&#252;nden, oynakl&#305;&#287;&#305; 12 aydan</div>
+    <div class="nas">&#304;kisi ayn&#305; sat&#305;rda g&#246;sterilince olmayan bir &#231;eli&#351;ki &#252;retiliyordu. Listenin ba&#351;&#305;ndaki fonun "%100 art&#305; ama %49 oynakl&#305;k" anomalisi bu y&#252;zden sahteydi. &#304;kisi de 12 aya &#231;ekildi.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>yanl&#305;&#351; okuma</span>&#8722;%48'lik g&#252;n kay&#305;p san&#305;ld&#305;</div>
+    <div class="nas">K&#226;r pay&#305; da&#287;&#305;tan fonlarda b&#252;y&#252;k tek g&#252;nl&#252;k d&#252;&#351;&#252;&#351; <strong>da&#287;&#305;t&#305;md&#305;r</strong>, kay&#305;p de&#287;il. Tabloya "en k&#246;t&#252; g&#252;n" s&#252;tunu ve bu konuda bir uyar&#305; eklendi; art&#305;k kendili&#287;inden g&#246;r&#252;n&#252;yor.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>y&#246;ntem fark&#305;</span>Rapor ile taray&#305;c&#305; ayn&#305; say&#305;y&#305; farkl&#305; hesapl&#305;yordu</div>
+    <div class="nas">Rapor, b&#246;l&#252;nme i&#351;aretli fonlar&#305; yay&#305;l&#305;m hesab&#305;ndan tamamen at&#305;yordu &mdash; bu kaybedenleri de eleyip da&#287;&#305;l&#305;m&#305; yapay olarak daralt&#305;yordu. &#304;kisi de art&#305;k d&#252;zeltilmi&#351; getiriyi kullan&#305;yor.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>test edildi, &#231;&#252;r&#252;t&#252;ld&#252;</span>"PHN karde&#351; fonlar&#305; tutuyor olabilir"</div>
+    <div class="nas">PHN varl&#305;klar&#305;n&#305;n <span class="num">%104,6</span>'s&#305;n&#305; ba&#351;ka fonlarda tutuyor; akla gelen ilk a&#231;&#305;klama karde&#351; fonlard&#305;. G&#252;nl&#252;k getiri korelasyonu <span class="num">r = 0,26</span> &#231;&#305;kt&#305;. Veri desteklemedi; <strong>a&#231;&#305;k soru olarak b&#305;rak&#305;ld&#305;.</strong></div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>&#246;l&#231;&#252;m hatas&#305;</span>Kendi &#246;l&#231;&#252;mlerim iki kez yanl&#305;&#351; &#231;&#305;kt&#305;</div>
+    <div class="nas">Bir kez taray&#305;c&#305; penceresi s&#305;f&#305;r geni&#351;likteyken "yatay ta&#351;ma var" denildi; bir kez saya&#231; s&#305;f&#305;rlama d&#252;&#287;mesine bas&#305;ld&#305;ktan sonra okundu. &#304;kisi de yeniden &#246;l&#231;&#252;l&#252;p d&#252;zeltildi.</div>
+  </div>
+
+  <div class="hata">
+    <div class="ne"><span>sessiz &#246;l&#231;&#252;m hatas&#305;</span>D&#252;z seride korelasyon 1,0 d&#246;n&#252;yordu</div>
+    <div class="nas">S&#305;f&#305;r varyans korumas&#305; <span class="num">if not varyans</span> bi&#231;imindeydi; neredeyse sabit bir seride kayan nokta g&#252;r&#252;lt&#252;s&#252; varyans&#305; s&#305;f&#305;r yerine <span class="num">1e-36</span> yap&#305;yor ve <span class="num">1e-36 / 1e-36 = 1,0</span> veriyordu. Para piyasas&#305; benzeri d&#252;z bir fona <strong>sahte bir "m&#252;kemmel yumu&#351;atma" imzas&#305;</strong> takabilirdi. Ba&#287;&#305;l e&#351;ikle d&#252;zeltildi; ger&#231;ek fonlar&#305;n &#961; de&#287;erleri de&#287;i&#351;medi, yani hata yay&#305;nda hi&#231; tetiklenmemi&#351;ti.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>sessiz &#246;l&#231;&#252;m hatas&#305;</span>S&#305;f&#305;r fiyat ay&#305;klanm&#305;yordu</div>
+    <div class="nas">TEFAS baz&#305; fonlar&#305;n ilk g&#252;n&#252;n&#252; <span class="num">0</span> d&#246;ner ve tek bir s&#305;f&#305;r t&#252;m getiri zincirini bozar. Veri katman&#305; ay&#305;kl&#305;yordu ama &#246;l&#231;&#252;m katman&#305;n&#305;n kendi korumas&#305; yoktu &mdash; yani ay&#305;klama bir g&#252;n atlansa hata sessizce ge&#231;erdi.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>yay&#305;nda k&#305;r&#305;k</span>"&#304;ncelendi" rozetleri hi&#231;bir yere gitmiyordu</div>
+    <div class="nas">Rapor ba&#287;lant&#305;s&#305; yap&#305;land&#305;rmada eksikti; rozetin <span class="num">href</span>'i bo&#351; temelle &#252;retilince taray&#305;c&#305;n&#305;n kendi i&#231;inde var olmayan bir ba&#287;lant&#305;ya i&#351;aret ediyordu. G&#252;nlerce yay&#305;nda kald&#305; ve fark edilmedi &mdash; &#231;&#252;nk&#252; kendi &#252;retti&#287;im &#231;&#305;kt&#305;ya t&#305;klayarak bakmam&#305;&#351;t&#305;m.</div>
+  </div>
+
+  <div class="kutu">
+    <div class="bl">Bu &#252;&#231;&#252;n&#252;n ortak dersi: bakmak yetmiyor</div>
+    <p>Yukar&#305;daki hatalar&#305;n &#231;o&#287;u <strong>bakarak</strong> bulundu &mdash; bir grafi&#287;i a&#231;&#305;p, bir tabloyu okuyup, bir say&#305;y&#305; ikinci kez hesaplayarak. Son &#252;&#231;&#252; &#246;yle bulunmad&#305;. &#304;lk ikisi, &#246;l&#231;&#252;m katman&#305; i&#231;in <strong>test yaz&#305;ld&#305;&#287;&#305;nda</strong> ortaya &#231;&#305;kt&#305;; ikisi de ger&#231;ek veride hi&#231; tetiklenmemi&#351;ti, yani hi&#231;bir grafi&#287;e bakarak g&#246;r&#252;lemezdi. &#220;&#231;&#252;nc&#252;s&#252;, kendi yay&#305;nlad&#305;&#287;&#305;m sayfan&#305;n ba&#287;lant&#305;s&#305;na t&#305;klanarak.</p>
+    <p style="margin-bottom:0">Sessiz hata, nicel bir i&#351;te en tehlikeli hata t&#252;r&#252;d&#252;r: yanl&#305;&#351; say&#305; &#252;retip do&#287;ru g&#246;r&#252;n&#252;r. Bu y&#252;zden &#246;l&#231;&#252;m katman&#305; art&#305;k <strong>24 testle</strong> korunuyor ve g&#252;nl&#252;k boru hatt&#305;, testler ge&#231;meden yay&#305;n yapm&#305;yor.</p>
+  </div>
+
+  <div class="kutu ne">
+    <div class="bl">En pahal&#305; ders: veri kalitesi</div>
+    <p>TEFAS fiyatlar&#305; pay b&#246;l&#252;nmesi gibi kurumsal i&#351;lemlere g&#246;re d&#252;zeltilmiyor. Bu, getirileri <strong>yan&#305;lt&#305;c&#305; bi&#231;imde iyi</strong> g&#246;steriyor: bir fon ham veride <span class="num neg">&#8722;%58</span> g&#246;r&#252;n&#252;rken, bir g&#252;nde <span class="num">&#215;9,5</span>'lik b&#246;l&#252;nme ay&#305;kland&#305;&#287;&#305;nda ger&#231;ek kayb&#305; <span class="num neg">&#8722;%99</span> &#231;&#305;kt&#305;. Ayn&#305; d&#252;zeltme d&#246;rt fonda daha kayb&#305; b&#252;y&#252;tt&#252;.</p>
+    <p>Ham seriye g&#252;venen bir tarama, &#231;&#246;ken fonlar&#305;n ne kadar &#231;&#246;kt&#252;&#287;&#252;n&#252; sistematik olarak eksik &#246;l&#231;er. Bu y&#252;zden taray&#305;c&#305;da b&#246;l&#252;nme i&#351;aretli fonlar ayr&#305; g&#246;steriliyor ve sat&#305;r a&#231;&#305;ld&#305;&#287;&#305;nda d&#252;zeltilmi&#351; getiri de veriliyor.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">06</span><h2>Bu ara&#231; ne yapamaz</h2></div>
+  <div class="kol">
+    <ul>
+      <li><strong>Portf&#246;y i&#231;eri&#287;ini g&#246;remez.</strong> Tarama yaln&#305;zca fiyat serisine bakar; kald&#305;rac&#305;, &#252;cret yap&#305;s&#305;n&#305;, ger&#231;ek pozisyonlar&#305; g&#246;rmez. Vakalarda bunlar elle, KAP ve portf&#246;y da&#287;&#305;l&#305;m raporlar&#305;ndan do&#287;ruland&#305; &mdash; 1.209 fon i&#231;in bu yap&#305;lmad&#305;.</li>
+      <li><strong>Hangi hissenin tutuldu&#287;unu s&#246;yleyemez.</strong> PKZ'de 710 pay&#305;n tamam&#305; tarand&#305;, aritmetik e&#351;le&#351;ti, ama tek bir isim verilemedi. En y&#252;ksek korelasyon <span class="num">R&#178; 0,10</span>. Bu t&#252;r sorular yaln&#305;zca KAP portf&#246;y raporlar&#305;yla kapan&#305;r.</li>
+      <li><strong>Gelece&#287;i tahmin edemez.</strong> B&#246;l&#252;m 04'&#252;n tamam&#305; bunun &#246;l&#231;&#252;s&#252;.</li>
+      <li><strong>Yat&#305;r&#305;m tavsiyesi vermez ve veremez.</strong> Hangi fonun al&#305;naca&#287;&#305;na dair hi&#231;bir &#231;&#305;kt&#305;s&#305; yok; portf&#246;y sekmesi bile elinizdekinin <em>ne oldu&#287;unu</em> g&#246;sterir, ne alman&#305;z gerekti&#287;ini de&#287;il.</li>
+      <li><strong>Usuls&#252;zl&#252;k iddias&#305; ta&#351;&#305;maz.</strong> Buradaki her yap&#305; kay&#305;tl&#305;, kamuya a&#231;&#305;klanm&#305;&#351; ve TEFAS'ta yay&#305;mlan&#305;yor. Sorulan tek &#351;ey, a&#231;&#305;klanm&#305;&#351; bir yap&#305;n&#305;n rakamlara nas&#305;l yans&#305;d&#305;&#287;&#305;.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">07</span><h2>Nas&#305;l &#231;al&#305;&#351;&#305;yor</h2></div>
+  <div class="kol">
+    <p>Saf Python, d&#305;&#351; ba&#287;&#305;ml&#305;l&#305;k yok, <span class="num">2.311</span> sat&#305;r. TEFAS'&#305;n a&#231;&#305;k JSON ucundan fiyat serileri, &#304;&#351; Yat&#305;r&#305;m'dan BIST kapan&#305;&#351;lar&#305;, KAP'tan portf&#246;y ve ortakl&#305;k bilgileri. Poppler olmad&#305;&#287;&#305; i&#231;in PDF okuyucu da elle yaz&#305;ld&#305;: s&#305;k&#305;&#351;t&#305;r&#305;lm&#305;&#351; ak&#305;&#351;lar&#305; a&#231;&#305;p yaz&#305; tipi e&#351;lemelerini &#231;&#246;zerek KAP raporlar&#305;ndan metin &#231;&#305;kar&#305;yor.</p>
+    <p>Metrik taraf&#305;nda pandas yok &mdash; CAGR, oynakl&#305;k, Sharpe/Sortino, maksimum d&#252;&#351;&#252;&#351;, VaR/CVaR, yakalama oranlar&#305;, yo&#287;unla&#351;ma testi, kayan pencereler, Getmansky-Lo-Makarov yumu&#351;atma tespiti ve Geltner tersine-yumu&#351;atma d&#252;zeltmesi do&#287;rudan yaz&#305;ld&#305;. Renk paleti bile bir do&#287;rulay&#305;c&#305;dan ge&#231;iyor: renk k&#246;rl&#252;&#287;&#252; ayr&#305;m&#305;, kontrast ve a&#231;&#305;kl&#305;k band&#305; &#246;l&#231;&#252;l&#252;yor.</p>
+    <p>Her i&#351; g&#252;n&#252; 09:03'te zamanlanm&#305;&#351; g&#246;rev evreni tazeliyor, tahminleri puanlay&#305;p yenilerini yaz&#305;yor ve taray&#305;c&#305;y&#305; yeniden yay&#305;nl&#305;yor; rapor pazartesileri g&#252;ncelleniyor. Bir veri kayna&#287;&#305; eri&#351;ilemezse eski veriyle yay&#305;n yap&#305;lm&#305;yor.</p>
+  </div>
+  <div class="bag">
+    <a href="https://claude.ai/code/artifact/10fe73cc-5153-4697-8fcb-3381f8cc008d" target="_blank" rel="noopener">
+      <span class="t">Rapor &#8599;</span><span class="a">Alt&#305; vakan&#305;n ayr&#305;nt&#305;l&#305; incelemesi</span></a>
+    <a href="https://claude.ai/code/artifact/bbf84a7a-8da6-4bcf-af2b-9d9579decd42" target="_blank" rel="noopener">
+      <span class="t">Taray&#305;c&#305; &#8599;</span><span class="a">1.209 fon &#183; be&#351; sekme</span></a>
+  </div>
+</section>
+
+<footer>
+  <p><strong>Veri kesimi 04.09.2026.</strong> Rakamlar TEFAS'&#305;n <span class="num">fonFiyatBilgiGetir</span> ucundan ve &#304;&#351; Yat&#305;r&#305;m'&#305;n a&#231;&#305;k g&#252;nl&#252;k kapan&#305;&#351; ucundan al&#305;nd&#305;; portf&#246;y da&#287;&#305;l&#305;mlar&#305; ve ortakl&#305;k yap&#305;lar&#305; KAP bildirimleriyle ve kurucu portf&#246;y da&#287;&#305;l&#305;m raporlar&#305;yla do&#287;ruland&#305;. Bu sayfadaki say&#305;lar o tarihe aittir ve sonraki ko&#351;ularla de&#287;i&#351;ebilir &mdash; canl&#305; rakamlar i&#231;in taray&#305;c&#305;ya bak&#305;n.</p>
+  <p>Bu bir yat&#305;r&#305;m tavsiyesi de&#287;ildir, herhangi bir fon veya menkul k&#305;ymet i&#231;in al&#305;m-sat&#305;m &#246;nerisi i&#231;ermez ve hi&#231;bir ki&#351;i veya kurum hakk&#305;nda usuls&#252;zl&#252;k iddias&#305; ta&#351;&#305;maz. Ge&#231;mi&#351; performans gelecek i&#231;in ba&#287;lay&#305;c&#305; de&#287;ildir. Analizler kamuya a&#231;&#305;k verilere dayan&#305;r ve hata i&#231;erebilir; nitekim yukar&#305;daki <em>Y&#246;ntemin kendi sicili</em> b&#246;l&#252;m&#252;, bu &#231;al&#305;&#351;ma s&#305;ras&#305;nda bulunup d&#252;zeltilen hatalar&#305;n kayd&#305;d&#305;r.</p>
+</footer>
+</main>
+</div>

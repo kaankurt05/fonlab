@@ -1,0 +1,21 @@
+# Onbellek: 86 MB, tamamen yeniden uretilebilir
+fonlab/.onbellek/
+
+# Uretilen veri dosyalari - `tara` / `rapor` / `tahmin` yeniden uretir
+tarama.json
+rapor_veri.json
+tahmin_kayit.json
+
+# Kayitlar ve gecici dosyalar
+*.log
+tmv.html
+belgeler/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# macOS
+.DS_Store

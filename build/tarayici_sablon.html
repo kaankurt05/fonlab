@@ -1,0 +1,1168 @@
+<title>Serbest Fon Tarayıcı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&family=Fraunces:opsz,wght@9..144,600..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f1f5fb; --surface:#ffffff; --surface-2:#e8eef8; --surface-3:#dbe5f4;
+  --ink:#0b1524; --ink-2:#3a4a63; --ink-3:#63758f;
+  --rule:#d3dfee; --rule-soft:#e5ecf7;
+  --accent:#1d4ed8; --accent-soft:#e8effd;
+  --pos:#047857; --neg:#dc2626; --uyari:#b45309;
+  --grad:linear-gradient(96deg,#2563eb 0%,#7c3aed 55%,#0e8ea8 100%);
+  --shadow:0 1px 2px rgba(11,21,36,.05), 0 12px 32px -20px rgba(11,21,36,.35);
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:40px; --s6:56px;
+  --fs-h1:clamp(30px,4.4vw,42px); --fs-h2:21px; --fs-body:16px; --fs-sm:14px; --fs-xs:12.5px;
+  --r-xs:4px; --r-sm:8px; --r-md:12px; --r-pill:999px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#070c16; --surface:#0f1826; --surface-2:#172234; --surface-3:#213047;
+  --ink:#eef4fd; --ink-2:#b2c2da; --ink-3:#8395b2;
+  --rule:#25334a; --rule-soft:#1b2637;
+  --accent:#7fa8ff; --accent-soft:#152238;
+  --pos:#3ddc84; --neg:#ff5c5c; --uyari:#e0a52c;
+  --grad:linear-gradient(96deg,#5b93ff 0%,#8343f6 55%,#32a3bd 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 32px -20px rgba(0,0,0,.85);
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#070c16; --surface:#0f1826; --surface-2:#172234; --surface-3:#213047;
+  --ink:#eef4fd; --ink-2:#b2c2da; --ink-3:#8395b2;
+  --rule:#25334a; --rule-soft:#1b2637;
+  --accent:#7fa8ff; --accent-soft:#152238;
+  --pos:#3ddc84; --neg:#ff5c5c; --uyari:#e0a52c;
+  --grad:linear-gradient(96deg,#5b93ff 0%,#8343f6 55%,#32a3bd 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 32px -20px rgba(0,0,0,.85);
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);margin:0;font-size:var(--fs-body);
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1280px;margin:0 auto;padding:var(--s5) 28px var(--s6)}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+.tape{height:6px;border-radius:3px;background:var(--grad);margin-bottom:var(--s4)}
+.kicker{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);letter-spacing:.15em;
+  text-transform:uppercase;color:var(--accent);font-weight:500}
+h1{font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:var(--fs-h1);line-height:1;
+  letter-spacing:-.02em;margin:var(--s2) 0 0;background:var(--grad);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+@supports not (background-clip:text){h1{color:var(--ink);background:none}}
+.dek{color:var(--ink-2);max-width:74ch;margin:var(--s2) 0 0}
+h2{font-family:"Archivo";font-variation-settings:"wdth" 110;font-weight:700;font-size:var(--fs-h2);
+  margin:var(--s5) 0 var(--s2)}
+.uyari-kutu{border:1px solid var(--rule);border-left:4px solid var(--uyari);background:var(--surface);
+  border-radius:var(--r-md);padding:var(--s3);margin:var(--s3) 0;box-shadow:var(--shadow)}
+.uyari-kutu p{margin:0;font-size:var(--fs-sm);color:var(--ink-2);max-width:78ch}
+.uyari-kutu b{color:var(--ink)}
+.sorular{display:flex;flex-wrap:wrap;gap:var(--s1);margin-bottom:var(--s3)}
+.soru{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-pill);
+  padding:9px 16px;font:inherit;font-size:var(--fs-sm);color:var(--ink-2);cursor:pointer;
+  transition:border-color .15s,color .15s,background .15s}
+.soru:hover{border-color:var(--accent);color:var(--ink)}
+.soru[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-md);
+  padding:var(--s3);box-shadow:var(--shadow)}
+.filtreler{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:var(--s3) var(--s4)}
+.f label{display:block;font-size:var(--fs-xs);color:var(--ink-3);margin-bottom:6px;
+  font-family:"IBM Plex Mono",monospace;letter-spacing:.04em}
+.f .satir{display:flex;align-items:center;gap:10px}
+.f input[type=range]{flex:1;accent-color:var(--accent)}
+.f output{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-sm);font-weight:600;
+  min-width:64px;text-align:right}
+.arac{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap;margin:var(--s3) 0 var(--s2)}
+.sayac{font-size:var(--fs-sm);color:var(--ink-2)}
+.sayac b{font-family:"IBM Plex Mono",monospace;font-size:19px;color:var(--ink)}
+.anahtar{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-sm);color:var(--ink-2);cursor:pointer}
+.btn{background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--r-sm);
+  padding:7px 13px;font:inherit;font-size:var(--fs-sm);color:var(--ink-2);cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--ink)}
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--r-md);background:var(--surface);
+  box-shadow:var(--shadow);max-height:70vh;overflow-y:auto}
+table{border-collapse:collapse;width:100%;font-size:var(--fs-sm);min-width:940px}
+th,td{padding:10px 13px;text-align:right;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+th{position:sticky;top:0;background:var(--surface-2);font-family:"IBM Plex Mono",monospace;
+  font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2);
+  font-weight:600;cursor:pointer;user-select:none;border-bottom:1.5px solid var(--rule);z-index:2}
+th:hover{color:var(--ink)}
+th[data-yon]::after{content:"";margin-left:6px;color:var(--accent)}
+th[data-yon="1"]::after{content:"\2191"}
+th[data-yon="-1"]::after{content:"\2193"}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--surface);z-index:1}
+th:first-child{z-index:3;background:var(--surface-2)}
+td{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;color:var(--ink)}
+tbody tr:hover td{background:var(--accent-soft)}
+.fon-kod{font-weight:700;color:var(--ink)}
+.rozet{display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:2px 8px;
+  border-radius:var(--r-pill);background:var(--accent-soft);color:var(--accent);
+  font-family:"Archivo",sans-serif;font-size:11px;font-weight:600;text-decoration:none;
+  vertical-align:1px;white-space:nowrap;border:1px solid transparent}
+.rozet:hover{border-color:var(--accent)}
+tr.incelendi td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+.fon-ad{display:block;font-family:"Archivo",sans-serif;font-size:var(--fs-xs);color:var(--ink-3);
+  max-width:330px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+.muted{color:var(--ink-3)}
+.bos{padding:var(--s5);text-align:center;color:var(--ink-3);font-size:var(--fs-sm)}
+footer{margin-top:var(--s6);padding-top:var(--s3);border-top:1px solid var(--rule);
+  font-size:var(--fs-xs);color:var(--ink-3)}
+footer p{max-width:86ch;line-height:1.65}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:660px){.wrap{padding:var(--s4) 16px var(--s5)}.filtreler{grid-template-columns:1fr}}
+
+/* ---- sekmeler ---- */
+.sekmeler{display:flex;gap:4px;margin:var(--s4) 0 var(--s2);border-bottom:1px solid var(--rule)}
+.sekme{background:none;border:none;border-bottom:2.5px solid transparent;margin-bottom:-1px;
+  padding:10px 18px;font:inherit;font-size:var(--fs-sm);font-weight:600;color:var(--ink-3);cursor:pointer}
+.sekme:hover{color:var(--ink)}
+.sekme[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.sekme .adet{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);color:var(--ink-3);margin-left:7px}
+[hidden]{display:none!important}
+/* ---- tani rozetleri ---- */
+.tani{display:inline-flex;gap:5px;flex-wrap:wrap;margin-left:8px;vertical-align:1px}
+.t{padding:1px 7px;border-radius:var(--r-pill);font-family:"Archivo",sans-serif;font-size:10.5px;
+  font-weight:600;border:1px solid;white-space:nowrap;cursor:help}
+.t-yumusak{color:var(--uyari);border-color:var(--uyari);background:transparent}
+.t-yogun  {color:var(--neg);border-color:var(--neg);background:transparent}
+.t-dar    {color:var(--ink-2);border-color:var(--rule);background:var(--surface-2)}
+.t-bolun  {color:var(--neg);border-color:var(--neg);background:transparent}
+.t-zirve  {color:var(--ink-2);border-color:var(--rule);background:var(--surface-2)}
+.t-sessiz {color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+/* ---- kivilcim ---- */
+.kv{display:block;width:104px;height:26px;overflow:visible}
+.kv path{fill:none;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+/* ---- satir acilimi ---- */
+tr.fon-satir{cursor:pointer}
+tr.acik td{background:var(--accent-soft)!important}
+td.detay-h{padding:0!important;background:var(--surface-2)}
+.detay{padding:var(--s3);display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:var(--s2) var(--s3);border-bottom:2px solid var(--rule);white-space:normal}
+.detay .d{font-family:"Archivo",sans-serif}
+.detay .dl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+.detay .dv{font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;color:var(--ink)}
+.detay .dn{font-size:var(--fs-xs);color:var(--ink-3);line-height:1.45;margin-top:2px}
+.detay .genis{grid-column:1/-1;font-size:var(--fs-sm);color:var(--ink-2);max-width:80ch}
+.ev-bag{background:none;border:none;padding:0;font:inherit;color:var(--accent);
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.cubuk{position:relative;height:7px;border-radius:4px;background:var(--surface-3);overflow:hidden;margin-top:5px}
+.cubuk i{position:absolute;top:0;bottom:0;border-radius:4px;background:var(--accent)}
+.kopya{margin-left:auto}
+
+/* ---- karsilastirma sepeti ---- */
+.sec{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;vertical-align:-2px}
+td.sec-h,th.sec-h{width:38px;padding-left:14px;padding-right:0}
+.sepet{position:sticky;bottom:0;z-index:6;margin-top:var(--s2);
+  background:var(--surface);border:1px solid var(--accent);border-radius:var(--r-md);
+  box-shadow:var(--shadow);padding:12px var(--s3);display:flex;align-items:center;
+  gap:var(--s2);flex-wrap:wrap}
+.sepet .baslik{font-size:var(--fs-sm);color:var(--ink-2)}
+.sepet .baslik b{font-family:"IBM Plex Mono",monospace;color:var(--ink)}
+.fis{display:inline-flex;align-items:center;gap:7px;padding:4px 8px 4px 11px;
+  border-radius:var(--r-pill);background:var(--surface-2);border:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);font-weight:600}
+.fis .nokta{width:9px;height:9px;border-radius:50%;flex:none}
+.fis button{background:none;border:none;color:var(--ink-3);cursor:pointer;font:inherit;
+  font-size:15px;line-height:1;padding:0 2px}
+.fis button:hover{color:var(--neg)}
+.sepet .sag{margin-left:auto;display:flex;gap:var(--s1)}
+.btn-ana{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.btn-ana:hover{color:#fff;filter:brightness(1.08)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+/* ---- karsilastirma gorunumu ---- */
+.kars-bos{padding:var(--s6) var(--s3);text-align:center;color:var(--ink-3);font-size:var(--fs-sm)}
+.kars-graf{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-md);
+  box-shadow:var(--shadow);padding:var(--s3);margin-bottom:var(--s3)}
+.kars-graf h3{margin:0 0 4px;font-family:"Archivo";font-size:var(--fs-sm);font-weight:700}
+.kars-graf .alt{font-size:var(--fs-xs);color:var(--ink-3);margin:0 0 var(--s2);max-width:74ch}
+.kars-graf svg{display:block;width:100%;height:auto}
+.gost{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s2);font-size:var(--fs-xs)}
+.gost span{display:inline-flex;align-items:center;gap:6px;color:var(--ink-2)}
+.gost i{width:14px;height:3px;border-radius:2px;flex:none}
+td.eniyi{background:color-mix(in oklab,var(--pos) 12%,transparent)}
+td.enkotu{background:color-mix(in oklab,var(--neg) 12%,transparent)}
+@supports not (background:color-mix(in oklab,red 10%,transparent)){
+  td.eniyi{background:var(--surface-2)} td.enkotu{background:var(--surface-2)}
+}
+
+/* ---- portfoy ---- */
+.pf-form{display:flex;gap:var(--s1);flex-wrap:wrap;align-items:flex-end;margin-bottom:var(--s3)}
+.pf-form .alan{display:flex;flex-direction:column;gap:5px}
+.pf-form label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink-3)}
+.pf-form input{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-sm);
+  padding:9px 11px;font:inherit;font-size:var(--fs-sm);color:var(--ink);
+  font-family:"IBM Plex Mono",monospace}
+.pf-form input:focus{outline:2px solid var(--accent);outline-offset:1px}
+#pfKod{width:150px;text-transform:uppercase} #pfTutar{width:170px}
+.pf-ozet{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:var(--s2);
+  margin-bottom:var(--s3)}
+.pf-k{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-md);
+  padding:var(--s2) var(--s3);box-shadow:var(--shadow)}
+.pf-k .l{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink-3)}
+.pf-k .v{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:700;margin-top:3px}
+.pf-k .n{font-size:var(--fs-xs);color:var(--ink-3);margin-top:2px;line-height:1.4}
+.pay{position:relative;height:6px;border-radius:3px;background:var(--surface-3);
+  overflow:hidden;margin-top:5px;min-width:70px}
+.pay i{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--accent)}
+.pf-uyari{border:1px solid var(--rule);border-left:4px solid var(--uyari);background:var(--surface);
+  border-radius:var(--r-md);padding:var(--s2) var(--s3);margin:var(--s3) 0;font-size:var(--fs-sm);
+  color:var(--ink-2)}
+.pf-uyari b{color:var(--ink)}
+.sil{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:17px;
+  line-height:1;padding:0 4px}
+.sil:hover{color:var(--neg)}
+
+.ara-sar{position:relative;display:block;flex:1 1 260px;max-width:340px}
+.gizli{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%)}
+#ara{width:100%;background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-pill);
+  padding:9px 16px;font:inherit;font-size:var(--fs-sm);color:var(--ink)}
+#ara::placeholder{color:var(--ink-3)}
+#ara:focus{border-color:var(--accent)}
+mark{background:var(--accent-soft);color:var(--ink);border-radius:3px;padding:0 2px;font-weight:700}
+@media (max-width:660px){.ara-sar{max-width:none;flex-basis:100%}
+  .arac{gap:var(--s2)} .sepet{padding:10px 14px}
+  .pf-form .alan,.pf-form input{width:100%} .pf-form{gap:var(--s2)}
+  #pfKod,#pfTutar{width:100%} .pf-form .alan{flex:1 1 100%}}
+/*__ORTAK_CSS__*/
+</style>
+
+<!--__NAV__-->
+<div class="wrap" lang="tr">
+<main id="ana">
+<div class="tape"></div>
+<div class="kicker">TEFAS · serbest fon evreni</div>
+<h1>Serbest Fon Tarayıcı</h1>
+<p class="dek">TLY ve DFI incelemesinde kullanılan tanı yöntemi, serbest fon evreninin tamamına uygulandı. Eşikleri sen oynat; liste anında daralsın. <strong>İncelendi</strong> rozetli fonların ayrıntılı analizi <a id="raporBag" href="#">raporda</a> var.</p>
+
+<div class="uyari-kutu">
+  <p><b>Bu araç hüküm vermez, soru üretir.</b> Buradaki hiçbir ölçüt tek başına bir sorun kanıtı değildir. Düşük oynaklık, az eksi gün veya yüksek oto-korelasyon; nakde geçmiş bir fonda da, tek hisseye yoğunlaşmış bir fonda da, tamamen olağan bir stratejide de görülebilir. Liste yalnızca <b>"bunu neden böyle?" diye sorulacak fonları</b> daraltır. Cevap, fonun KAP bildirimlerinde ve portföy dağılım raporlarındadır &mdash; bu tabloda değil. Yatırım tavsiyesi değildir.</p>
+</div>
+
+<div class="sekmeler" role="tablist">
+  <button class="sekme" id="sk-fon" role="tab" aria-selected="true" aria-controls="p-fon">Fonlar<span class="adet" id="sk-fon-n"></span></button>
+  <button class="sekme" id="sk-ev" role="tab" aria-selected="false" aria-controls="p-ev">Kurucular<span class="adet" id="sk-ev-n"></span></button>
+  <button class="sekme" id="sk-kars" role="tab" aria-selected="false" aria-controls="p-kars">Karşılaştırma<span class="adet" id="sk-kars-n"></span></button>
+  <button class="sekme" id="sk-pf" role="tab" aria-selected="false" aria-controls="p-pf">Portföy<span class="adet" id="sk-pf-n"></span></button>
+  <button class="sekme" id="sk-tah" role="tab" aria-selected="false" aria-controls="p-tah">Öngörülebilirlik</button>
+</div>
+
+<div id="p-fon" role="tabpanel" aria-labelledby="sk-fon">
+  <h2>Hazır sorular</h2>
+  <div class="sorular" id="sorular"></div>
+
+  <div class="panel">
+    <div class="filtreler" id="filtreler"></div>
+  </div>
+
+  <div class="arac">
+    <label class="ara-sar"><span class="gizli">Fon kodu veya adında ara</span>
+      <input type="search" id="ara" placeholder="fon kodu veya adında ara…" autocomplete="off"
+             spellcheck="false" enterkeyhint="search"></label>
+    <span class="sayac"><b id="sayi">—</b> fon eşiği geçiyor <span class="muted" id="toplam"></span></span>
+    <label class="anahtar"><input type="checkbox" id="supheliGoster"> şüpheli sıçramalıları da göster</label>
+    <button class="btn" id="sifirla">filtreleri sıfırla</button>
+    <button class="btn kopya" id="kopyala">bu görünümün bağlantısını kopyala</button>
+  </div>
+  <div class="arac" id="evSuzgec" hidden>
+    <span class="sayac">Yalnızca <b id="evAdi"></b> fonları gösteriliyor.</span>
+    <button class="btn" id="evTemizle">kurucu süzgecini kaldır</button>
+  </div>
+
+  <div class="tbl">
+    <table id="tablo"><thead></thead><tbody></tbody></table>
+    <div class="bos" id="bos" hidden>Bu eşiklerde fon kalmadı. Filtreleri gevşetin.</div>
+  </div>
+  <p class="dek" style="font-size:var(--fs-xs);margin-top:var(--s2)">Bir satıra tıklayınca fonun ayrıntısı açılır. Soldaki kutucukla en fazla beş fonu <b>karşılaştırma sepetine</b> alabilirsiniz. Rozetler otomatik üretilir ve <b>hüküm değil, soru</b> anlamına gelir &mdash; üzerine gelince ne demek istediğini yazar.</p>
+  <div class="sepet" id="sepet" hidden>
+    <span class="baslik">Sepette <b id="sepetN">0</b> fon</span>
+    <span id="sepetFisler"></span>
+    <span class="sag">
+      <button class="btn" id="sepetBosalt">boşalt</button>
+      <button class="btn btn-ana" id="sepetAc">karşılaştır →</button>
+    </span>
+  </div>
+</div>
+
+<div id="p-ev" role="tabpanel" aria-labelledby="sk-ev" hidden>
+  <h2>Kurucu içi dağılım</h2>
+  <p class="dek">Bir fonun kategori sırası tek başına okununca bir başarı belgesi gibi durur. Aynı evin diğer fonlarıyla birlikte okununca başka bir şey söyler: <b>çok sayıda yoğun ve birbirinden bağımsız bahis yapan bir ev, hiçbir beceri olmasa bile listenin hem tepesinde hem dibinde fon bulundurur.</b> Aşağıda en az 5 serbest fonu olan her kurucu, fonlarının 12 aylık getiri yayılımına göre sıralı. Bir satıra tıklayınca o evin fonları Fonlar sekmesinde açılır.</p>
+  <div class="arac">
+    <span class="sayac"><b id="evSayi">—</b> kurucu <span class="muted">(en az 5 serbest fonu olanlar)</span></span>
+    <span class="sayac muted">sektör ortancası yayılım: <b id="evOrtanca" style="font-size:var(--fs-sm)"></b></span>
+  </div>
+  <div class="tbl">
+    <table id="evTablo"><thead></thead><tbody></tbody></table>
+  </div>
+  <p class="dek" style="font-size:var(--fs-xs);margin-top:var(--s2)"><b>Yayılım</b>, kurucunun fonlarının 12 aylık getirilerinde %90'lık dilim ile %10'luk dilim arasındaki fark. Uç değerlerden az etkilenmesi için yüzdelik kullanıldı. Bölünme işaretli fonlarda düzeltilmiş getiri kullanılıyor. Yüksek yayılım tek başına bir kusur değildir: nitelikli yatırımcıya özel, her müşteriye ayrı kap açan bir yapıda da, yoğun ve kaldıraçlı stratejilerde de doğal olarak ortaya çıkar. Söylediği tek şey, <b>o evdeki tek bir fonun sırasının o ev hakkında az şey anlattığı</b>.</p>
+</div>
+
+<div id="p-kars" role="tabpanel" aria-labelledby="sk-kars" hidden>
+  <h2>Fon karşılaştırma</h2>
+  <p class="dek">Seçilen fonlar aynı 12 aylık pencerede, aynı eksende. Her satırda en iyi ve en kötü değer işaretli &mdash; ama <b>"en iyi" burada yalnızca o satırdaki sayı demek</b>, fonun daha iyi olduğu anlamına gelmez. Yüksek getiri düşük oynaklıkla birlikte geliyorsa sorulacak soru artar, azalmaz.</p>
+  <div id="karsIcerik"></div>
+  <div class="kars-bos" id="karsBos">Sepet boş. <b>Fonlar</b> sekmesinde satırların solundaki kutucuklarla en az iki fon seçin.</div>
+</div>
+
+<div id="p-tah" role="tabpanel" aria-labelledby="sk-tah" hidden>
+  <h2>Ertesi gün tahmin edilebilir mi?</h2>
+  <p class="dek">Kısa cevap: <b>yön için hayır.</b> Dört şeffaf model (hep artı · dünü tekrarla · AR(1) ρ×dün · 20 gün ortalaması) evrenin tamamında, ileriye bakmayan yürüyen testle denendi. Hiçbiri, hiçbir şey bilmeden "hep artı" diyen taban modeli sistematik olarak geçemedi.</p>
+
+  <div class="uyari-kutu">
+    <p><b>Neden ham isabet oranına bakmıyoruz.</b> Günlerinin %98'i artı olan bir fonda "hep artı de" demek %98 tutturur ve sıfır bilgi taşır. Anlamlı ölçü <b>beceri = isabet − taban oran</b>. Aşağıda gözlemlenen beceri dağılımı, aynı fonlara <b>rastgele</b> tahmin yapan dört modelin üreteceği dağılımla yan yana konuyor. İkisi örtüşüyorsa ortada beceri değil, şans vardır.</p>
+  </div>
+
+  <div class="tbl"><table id="tahKiyas"><thead></thead><tbody></tbody></table></div>
+  <p class="dek" style="font-size:var(--fs-xs);margin-top:var(--s2)" id="tahYorum"></p>
+
+  <h2>İleriye dönük sicil</h2>
+  <p class="dek">Yukarıdaki test <b>geriye dönük</b>: bugünkü veriyle geçmişe uygulanıyor. Aşağıdaki ise <b>gerçek disörneklem kayıt</b> &mdash; her gün, piyasa kapalıyken, ertesi gün için tahmin yazılıyor ve bir sonraki gün gerçekleşenle puanlanıyor. Tahminler yazıldıktan sonra değiştirilmiyor. Bu, modelin lehine seçim yapma imkânı bırakmayan tek ölçüdür ve zamanla birikir.</p>
+  <div class="pf-ozet" id="sicilOzet"></div>
+  <div id="sicilGraf"></div>
+
+  <h2>Asıl bulgu: taban oranın kendisi</h2>
+  <p class="dek">Tahmin denemesi bir kenara, <b>taban oran bir teşhis</b>: bir fonun günlerinin ne kadarının artı olduğu, o fonun canlı bir piyasaya göre işaretlenip işaretlenmediğini söyler. BIST 100 endeks fonunda bu oran <b>%52</b> &mdash; yazı tura, olması gerektiği gibi. Para piyasası benzeri fonlarda %100, çünkü tahakkukla değerleniyorlar. Arada kalanlar soru üretir: hisse ağırlıklı olduğu hâlde günlerinin %96'sında artı yapan bir fon, hisse fiyatlarının yapmadığı bir şey yapıyor demektir.</p>
+  <div class="pf-ozet" id="tahOzet"></div>
+  <p class="dek" style="font-size:var(--fs-sm)">Aşağıdaki liste <b>yıllık oynaklığı %15’in üzerinde olan</b> fonlarla sınırlı. Para piyasası ve kısa vadeli fonlar tanımı gereği her gün artı yapar; orada anomali yoktur. Asıl soru, <b>oynak olduğu hâlde neredeyse hiç eksi gün yapmayan</b> fonlardadır. Artı gün oranı ve oynaklık <b>aynı 12 aylık pencereden</b> hesaplanır.</p>
+  <div class="pf-uyari"><b>“En kötü gün” sütununu okurken:</b> kâr payı dağıtan fonlarda büyük tek günlük düşüşler <b>kayıp değil, dağıtımdır</b> &mdash; pay fiyatı dağıtılan tutar kadar düşer. Adında “kâr payı ödeyen” geçen fonlarda ve bazı katılım fonlarında bu görülür; oynaklığı da yapay olarak yükseltir. Bu tabloda tek başına bir soru işareti sayılmamalıdır.</div>
+  <div class="tbl"><table id="tahTablo"><thead></thead><tbody></tbody></table></div>
+  <p class="dek" style="font-size:var(--fs-xs);margin-top:var(--s2)"><b>Yöntem.</b> Son <span class="num">120</span> işlem günü için yürüyen (walk-forward) test: her gün yalnızca o güne kadarki veriyle tahmin üretildi, geleceğe bakma yok. <b>Yarın</b> sütunu, o fon için en iyi çıkan modelin bir sonraki işlem günü tahminidir &mdash; yukarıdaki sonuç ışığında <b>bunu bir sinyal değil, modelin ne dediğinin kaydı olarak okuyun</b>. Büyüklük tahmininde modeller "sıfır tahmin et"e göre medyanda yalnızca %5 daha iyi. Bu bir alım-satım aracı değildir ve yatırım tavsiyesi içermez.</p>
+</div>
+
+<div id="p-pf" role="tabpanel" aria-labelledby="sk-pf" hidden>
+  <h2>Portföyüm</h2>
+  <p class="dek">Elinizdeki fonları ve tutarlarını girin; aynı tanı yöntemi <b>portföyün tamamına</b> uygulansın. Bu bir tavsiye aracı değil: ne almanız gerektiğini söylemez, <b>elinizdekinin nasıl bir şey olduğunu</b> gösterir &mdash; yoğunlaşma, kurucu bağımlılığı ve fonların taşıdığı rozetler.</p>
+
+  <div class="pf-uyari">
+    <b>Veriler tarayıcınızdan çıkmıyor.</b> Girdiğiniz fon ve tutarlar yalnızca bu cihazın yerel deposunda (<span class="num">localStorage</span>) tutulur; hiçbir sunucuya, bu sayfanın yazarına veya Claude'a gönderilmez. Tarayıcı verilerini temizlerseniz kaybolur. Paylaşılabilir bağlantıya da <b>dahil edilmez</b>.
+  </div>
+
+  <div class="pf-form">
+    <div class="alan"><label for="pfKod">Fon kodu</label>
+      <input id="pfKod" list="fonListesi" placeholder="örn. TLY" autocomplete="off" maxlength="6"></div>
+    <div class="alan"><label for="pfTutar">Tutar (TL)</label>
+      <input id="pfTutar" type="number" min="0" step="1000" placeholder="100000"></div>
+    <button class="btn btn-ana" id="pfEkle">portföye ekle</button>
+    <button class="btn" id="pfTemizle">tümünü sil</button>
+  </div>
+  <datalist id="fonListesi"></datalist>
+  <p id="pfHata" class="dek" style="color:var(--neg);font-size:var(--fs-sm);margin:0 0 var(--s2)" hidden></p>
+
+  <div id="pfIcerik"></div>
+  <div class="kars-bos" id="pfBos">Portföy boş. Yukarıdan bir fon kodu ve tutar girin.</div>
+</div>
+
+<footer>
+  <p><strong>Yöntem.</strong> TEFAS'ın <span class="num">fonFiyatBilgiGetir</span> ucundan her fonun son 12 aylık günlük birim pay fiyatı çekildi (<span class="num" id="fBit"></span> kesimi). Adında "serbest" geçen, emeklilik olmayan <span class="num" id="fEvren"></span> fondan <span class="num" id="fIslenen"></span> tanesi işlendi; <span class="num" id="fAtlanan"></span> fon 200 günden kısa geçmişi olduğu için, <span class="num" id="fHata"></span> fon veri hatası nedeniyle dışarıda kaldı. 6 aylık ölçütler aynı serinin son 126 gününden hesaplandı. Oynaklık günlük getirilerin standart sapmasının √252 katı; ρ birinci gecikme oto-korelasyonu; Sharpe, para piyasası fonuna (ALE) göre aşırı getiriden.</p>
+  <p><strong>Veri kalitesi.</strong> TEFAS fiyatları pay bölünmesi gibi kurumsal işlemlere göre düzeltilmiyor; tek günde %50'yi aşan hareket neredeyse her zaman bölünmedir, getiri değil. Böyle <span class="num" id="fSup"></span> fon <em>şüpheli</em> işaretlenip varsayılan listeden çıkarıldı ve <b>bölünme</b> rozeti aldı. Üstteki anahtarla görünür yapabilirsiniz &mdash; o satırlardaki ham getiri ve oynaklık rakamları gerçeği yansıtmaz, ama satırı açtığınızda sıçrama günleri nötrlenerek hesaplanmış <em>düzeltilmiş getiri</em> de gösterilir. Bu düzeltme kayıpları genelde <b>büyütür</b>: ham seri, çöken fonların kaybını olduğundan küçük gösteriyor. Kurucular sekmesindeki yayılım hesabı da düzeltilmiş getirileri kullanır.</p>
+  <p><strong>Kurucu görünümü.</strong> Fon unvanının başındaki kurucu adına göre gruplandı; en az 5 serbest fonu olan <span class="num" id="fEv"></span> kurucu listelendi. Yayılım, o kurucunun fonlarının 12 aylık getirilerinde %90'lık ile %10'luk dilim arasındaki fark.</p>
+  <p><strong>Rozetler.</strong> Otomatik ve eşikleri sabit: <b>yumuşak</b> ρ(6 ay) ≥ 0,25; <b>yoğun</b> en iyi 10 gün çıkarılınca getirinin üçte birinden azı kalıyorsa (ve 12 aylık getiri %50 üstündeyse); <b>dar</b> yatırımcı sayısı 25'in altında; <b>zirveden uzak</b> bugün 12 aylık zirvesinin %50'sinden aşağıda; <b>sessiz yükseliş</b> 6 ayda getiri ≥%30, oynaklık ≤%25, eksi gün oranı ≤%20. Hiçbiri bir kusur iddiası değildir.</p>
+  <p><strong>Sınırlar.</strong> "Özel" fonlar nitelikli yatırımcıya yöneliktir ve herkese açık olmayabilir. Tarama yalnızca fiyat serisine bakar: portföy içeriğini, kaldıracı, ücret yapısını görmez. Geçmiş performans gelecek için bağlayıcı değildir.</p>
+</footer>
+</main>
+</div>
+
+<script>
+const T = /*__TARAMA__*/;
+const A = {}; T.alanlar.forEach((a,i)=>A[a]=i);
+const nf=(v,d=1)=>v==null?'—':new Intl.NumberFormat('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d}).format(v);
+const pc=(v,d=1)=>v==null?'—':(v>=0?'+':'−')+nf(Math.abs(v*100),d)+'%';
+const pct=(v,d=0)=>v==null?'—':nf(v*100,d)+'%';
+const mlr=v=>v==null?'—':(v>=1e9?nf(v/1e9,1)+' mlr':v>=1e6?nf(v/1e6,0)+' mn':nf(v,0));
+
+const FILTRE=[
+  {ad:'toplam6', et:'6 ay getiri ≥',   min:-0.5, max:3,   adim:0.05, def:-0.5, bic:v=>pc(v,0)},
+  {ad:'vol6',    et:'6 ay oynaklık ≤', min:0.01, max:1.2, adim:0.01, def:1.2,  bic:v=>pct(v)},
+  {ad:'eksi_oran6', et:'eksi gün oranı ≤', min:0, max:0.7, adim:0.01, def:0.7, bic:v=>pct(v)},
+  {ad:'rho6',    et:'oto-korelasyon ρ ≥', min:-0.5, max:0.7, adim:0.01, def:-0.5, bic:v=>nf(v,2)},
+  {ad:'buyukluk',et:'fon büyüklüğü ≥', min:0, max:50e9, adim:1e8, def:0, bic:v=>mlr(v)},
+];
+const SEPET_AZAMI=5;
+// Dogrulanmis paletten; ust uste cizilen egrilerin birbirinden ayirt edilebilmesi
+// icin sabit sirayla dagitiliyor, dongusel degil.
+const SEPET_RENK=['#2563eb','#e06010','#7c3aed','#0e8ea8','#c98a00'];
+const SEPET_RENK_K=['#5b93ff','#e56418','#8343f6','#32a3bd','#c58700'];
+const koyuMu=()=>matchMedia('(prefers-color-scheme:dark)').matches
+  && document.documentElement.getAttribute('data-theme')!=='light'
+  || document.documentElement.getAttribute('data-theme')==='dark';
+const sepetRenk=i=>(koyuMu()?SEPET_RENK_K:SEPET_RENK)[i%5];
+
+const SUTUN=[
+  {ad:'sec', et:'', sinif:'sec-h', ic:r=>{
+     const v=sepet.includes(r[A.kod]);
+     const dolu=sepet.length>=SEPET_AZAMI && !v;
+     return '<input type="checkbox" class="sec" data-kod="'+r[A.kod]+'"'+
+       (v?' checked':'')+(dolu?' disabled':'')+
+       ' aria-label="'+r[A.kod]+' fonunu karşılaştırma sepetine ekle">';},
+   sirala:r=>sepet.includes(r[A.kod])?1:0},
+  {ad:'fon', et:'Fon', sinif:'hucre-ad', ic:r=>{
+     const inc=T.incelenen&&T.incelenen[r[A.kod]];
+     const roz=inc?'<a class="rozet" href="'+T.raporUrl+'#'+inc+'" target="_blank" rel="noopener">incelendi \u2197</a>':'';
+     return '<span class="fon-kod">'+vur(r[A.kod])+'</span>'+roz+taniHtml(r)+
+            '<span class="fon-ad">'+vur(r[A.ad])+'</span>';},
+   sirala:r=>r[A.kod]},
+  {ad:'kivilcim', et:'12 ay seyri', ic:r=>kivilcim(r), sirala:r=>r[A.toplam]},
+  {ad:'toplam6', et:'6 ay getiri', ic:r=>sinifla(r[A.toplam6]), sirala:r=>r[A.toplam6]},
+  {ad:'vol6', et:'6 ay oyn.', ic:r=>pct(r[A.vol6]), sirala:r=>r[A.vol6]},
+  {ad:'eksi_oran6', et:'eksi gün', ic:r=>pct(r[A.eksi_oran6]), sirala:r=>r[A.eksi_oran6]},
+  {ad:'rho6', et:'ρ (6 ay)', ic:r=>nf(r[A.rho6],2).replace('-','−'), sirala:r=>r[A.rho6]},
+  {ad:'toplam', et:'12 ay getiri', ic:r=>sinifla(r[A.toplam]), sirala:r=>r[A.toplam]},
+  {ad:'vol', et:'12 ay oyn.', ic:r=>pct(r[A.vol]), sirala:r=>r[A.vol]},
+  {ad:'mdd', et:'maks. düşüş', ic:r=>'<span class="neg">'+pc(r[A.mdd],1)+'</span>', sirala:r=>r[A.mdd]},
+  {ad:'x10', et:'en iyi 10 gün hariç', ic:r=>sinifla(r[A.x10]), sirala:r=>r[A.x10]},
+  {ad:'zirveden', et:'zirvesinden', ic:r=>'<span class="'+(r[A.zirveden]<=-0.2?'neg':'muted')+'">'+pc(r[A.zirveden],0)+'</span>', sirala:r=>r[A.zirveden]},
+  {ad:'buyukluk', et:'büyüklük', ic:r=>mlr(r[A.buyukluk]), sirala:r=>r[A.buyukluk]||0},
+  {ad:'yatirimci', et:'yatırımcı', ic:r=>r[A.yatirimci]==null?'—':r[A.yatirimci].toLocaleString('tr-TR'), sirala:r=>r[A.yatirimci]??-1},
+];
+// Aranan metni sonucta isaretle - hangi kelimenin tuttugu gorunsun
+function vur(t){
+  const q=aranan.trim(); if(!q) return t;
+  const i=t.toLocaleUpperCase('tr').indexOf(q.toLocaleUpperCase('tr'));
+  if(i<0) return t;
+  return t.slice(0,i)+'<mark>'+t.slice(i,i+q.length)+'</mark>'+t.slice(i+q.length);
+}
+function sinifla(v,d){ if(v==null) return '—';
+  const h = d!=null ? d : (Math.abs(v)<0.05 ? 2 : 0);
+  return '<span class="'+(v>=0?'pos':'neg')+'">'+pc(v,h)+'</span>'; }
+
+const SORULAR=[
+  {ad:'Sessiz yükseliş', ipucu:'Yüksek getiri, düşük oynaklık, az eksi gün',
+   d:{toplam6:0.30, vol6:0.25, eksi_oran6:0.20, rho6:-0.5, buyukluk:0}},
+  {ad:'Yumuşatma imzası', ipucu:'Kalıcı pozitif oto-korelasyon, düşük oynaklık',
+   d:{toplam6:-0.5, vol6:0.30, eksi_oran6:0.7, rho6:0.25, buyukluk:0}},
+  {ad:'Neredeyse kayıpsız', ipucu:'Günlerin %10’undan azı eksi',
+   d:{toplam6:-0.5, vol6:1.2, eksi_oran6:0.10, rho6:-0.5, buyukluk:0}},
+  {ad:'Büyük ve sessiz', ipucu:'10 milyar TL üstü, oynaklığı %20 altı, getirisi yüksek',
+   d:{toplam6:0.20, vol6:0.20, eksi_oran6:0.7, rho6:-0.5, buyukluk:10e9}},
+  {ad:'Zirvesinden uzak', ipucu:'Getirisi iyi görünse de bugün 12 aylık zirvesinin yarısından aşağıda',
+   ek:r=>r[A.zirveden]<=-0.5,
+   d:{toplam6:-0.5, vol6:1.2, eksi_oran6:0.7, rho6:-0.5, buyukluk:0}},
+  {ad:'Dar yatırımcı tabanı', ipucu:'25’ten az yatırımcısı olan fonlar — perakende değil, özel araçlar',
+   ek:r=>r[A.yatirimci]!=null&&r[A.yatirimci]<25,
+   d:{toplam6:-0.5, vol6:1.2, eksi_oran6:0.7, rho6:-0.5, buyukluk:0}},
+  {ad:'Raporda incelenenler', ipucu:'Ayrıntılı analizi yapılmış altı fon', sadeceIncelenen:true,
+   d:{toplam6:-0.5, vol6:1.2, eksi_oran6:0.7, rho6:-0.5, buyukluk:0}},
+];
+
+let durum={}, siraSutun='toplam6', siraYon=-1, supheli=false, aktifSoru=null,
+    sadeceIncelenen=false, evSuz=null, sekme='fon', acikSatir=null, sepet=[],
+    aranan='',
+    evSira='yayilim', evYon=-1;
+FILTRE.forEach(f=>durum[f.ad]=f.def);
+
+const $=id=>document.getElementById(id);
+
+/* ---------- otomatik tani rozetleri ----------
+   Hicbiri bir kusur iddiasi degil; hepsi "bunu neden boyle?" sorusunun
+   kisayolu. Esikler raporda kullanilan esiklerle ayni. */
+const TANI=[
+  {ad:'bölünme', sinif:'t-bolun', ne:'Tek günde %50\'yi aşan sıçrama var — bu neredeyse her zaman pay bölünmesidir, getiri değil. Ham getiri rakamı yanıltıcı.',
+   test:r=>r[A.supheli]},
+  {ad:'yumuşak', sinif:'t-yumusak', ne:'Son 6 ayda oto-korelasyon ρ ≥ 0,25. Bugünün getirisi dünkünü izliyor — değerleme gecikmeli fiyatlanıyor olabilir. Oynaklık ve Sharpe olduğundan iyi görünür.',
+   test:r=>r[A.rho6]>=0.25},
+  {ad:'yoğun', sinif:'t-yogun', ne:'12 aylık getirinin çok büyük kısmı birkaç güne bağlı: en iyi 10 gün çıkarılınca getirinin üçte birinden azı kalıyor.',
+   test:r=>r[A.toplam]>0.5 && r[A.x10]!=null && r[A.x10] < r[A.toplam]/3},
+  {ad:'dar', sinif:'t-dar', ne:'25\'ten az yatırımcı. Perakende bir fon değil, birkaç nitelikli yatırımcı için kurulmuş özel bir araç olabilir; kategori sıralamasında büyük fonlarla yan yana görünür.',
+   test:r=>r[A.yatirimci]!=null && r[A.yatirimci]<25},
+  {ad:'zirveden uzak', sinif:'t-zirve', ne:'Bugün kendi 12 aylık zirvesinin %50\'sinden aşağıda. Getiri tablosu iyi görünse bile fon şu an tepe değerinin çok altında.',
+   test:r=>r[A.zirveden]<=-0.5},
+  {ad:'sessiz yükseliş', sinif:'t-sessiz', ne:'6 ayda getiri ≥%30, oynaklık ≤%25, günlerin ≤%20\'si eksi. Raporun dört vakası bu ölçütle bulundu.',
+   test:r=>r[A.toplam6]>=0.30 && r[A.vol6]<=0.25 && r[A.eksi_oran6]<=0.20},
+];
+const taniLar=r=>TANI.filter(t=>{try{return t.test(r);}catch(e){return false;}});
+function taniHtml(r){
+  const t=taniLar(r); if(!t.length) return '';
+  return '<span class="tani">'+t.map(x=>
+    '<span class="t '+x.sinif+'" title="'+x.ne.replace(/"/g,'&quot;')+'">'+x.ad+'</span>').join('')+'</span>';
+}
+
+/* ---------- kivilcim ---------- */
+const KV_ALFABE='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_';
+const kvCoz=t=>{const d=[];for(const c of t){const i=KV_ALFABE.indexOf(c); if(i>=0)d.push(i);}return d;};
+function kivilcim(r){
+  const t=r[A.kivilcim]; if(!t||t.length<4) return '';
+  const d=kvCoz(t);
+  const W=104,H=26,lo=0,hi=63,ar=63;
+  const X=i=>i/(d.length-1)*W, Y=v=>H-2-((v-lo)/ar)*(H-4);
+  const yol=d.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+  const yuk=d[d.length-1]>=d[0];
+  return '<svg class="kv" viewBox="0 0 '+W+' '+H+'" aria-hidden="true" focusable="false">'+
+    '<path d="'+yol+'" stroke="'+(yuk?'var(--pos)':'var(--neg)')+'"/></svg>';
+}
+
+/* ---------- fon detayi ---------- */
+function detay(r){
+  const ev=(T.ev||[]).find(e=>e.ev===r[A.ev]);
+  const kut=(l,v,n)=>'<div class="d"><div class="dl">'+l+'</div><div class="dv">'+v+'</div>'+
+    (n?'<div class="dn">'+n+'</div>':'')+'</div>';
+  let g='';
+  g+=kut('12 ay getiri', sinifla(r[A.toplam]),
+       r[A.supheli]?('bölünme düzeltilince '+pc(r[A.toplam_duz],0)):'');
+  g+=kut('Zirvesinden', '<span class="'+(r[A.zirveden]<=-0.2?'neg':'muted')+'">'+pc(r[A.zirveden],1)+'</span>',
+       'son 12 ayın en yüksek değerine göre bugün');
+  g+=kut('En iyi 10 gün hariç', sinifla(r[A.x10]),
+       'getirinin ne kadarı birkaç güne bağlı');
+  g+=kut('Sharpe', nf(r[A.sharpe],2), 'para piyasası fonuna göre');
+  g+=kut('Oto-korelasyon <span style="text-transform:none">ρ</span>', nf(r[A.rho6],2).replace('-','−')+' <span class="muted">/ 6 ay</span>',
+       '12 ay: '+nf(r[A.rho],2).replace('-','−'));
+  g+=kut('Yatırımcı', r[A.yatirimci]==null?'—':r[A.yatirimci].toLocaleString('tr-TR'),
+       'büyüklük '+mlr(r[A.buyukluk]));
+  if(ev){
+    const yer=ev.kod.length>1
+      ? (ev.kod.slice().length+' fondan biri') : 'evin tek fonu';
+    g+=kut('Kurucu',
+      '<button class="ev-bag" data-ev="'+ev.ev+'">'+ev.ev+' ↗</button>',
+      ev.fon+' serbest fon · yayılım '+pct(ev.yayilim,0)+' · medyan '+pc(ev.medyan,0));
+  }
+  const t=taniLar(r);
+  if(t.length){
+    g+='<div class="genis"><b>Neden dikkat çekiyor:</b><ul style="margin:6px 0 0;padding-left:18px">'+
+      t.map(x=>'<li><b>'+x.ad+'</b> — '+x.ne+'</li>').join('')+'</ul></div>';
+  } else {
+    g+='<div class="genis muted">Bu fon otomatik ölçütlerin hiçbirine takılmıyor.</div>';
+  }
+  g+='<div class="genis muted">Veri aralığı '+r[A.gun]+' işlem günü. Bu tablo yalnızca fiyat serisine bakar; '+
+     'portföy içeriğini, kaldıracı ve ücretleri görmez. Cevap fonun KAP bildirimlerinde ve portföy dağılım raporlarındadır.</div>';
+  return '<div class="detay">'+g+'</div>';
+}
+
+/* ---------- kurulum ---------- */
+function kurFiltreler(){
+  $('filtreler').innerHTML=FILTRE.map(f=>
+    '<div class="f"><label for="i-'+f.ad+'">'+f.et+'</label><div class="satir">'+
+    '<input type="range" id="i-'+f.ad+'" min="'+f.min+'" max="'+f.max+'" step="'+f.adim+'" value="'+f.def+'">'+
+    '<output id="o-'+f.ad+'"></output></div></div>').join('');
+  FILTRE.forEach(f=>{
+    const el=$('i-'+f.ad);
+    el.addEventListener('input',()=>{durum[f.ad]=+el.value; aktifSoru=null; sadeceIncelenen=false; ciz();});
+  });
+}
+function kurSorular(){
+  $('sorular').innerHTML=SORULAR.map((s,i)=>
+    '<button class="soru" data-i="'+i+'" aria-pressed="false" title="'+s.ipucu+'">'+s.ad+'</button>').join('');
+  $('sorular').querySelectorAll('.soru').forEach(b=>b.addEventListener('click',()=>{
+    const i=+b.dataset.i;
+    if(aktifSoru===i){ sifirla(); return; }
+    aktifSoru=i; sadeceIncelenen=!!SORULAR[i].sadeceIncelenen;
+    Object.assign(durum, SORULAR[i].d); esitleGirdiler(); ciz();
+  }));
+}
+function esitleGirdiler(){ FILTRE.forEach(f=>{ $('i-'+f.ad).value=durum[f.ad]; }); }
+function sifirla(){ aktifSoru=null; sadeceIncelenen=false; evSuz=null; acikSatir=null;
+  aranan=''; if($('ara')) $('ara').value='';
+  FILTRE.forEach(f=>durum[f.ad]=f.def); esitleGirdiler(); ciz(); }
+
+function suz(){
+  const q=aranan.trim().toLocaleUpperCase('tr');
+  return T.satir.filter(r=>{
+    if(q && !(r[A.kod].includes(q)||r[A.ad].toLocaleUpperCase('tr').includes(q))) return false;
+    if(evSuz && r[A.ev]!==evSuz) return false;
+    if(sadeceIncelenen && !(T.incelenen&&T.incelenen[r[A.kod]])) return false;
+    if(!supheli && r[A.supheli]) return false;
+    if(r[A.toplam6]<durum.toplam6) return false;
+    if(r[A.vol6]>durum.vol6) return false;
+    if(r[A.eksi_oran6]>durum.eksi_oran6) return false;
+    if(r[A.rho6]<durum.rho6) return false;
+    if((r[A.buyukluk]||0)<durum.buyukluk) return false;
+    const so=aktifSoru!=null?SORULAR[aktifSoru]:null;
+    if(so&&so.ek&&!so.ek(r)) return false;
+    return true;
+  });
+}
+
+/* ---------- fon tablosu ---------- */
+function ciz(){
+  FILTRE.forEach(f=>{ $('o-'+f.ad).textContent=f.bic(durum[f.ad]); });
+  $('sorular').querySelectorAll('.soru').forEach(b=>
+    b.setAttribute('aria-pressed', String(+b.dataset.i===aktifSoru)));
+  $('evSuzgec').hidden=!evSuz;
+  if(evSuz) $('evAdi').textContent=evSuz;
+  const s=SUTUN.find(c=>c.ad===siraSutun);
+  const satir=suz().sort((a,b)=>{
+    const x=s.sirala(a), y=s.sirala(b);
+    if(typeof x==='string') return siraYon*x.localeCompare(y,'tr');
+    return siraYon*((x??-1e18)-(y??-1e18));
+  });
+  $('sayi').textContent=satir.length.toLocaleString('tr-TR');
+  $('toplam').textContent='('+(supheli?T.satir.length:T.satir.filter(r=>!r[A.supheli]).length).toLocaleString('tr-TR')+' fon içinden)';
+  document.querySelector('#tablo thead').innerHTML='<tr>'+SUTUN.map(c=>
+    '<th data-ad="'+c.ad+'"'+(c.sinif?' class="'+c.sinif+'"':'')+
+    (c.ad===siraSutun?' data-yon="'+siraYon+'"':'')+'>'+c.et+'</th>').join('')+'</tr>';
+  document.querySelector('#tablo thead').querySelectorAll('th').forEach(th=>
+    th.addEventListener('click',()=>{
+      const ad=th.dataset.ad;
+      if(ad===siraSutun) siraYon=-siraYon; else {siraSutun=ad; siraYon=-1;}
+      ciz();
+    }));
+  const gov=satir.slice(0,400).map(r=>{
+    const k=r[A.kod], ac=acikSatir===k;
+    let h='<tr class="fon-satir'+((T.incelenen&&T.incelenen[k])?' incelendi':'')+(ac?' acik':'')+
+      '" data-kod="'+k+'" tabindex="0" aria-expanded="'+ac+'">'+
+      SUTUN.map(c=>'<td data-l="'+(c.et||'')+'"'+(c.sinif?' class="'+c.sinif+'"':'')+
+        '>'+c.ic(r)+'</td>').join('')+'</tr>';
+    if(ac) h+='<tr><td class="detay-h" colspan="'+SUTUN.length+'">'+detay(r)+'</td></tr>';
+    return h;
+  }).join('');
+  document.querySelector('#tablo tbody').innerHTML=gov;
+  document.querySelectorAll('#tablo tbody tr.fon-satir').forEach(tr=>{
+    const ac=()=>{ acikSatir = acikSatir===tr.dataset.kod ? null : tr.dataset.kod; ciz(); };
+    tr.addEventListener('click',ac);
+    tr.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();ac();} });
+  });
+  document.querySelectorAll('#tablo .ev-bag').forEach(b=>
+    b.addEventListener('click',e=>{e.stopPropagation(); evAc(b.dataset.ev);}));
+  document.querySelectorAll('#tablo .sec').forEach(cb=>{
+    cb.addEventListener('click',e=>e.stopPropagation());   // satiri acmasin
+    cb.addEventListener('change',()=>sepeteAlCikar(cb.dataset.kod));
+  });
+  $('bos').hidden=satir.length>0;
+  if(!satir.length) $('bos').innerHTML = aranan.trim()
+    ? '<b>'+aranan.trim()+'</b> için sonuç yok. Arama fon kodunda ve adında geçen metni arar.'
+    : 'Bu eşiklerde fon kalmadı. Filtreleri gevşetin.';
+  $('sk-fon-n').textContent=satir.length.toLocaleString('tr-TR');
+  urlYaz();
+}
+
+/* ---------- kurucu tablosu ---------- */
+const EVSUTUN=[
+  {ad:'ev', et:'Kurucu', ic:e=>'<span class="fon-kod">'+e.ev+'</span>'+
+      '<span class="fon-ad">'+e.fon+' serbest fon · '+mlr(e.buyukluk)+' TL · '+
+      e.yatirimci.toLocaleString('tr-TR')+' yatırımcı</span>', sirala:e=>e.ev},
+  {ad:'fon', et:'Fon', ic:e=>e.fon, sirala:e=>e.fon},
+  {ad:'yayilim', et:'Yayılım %90−%10', ic:e=>'<b>'+pct(e.yayilim,0)+'</b>', sirala:e=>e.yayilim},
+  {ad:'en_iyi', et:'En iyi', ic:e=>sinifla(e.en_iyi), sirala:e=>e.en_iyi},
+  {ad:'medyan', et:'Medyan', ic:e=>sinifla(e.medyan), sirala:e=>e.medyan},
+  {ad:'en_kotu', et:'En kötü', ic:e=>sinifla(e.en_kotu), sirala:e=>e.en_kotu},
+  {ad:'eksi', et:'Eksi biten', ic:e=>e.eksi+' / '+e.fon, sirala:e=>e.eksi/e.fon},
+  {ad:'yarim', et:'≤ −%50', ic:e=>e.yarim?('<span class="neg">'+e.yarim+'</span>'):'<span class="muted">—</span>', sirala:e=>e.yarim},
+  {ad:'bolunmeli', et:'Bölünmeli', ic:e=>e.bolunmeli?('<span class="neg">'+e.bolunmeli+'</span>'):'<span class="muted">—</span>', sirala:e=>e.bolunmeli},
+  {ad:'yat_ort', et:'Fon başına yatırımcı', ic:e=>e.yat_ort.toLocaleString('tr-TR'), sirala:e=>e.yat_ort},
+];
+function evAc(ev){
+  evSuz=ev; acikSatir=null; aktifSoru=null; sadeceIncelenen=false;
+  FILTRE.forEach(f=>durum[f.ad]=f.def); esitleGirdiler();
+  supheli=true; $('supheliGoster').checked=true;   // evin tamami gorunsun
+  sekmeAc('fon'); ciz();
+}
+function evCiz(){
+  const E=(T.ev||[]).slice();
+  if(!E.length){ $('sk-ev').hidden=true; return; }
+  const s=EVSUTUN.find(c=>c.ad===evSira)||EVSUTUN[2];
+  E.sort((a,b)=>{ const x=s.sirala(a),y=s.sirala(b);
+    return typeof x==='string' ? evYon*x.localeCompare(y,'tr') : evYon*((x??-1e18)-(y??-1e18)); });
+  const yay=E.map(e=>e.yayilim).sort((a,b)=>a-b);
+  $('evSayi').textContent=E.length;
+  $('evOrtanca').textContent=pct(yay[Math.floor(yay.length/2)],0);
+  $('sk-ev-n').textContent=E.length;
+  const enb=Math.max(...E.map(e=>e.yayilim));
+  document.querySelector('#evTablo thead').innerHTML='<tr>'+EVSUTUN.map(c=>
+    '<th data-ad="'+c.ad+'"'+(c.ad===evSira?' data-yon="'+evYon+'"':'')+'>'+c.et+'</th>').join('')+'</tr>';
+  document.querySelector('#evTablo thead').querySelectorAll('th').forEach(th=>
+    th.addEventListener('click',()=>{
+      const ad=th.dataset.ad;
+      if(ad===evSira) evYon=-evYon; else {evSira=ad; evYon=-1;}
+      evCiz();
+    }));
+  document.querySelector('#evTablo tbody').innerHTML=E.map(e=>
+    '<tr class="fon-satir" data-ev="'+e.ev+'" tabindex="0">'+
+    EVSUTUN.map((c,i)=>'<td data-l="'+(c.et||'')+'">'+c.ic(e)+
+      (c.ad==='yayilim'?'<div class="cubuk"><i style="width:'+
+        Math.max(2,Math.min(100,e.yayilim/enb*100)).toFixed(0)+'%"></i></div>':'')+
+      '</td>').join('')+'</tr>').join('');
+  document.querySelectorAll('#evTablo tbody tr').forEach(tr=>{
+    const ac=()=>evAc(tr.dataset.ev);
+    tr.addEventListener('click',ac);
+    tr.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();ac();} });
+  });
+}
+
+/* ---------- karsilastirma sepeti ---------- */
+const fonBul=k=>T.satir.find(r=>r[A.kod]===k);
+
+function sepeteAlCikar(kod){
+  const i=sepet.indexOf(kod);
+  if(i>=0) sepet.splice(i,1);
+  else if(sepet.length<SEPET_AZAMI) sepet.push(kod);
+  sepetCiz(); karsCiz(); ciz();
+}
+function sepetCiz(){
+  $('sepet').hidden = sepet.length===0;
+  $('sepetN').textContent = sepet.length;
+  $('sk-kars-n').textContent = sepet.length || '';
+  $('sepetAc').disabled = sepet.length<2;
+  $('sepetAc').title = sepet.length<2 ? 'En az iki fon seçin' : '';
+  $('sepetFisler').innerHTML = sepet.map((k,i)=>{
+    const r=fonBul(k);
+    return '<span class="fis"><i class="nokta" style="background:'+sepetRenk(i)+'"></i>'+k+
+      '<button data-kod="'+k+'" aria-label="'+k+' fonunu sepetten çıkar" title="çıkar">×</button></span>';
+  }).join(' ');
+  $('sepetFisler').querySelectorAll('button').forEach(b=>
+    b.addEventListener('click',()=>sepeteAlCikar(b.dataset.kod)));
+}
+
+/* kivilcim dizgesini gercek olcege dondur: ilk gun = 100 tabanli seri */
+function seriyiAc(r){
+  const t=r[A.kivilcim], lo=r[A.kv_lo], hi=r[A.kv_hi];
+  if(!t||lo==null||hi==null) return null;
+  const ar=(hi-lo)||1;
+  return kvCoz(t).map(v=>lo + v/63*ar);
+}
+
+function karsGrafik(secili){
+  const seri=secili.map(r=>seriyiAc(r));
+  if(seri.some(x=>!x)) return '';
+  const n=Math.max(...seri.map(x=>x.length));
+  // Farkli uzunluktakiler son noktaya kadar orantili okunuyor (hepsi ayni
+  // 12 aylik pencere; gun sayisi 200-252 arasinda degisebiliyor).
+  const W=980,H=300,M={t:14,r:64,b:26,l:52};
+  const hepsi=seri.flat();
+  let lo=Math.min(...hepsi), hi=Math.max(...hepsi);
+  const log=hi/Math.max(lo,1)>12;            // cok genis aralikta log eksen
+  const f=v=>log?Math.log10(Math.max(v,1)):v;
+  let flo=f(lo), fhi=f(hi); const pad=(fhi-flo)*0.08||1; flo-=pad; fhi+=pad;
+  const X=(i,m)=>M.l+(m<2?0:i/(m-1))*(W-M.l-M.r);
+  const Y=v=>M.t+(1-(f(v)-flo)/(fhi-flo))*(H-M.t-M.b);
+  // eksen degerleri
+  const tik=[]; const hedef=log?[100,200,500,1000,2000,5000,10000,20000]
+                              :null;
+  if(log){ hedef.forEach(v=>{ if(v>=lo*0.9&&v<=hi*1.1) tik.push(v); }); }
+  else { for(let k=0;k<=4;k++) tik.push(lo+(hi-lo)*k/4); }
+  let g='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Seçilen fonların 12 aylık seyri, 100 TL bazlı">';
+  tik.forEach(v=>{ const y=Y(v).toFixed(1);
+    g+='<line x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+y+'" y2="'+y+'" stroke="var(--rule-soft)" stroke-width="1"/>'+
+       '<text x="'+(M.l-9)+'" y="'+(+y+4)+'" text-anchor="end" font-size="12" fill="var(--ink-3)" '+
+       'font-family="IBM Plex Mono, monospace">'+Math.round(v).toLocaleString('tr-TR')+'</text>'; });
+  g+='<line x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+Y(100).toFixed(1)+'" y2="'+Y(100).toFixed(1)+
+     '" stroke="var(--ink-3)" stroke-width="1.2" stroke-dasharray="3 3"/>';
+  seri.forEach((d,i)=>{
+    const yol=d.map((v,j)=>(j?'L':'M')+X(j,d.length).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+    g+='<path d="'+yol+'" fill="none" stroke="'+sepetRenk(i)+'" stroke-width="2.4" '+
+       'stroke-linejoin="round" stroke-linecap="round"/>';
+    const sy=Y(d[d.length-1]);
+    g+='<text x="'+(W-M.r+8)+'" y="'+(sy+4).toFixed(1)+'" font-size="12.5" font-weight="700" '+
+       'fill="'+sepetRenk(i)+'" font-family="IBM Plex Mono, monospace">'+secili[i][A.kod]+'</text>';
+  });
+  g+='<text x="'+M.l+'" y="'+(H-6)+'" font-size="12" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">12 ay önce</text>';
+  g+='<text x="'+(W-M.r)+'" y="'+(H-6)+'" text-anchor="end" font-size="12" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">'+T.bit+'</text>';
+  g+='</svg>';
+  return '<div class="kars-graf"><h3>100 TL ne oldu?</h3>'+
+    '<p class="alt">Her fon 12 ay önce 100 TL kabul edildi.'+
+    (log?' Aralık çok geniş olduğu için <b>dikey eksen logaritmik</b> &mdash; eşit yükseklik eşit <em>oran</em> demek, eşit tutar değil.':'')+
+    ' Kesikli çizgi başlangıç seviyesi.</p>'+g+
+    '<div class="gost">'+secili.map((r,i)=>'<span><i style="background:'+sepetRenk(i)+'"></i>'+
+      r[A.kod]+' <span class="muted">'+r[A.ad].split('PORTFÖY')[0].trim()+'</span></span>').join('')+'</div></div>';
+}
+
+const KARS=[
+  {et:'Kurucu', ic:r=>r[A.ev], ham:null},
+  {et:'6 ay getiri', ic:r=>sinifla(r[A.toplam6]), ham:r=>r[A.toplam6], yon:1},
+  {et:'12 ay getiri', ic:r=>sinifla(r[A.toplam])+(r[A.supheli]?'<div class="dn muted">düzeltilmiş '+pc(r[A.toplam_duz],0)+'</div>':''), ham:r=>r[A.supheli]?r[A.toplam_duz]:r[A.toplam], yon:1},
+  {et:'12 ay oynaklık', ic:r=>pct(r[A.vol]), ham:r=>r[A.vol], yon:-1},
+  {et:'Sharpe', ic:r=>nf(r[A.sharpe],2), ham:r=>r[A.sharpe], yon:1},
+  {et:'Maks. düşüş', ic:r=>'<span class="neg">'+pc(r[A.mdd],1)+'</span>', ham:r=>r[A.mdd], yon:1},
+  {et:'Zirvesinden', ic:r=>'<span class="'+(r[A.zirveden]<=-0.2?'neg':'muted')+'">'+pc(r[A.zirveden],1)+'</span>', ham:r=>r[A.zirveden], yon:1},
+  {et:'Eksi gün oranı', ic:r=>pct(r[A.eksi_oran]), ham:r=>r[A.eksi_oran], yon:-1},
+  {et:'En iyi 10 gün hariç', ic:r=>sinifla(r[A.x10]), ham:r=>r[A.x10], yon:1},
+  {et:'Oto-korelasyon ρ <span class="muted">6 ay</span>', ic:r=>nf(r[A.rho6],2).replace('-','−'), ham:null},
+  {et:'Büyüklük', ic:r=>mlr(r[A.buyukluk])+' TL', ham:r=>r[A.buyukluk], yon:1},
+  {et:'Yatırımcı', ic:r=>r[A.yatirimci]==null?'—':r[A.yatirimci].toLocaleString('tr-TR'), ham:r=>r[A.yatirimci], yon:1},
+  {et:'Gözlem', ic:r=>r[A.gun]+' gün', ham:null},
+  {et:'Rozetler', ic:r=>taniHtml(r)||'<span class="muted">—</span>', ham:null},
+];
+
+function karsCiz(){
+  const secili=sepet.map(fonBul).filter(Boolean);
+  $('karsBos').hidden = secili.length>=2;
+  if(secili.length<2){ $('karsIcerik').innerHTML=''; return; }
+  let h=karsGrafik(secili);
+  h+='<div class="tbl"><table><thead><tr><th>Ölçüt</th>'+
+     secili.map((r,i)=>'<th style="text-align:right"><span class="fon-kod" style="color:'+sepetRenk(i)+'">'+
+       r[A.kod]+'</span></th>').join('')+'</tr></thead><tbody>';
+  KARS.forEach(k=>{
+    let eniyi=null, enkotu=null;
+    if(k.ham){
+      const v=secili.map(k.ham).filter(x=>x!=null&&!isNaN(x));
+      if(v.length>1){
+        const mx=Math.max(...v), mn=Math.min(...v);
+        if(mx!==mn){ eniyi=k.yon>0?mx:mn; enkotu=k.yon>0?mn:mx; }
+      }
+    }
+    h+='<tr><td>'+k.et+'</td>'+secili.map(r=>{
+      const v=k.ham?k.ham(r):null;
+      const sn = v!=null && eniyi!=null ? (v===eniyi?' class="eniyi"':(v===enkotu?' class="enkotu"':'')) : '';
+      return '<td'+sn+'>'+k.ic(r)+'</td>';
+    }).join('')+'</tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<p class="dek" style="font-size:var(--fs-xs);margin-top:var(--s2)">Yeşil ve kırmızı işaretler yalnızca <b>o satırdaki</b> en yüksek ve en düşük değeri gösterir; bir fonun bütün olarak daha iyi olduğu anlamına gelmez. Gözlem sayıları farklıysa fonların geçmişi aynı uzunlukta değildir. Bu tablo yalnızca fiyat serisine bakar.</p>';
+  $('karsIcerik').innerHTML=h;
+}
+
+/* ---------- ileriye donuk sicil ---------- */
+function sicilCiz(){
+  const S=T.sicil, k=$('sicilOzet'), gr=$('sicilGraf');
+  if(!S){ k.innerHTML='<div class="pf-k"><div class="l">Sicil</div><div class="v">—</div>'+
+    '<div class="n">Kayıt dosyası henüz yok.</div></div>'; gr.innerHTML=''; return; }
+  const kut=(l,v,n,renk)=>'<div class="pf-k"><div class="l">'+l+'</div><div class="v"'+
+    (renk?' style="color:'+renk+'"':'')+'>'+v+'</div>'+(n?'<div class="n">'+n+'</div>':'')+'</div>';
+  if(!S.adet){
+    k.innerHTML=kut('Durum','Başladı','ilk tahminler yazıldı, henüz puanlanmadı')+
+      kut('Bekleyen tahmin', S.bekleyen.toLocaleString('tr-TR'), 'bir sonraki işlem gününde puanlanacak');
+    gr.innerHTML='<div class="pf-uyari">Sicil <b>bugün başlıyor</b>. İlk puanlanmış sonuçlar bir sonraki işlem gününde görünecek; anlamlı bir isabet oranı için birkaç haftalık birikim gerekir. O zamana kadar yukarıdaki geriye dönük teste bakın.</div>';
+    return;
+  }
+  k.innerHTML=
+    kut('Puanlanmış tahmin', S.adet.toLocaleString('tr-TR'), S.fon+' fon · '+S.gun+' gün')+
+    kut('İsabet', pct(S.isabet,1), S.ilk+' → '+S.son)+
+    kut('Ort. mutlak hata', pct(S.mae,2), 'tahmin ile gerçek arasındaki fark')+
+    kut('Bekleyen', S.bekleyen.toLocaleString('tr-TR'), 'henüz puanlanmadı');
+  const g=(S.gunluk||[]).filter(x=>x.isabet!=null);
+  if(g.length<2){ gr.innerHTML=''; return; }
+  const W=980,H=200,M={t:14,r:20,b:26,l:52};
+  const X=i=>M.l+(g.length<2?0:i/(g.length-1))*(W-M.l-M.r);
+  const Y=v=>M.t+(1-v)*(H-M.t-M.b);
+  let h='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Gün gün tahmin isabeti">';
+  [0,0.25,0.5,0.75,1].forEach(v=>{const y=Y(v).toFixed(1);
+    h+='<line x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+y+'" y2="'+y+'" stroke="var(--rule-soft)"/>'+
+       '<text x="'+(M.l-9)+'" y="'+(+y+4)+'" text-anchor="end" font-size="12" fill="var(--ink-3)" '+
+       'font-family="IBM Plex Mono, monospace">'+pct(v)+'</text>';});
+  const yol=g.map((x,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(x.isabet).toFixed(1)).join(' ');
+  h+='<path d="'+yol+'" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>';
+  h+='<text x="'+M.l+'" y="'+(H-6)+'" font-size="12" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">'+g[0].tarih+'</text>';
+  h+='<text x="'+(W-M.r)+'" y="'+(H-6)+'" text-anchor="end" font-size="12" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">'+g[g.length-1].tarih+'</text>';
+  h+='</svg>';
+  gr.innerHTML='<div class="kars-graf"><h3>Gün gün isabet</h3>'+
+    '<p class="alt">Her nokta o gün puanlanan tüm tahminlerin isabet oranı. Taban oran evren medyanında %68 &mdash; bu çizginin oranın belirgin üstünde kalması gerekir ki modelin bir katkısı olsun.</p>'+h+'</div>';
+}
+
+/* ---------- ongorulebilirlik ---------- */
+const T_MODEL={yukari:'hep artı', dun:'dünü tekrarla', ar1:'AR(1): ρ×dün', ort:'20 gün ort.'};
+function tahCiz(){
+  const O=T.tahmin;
+  if(!O){ $('sk-tah').hidden=true; return; }
+  // sansla kiyas
+  document.querySelector('#tahKiyas thead').innerHTML=
+    '<tr><th>Beceri dağılımı</th><th>Gözlem</th><th>Rastgele model</th><th></th></tr>';
+  const ad={0.9:'%90’lık dilim',0.95:'%95’lik dilim',0.99:'%99’luk dilim',1:'en iyi fon'};
+  // Medyan satiri yaniltici: "hep arti" modeli tanim geregi tam taban orani
+  // tutturdugu icin gozlemlenen beceri asla 0'in altina inemiyor, rastgele
+  // benzetimde ise boyle bir taban yok. Yalnizca ust kuyruk bilgi tasiyor.
+  let g=O.yuzdelik.filter(r=>r.p>=0.9).map(r=>{
+    const fark=r.gozlem-r.sans;
+    return '<tr><td style="text-align:left">'+ad[r.p]+'</td><td>'+pc(r.gozlem,1)+'</td><td>'+pc(r.sans,1)+
+      '</td><td><span class="muted">'+(Math.abs(fark)<0.02?'ayırt edilemiyor':(fark>0?'gözlem daha yüksek':'gözlem daha düşük'))+'</span></td></tr>';
+  }).join('');
+  g+=O.esik.map(r=>'<tr><td style="text-align:left">beceri &gt; +'+pct(r.e)+' olan fon</td><td>'+
+    r.gozlem+'</td><td>'+r.sans+'</td><td><span class="muted">'+
+    (r.gozlem<=r.sans*1.4?'şansla açıklanıyor':'şanstan fazla')+'</span></td></tr>').join('');
+  document.querySelector('#tahKiyas tbody').innerHTML=g;
+  const u=O.esik[1], uc=O.esik[2];
+  $('tahYorum').innerHTML=
+    '<b>Orta dilimlerde fark yok.</b> Becerisi +'+pct(u.e)+'’i geçen <b>'+u.gozlem+
+    '</b> fon var; rastgele modelden beklenen <b>'+u.sans+'</b>. %90 ve %95’lik dilimlerde iki '+
+    'dağılım üst üste biniyor. Yani "tahmin edilebilir" görünen fonların çoğu, '+O.n+
+    ' denemede şansın kendiliğinden üreteceği kadar.<br><br>'+
+    '<b>Uç kuyrukta ise şanstan fazlası var:</b> becerisi +'+pct(uc.e)+'’u geçen <b>'+uc.gozlem+
+    '</b> fona karşılık rastgele modelden beklenen <b>'+uc.sans+'</b>. Bu farkı yok saymıyoruz &mdash; '+
+    'ama bu, "tahmin modeli çalışıyor" demek değil: o fonların fiyat serisinin <b>kendi içinde '+
+    'mekanik bir örüntü taşıdığı</b> anlamına gelir. Tek tek bakılmayı hak eden yer burasıdır, '+
+    'listenin geneli değil. Not: medyan satırı bilerek gösterilmiyor &mdash; "hep artı" modeli tanım '+
+    'gereği tam taban oranı tutturduğu için gözlemlenen beceri 0’ın altına inemez, rastgele '+
+    'benzetimde böyle bir taban yoktur; iki dağılım yalnızca üst kuyrukta karşılaştırılabilir.';
+
+  // ongorulebilirlik ozeti + tablo
+  const kut=(l,v,n,renk)=>'<div class="pf-k"><div class="l">'+l+'</div><div class="v"'+
+    (renk?' style="color:'+renk+'"':'')+'>'+v+'</div>'+(n?'<div class="n">'+n+'</div>':'')+'</div>';
+  const dze=fonBul('DZE');
+  // Arti gun orani 12 aylik pencereden (oynaklikla ayni pencere). t_taban
+  // yuruyen testin 120 gunluk penceresine ait; ikisini yan yana gostermek
+  // farkli donemleri karsilastirmak olurdu.
+  const artiOran=r=>1-r[A.eksi_oran];
+  const riskli=T.satir.filter(r=>!r[A.supheli]&&r[A.vol]>=0.15);
+  // Tum sayimlar 12 aylik pencereden. tahmin_ozeti'nin taban degerleri
+  // yuruyen testin 120 gunluk penceresine ait; asagidaki tabloyla ayni
+  // pencereden okunsun diye burada yeniden sayiliyor.
+  const hepsi=T.satir.filter(r=>!r[A.supheli]&&r[A.eksi_oran]!=null);
+  const oran=hepsi.map(artiOran).sort((a,b)=>a-b);
+  $('tahOzet').innerHTML=
+    kut('Evren medyanı', pct(oran[Math.floor(oran.length/2)]), 'günlerin bu kadarı artı')+
+    kut('Günlerinin ≥%90’ı artı', oran.filter(v=>v>=0.90).length+' fon',
+        hepsi.length+' fon içinden', 'var(--uyari)')+
+    kut('Her gün artı', oran.filter(v=>v>=0.999).length+' fon', '12 ayda tek eksi gün yok', 'var(--neg)')+
+    kut('Oynak ama artı', riskli.filter(r=>artiOran(r)>=0.85).length+' fon',
+        'yıllık oynaklığı ≥%15 olduğu hâlde günlerinin ≥%85’i artı', 'var(--neg)')+
+    (dze?kut('BIST 100 endeks fonu', pct(dze[A.t_taban]), 'karşılaştırma çıpası — gerçek piyasa'):'');
+
+  // Para piyasasi/kisa vadeli fonlar tanim geregi %100 arti gun yapiyor; o yuzden
+  // esik: yillik oynakligi %15 ustunde olanlar. Asil soru "riskli oldugu halde
+  // neredeyse hic eksi gun yapmayan" fonlarda.
+  const list=riskli.slice()
+    .sort((a,b)=>artiOran(b)-artiOran(a)||(b[A.buyukluk]||0)-(a[A.buyukluk]||0)).slice(0,50);
+  document.querySelector('#tahTablo thead').innerHTML=
+    '<tr><th>Fon</th><th>Artı gün oranı</th><th>En kötü gün</th><th>12 ay oyn.</th><th>Beceri</th>'+
+    '<th>En iyi model</th><th>Yarın</th><th>Büyüklük</th></tr>';
+  document.querySelector('#tahTablo tbody').innerHTML=list.map(r=>
+    '<tr'+((T.incelenen&&T.incelenen[r[A.kod]])?' class="incelendi"':'')+'>'+
+    '<td style="text-align:left"><span class="fon-kod">'+r[A.kod]+'</span>'+taniHtml(r)+
+      '<span class="fon-ad">'+r[A.ad]+'</span></td>'+
+    '<td><b>'+pct(artiOran(r))+'</b></td>'+
+    '<td>'+pc(r[A.en_kotu]!=null?r[A.en_kotu]:0,1)+'</td>'+
+    '<td>'+pct(r[A.vol])+'</td>'+
+    '<td>'+(r[A.t_beceri]==null?'—':'<span class="muted">'+pc(r[A.t_beceri],1)+'</span>')+'</td>'+
+    '<td><span class="muted">'+(T_MODEL[r[A.t_model]]||'—')+'</span></td>'+
+    '<td>'+(r[A.t_yarin]==null?'—':sinifla(r[A.t_yarin]).replace('%','%')) +'</td>'+
+    '<td>'+mlr(r[A.buyukluk])+'</td></tr>').join('');
+}
+
+/* ---------- portfoy ----------
+   Tutarlar yalnizca localStorage'da. Sunucuya, sayfanin yazarina veya
+   Claude'a gitmiyor; paylasilabilir baglantiya da eklenmiyor. */
+const PF_ANAHTAR='fonlab.portfoy.v1';
+let pf=[];
+function pfYukle(){
+  try{ pf=JSON.parse(localStorage.getItem(PF_ANAHTAR)||'[]'); }catch(e){ pf=[]; }
+  if(!Array.isArray(pf)) pf=[];
+  pf=pf.filter(x=>x&&fonBul(x.kod)&&x.tutar>0);
+}
+function pfKaydet(){
+  try{ localStorage.setItem(PF_ANAHTAR, JSON.stringify(pf)); }
+  catch(e){ /* ozel pencere / depolama kapali: oturumluk calisir */ }
+}
+function pfHata(m){
+  const e=$('pfHata'); e.textContent=m||''; e.hidden=!m;
+}
+function pfEkle(kod,tutar){
+  kod=(kod||'').trim().toUpperCase();
+  if(!kod) return pfHata('Fon kodu girin.');
+  if(!fonBul(kod)) return pfHata('"'+kod+'" bu taramada yok. 12 aydan kısa geçmişi olan fonlar dışarıda kalıyor.');
+  if(!(tutar>0)) return pfHata('Sıfırdan büyük bir tutar girin.');
+  const v=pf.find(x=>x.kod===kod);
+  if(v) v.tutar+=tutar; else pf.push({kod, tutar});
+  pfHata(''); pfKaydet(); pfCiz();
+}
+function pfSil(kod){ pf=pf.filter(x=>x.kod!==kod); pfKaydet(); pfCiz(); }
+
+/* haftalik seriden portfoy serisi + olculer */
+function pfHesap(){
+  const kalem=pf.map(x=>({...x, r:fonBul(x.kod)})).filter(x=>x.r);
+  const top=kalem.reduce((t,x)=>t+x.tutar,0);
+  if(!kalem.length||!top) return null;
+  const seri=kalem.map(x=>seriyiAc(x.r));
+  const n=Math.min(...seri.map(s2=>s2?s2.length:0));
+  let pfs=null;
+  if(n>=8&&seri.every(Boolean)){
+    // her fon 100 tabanli; agirlikli birlestir (yeniden dengeleme yok)
+    pfs=[];
+    for(let i=0;i<n;i++){
+      let v=0;
+      kalem.forEach((x,j)=>{ const s2=seri[j]; v += (x.tutar/top) * s2[s2.length-n+i]; });
+      pfs.push(v);
+    }
+  }
+  const getiri = pfs ? pfs[pfs.length-1]/pfs[0]-1 : null;
+  let vol=null, mdd=null;
+  if(pfs){
+    const rr=[]; for(let i=1;i<pfs.length;i++) rr.push(pfs[i]/pfs[i-1]-1);
+    const m=rr.reduce((a,b)=>a+b,0)/rr.length;
+    vol=Math.sqrt(rr.reduce((a,b)=>a+(b-m)*(b-m),0)/rr.length)*Math.sqrt(52);
+    let z=pfs[0]; mdd=0;
+    pfs.forEach(v=>{ if(v>z)z=v; mdd=Math.min(mdd, v/z-1); });
+  }
+  const agirlik=kalem.map(x=>({...x, w:x.tutar/top})).sort((a,b)=>b.w-a.w);
+  const evPay={};
+  agirlik.forEach(x=>{ const e=x.r[A.ev]; evPay[e]=(evPay[e]||0)+x.w; });
+  const evler=Object.entries(evPay).sort((a,b)=>b[1]-a[1]);
+  const rozet={};
+  agirlik.forEach(x=>taniLar(x.r).forEach(t=>{
+    rozet[t.ad]=rozet[t.ad]||{n:0,w:0,ne:t.ne,sinif:t.sinif};
+    rozet[t.ad].n++; rozet[t.ad].w+=x.w;
+  }));
+  return {kalem:agirlik, top, getiri, vol, mdd, pfs, evler, rozet, hafta:n};
+}
+
+function pfCiz(){
+  $('sk-pf-n').textContent = pf.length || '';
+  const h=pfHesap();
+  $('pfBos').hidden = !!h;
+  if(!h){ $('pfIcerik').innerHTML=''; return; }
+  const kut=(l,v,n,renk)=>'<div class="pf-k"><div class="l">'+l+'</div>'+
+    '<div class="v"'+(renk?' style="color:'+renk+'"':'')+'>'+v+'</div>'+
+    (n?'<div class="n">'+n+'</div>':'')+'</div>';
+  let g='<div class="pf-ozet">';
+  g+=kut('Toplam', mlr(h.top)+' TL', h.kalem.length+' fon');
+  g+=kut('Son 12 ay', h.getiri==null?'—':pc(h.getiri,0),
+         'bugünkü ağırlıklarla, geriye dönük',
+         h.getiri==null?null:(h.getiri>=0?'var(--pos)':'var(--neg)'));
+  g+=kut('Oynaklık', h.vol==null?'—':pct(h.vol), 'haftalık getirilerden yıllıklandırılmış');
+  g+=kut('Maks. düşüş', h.mdd==null?'—':pc(h.mdd,1), 'haftalık veriyle', 'var(--neg)');
+  g+=kut('En büyük kalem', pct(h.kalem[0].w)+' <span class="muted">'+h.kalem[0].kod+'</span>',
+         h.kalem.length>2?('ilk üç: '+pct(h.kalem.slice(0,3).reduce((t,x)=>t+x.w,0))):'');
+  const enEv=h.evler[0];
+  g+=kut('En büyük kurucu', pct(enEv[1])+' <span class="muted">'+enEv[0]+'</span>',
+         h.evler.length+' kurucuya dağılmış',
+         enEv[1]>=0.5?'var(--uyari)':null);
+  g+='</div>';
+
+  if(h.pfs) g+=pfGrafik(h);
+
+  g+='<div class="tbl"><table><thead><tr><th>Fon</th><th>Tutar</th><th>Ağırlık</th>'+
+     '<th>12 ay getiri</th><th>Oynaklık</th><th>Zirvesinden</th><th>Kurucu</th><th></th></tr></thead><tbody>';
+  h.kalem.forEach(x=>{
+    const r=x.r;
+    g+='<tr><td style="text-align:left"><span class="fon-kod">'+r[A.kod]+'</span>'+taniHtml(r)+
+       '<span class="fon-ad">'+r[A.ad]+'</span></td>'+
+       '<td>'+mlr(x.tutar)+'</td>'+
+       '<td>'+pct(x.w)+'<div class="pay"><i style="width:'+(x.w*100).toFixed(0)+'%"></i></div></td>'+
+       '<td>'+sinifla(r[A.toplam])+'</td><td>'+pct(r[A.vol])+'</td>'+
+       '<td><span class="'+(r[A.zirveden]<=-0.2?'neg':'muted')+'">'+pc(r[A.zirveden],0)+'</span></td>'+
+       '<td>'+r[A.ev]+'</td>'+
+       '<td><button class="sil" data-kod="'+r[A.kod]+'" aria-label="'+r[A.kod]+' kalemini sil" title="sil">×</button></td></tr>';
+  });
+  g+='</tbody></table></div>';
+
+  const roz=Object.entries(h.rozet).sort((a,b)=>b[1].w-a[1].w);
+  if(roz.length){
+    g+='<h2>Portföyünüz hangi soruları taşıyor?</h2><div class="pf-ozet">';
+    roz.forEach(([ad,v])=>{ g+=kut(ad, pct(v.w)+' <span class="muted">ağırlık</span>',
+      v.n+' fon · '+v.ne.slice(0,96)+'…'); });
+    g+='</div>';
+  }
+  if(enEv[1]>=0.5){
+    const ev=(T.ev||[]).find(e=>e.ev===enEv[0]);
+    g+='<div class="pf-uyari"><b>Portföyünüzün '+pct(enEv[1])+"'i tek bir kurucuda: "+enEv[0]+'.</b> '+
+       (ev?('Bu evin '+ev.fon+' serbest fonunun 12 aylık getirileri '+pc(ev.en_kotu,0)+' ile '+
+            pc(ev.en_iyi,0)+' arasına dağılmış (yayılım '+pct(ev.yayilim,0)+
+            ', sektör ortancası %47). '):'')+
+       'Tek bir evin fonları aynı ekip, aynı süreç ve çoğu zaman örtüşen pozisyonlar taşır; '+
+       'farklı fon kodları tek başına dağıtım anlamına gelmez.</div>';
+  }
+  g+='<div class="pf-uyari"><b>Bu hesabın sınırları.</b> Seri haftalık örneklenmiş noktalardan '+
+     '('+h.hafta+' nokta) kuruluyor, günlük fiyatlardan değil; oynaklık ve maksimum düşüş yaklaşık '+
+     'değerlerdir. Getiri <b>bugünkü ağırlıklarla geriye dönük</b> hesaplanır — geçen yıl bu '+
+     'ağırlıklarda olsaydınız ne olurdu sorusunun cevabıdır, gerçekleşen kârınız değil. Alım-satım '+
+     'tarihleri, giriş-çıkış komisyonları, fon yönetim ücreti (fiyata zaten yansımış) ve vergi '+
+     'hesaba katılmaz. Yatırım tavsiyesi değildir.</div>';
+  $('pfIcerik').innerHTML=g;
+  $('pfIcerik').querySelectorAll('.sil').forEach(b=>
+    b.addEventListener('click',()=>pfSil(b.dataset.kod)));
+}
+
+function pfGrafik(h){
+  const d=h.pfs, W=980,H=250,M={t:14,r:20,b:26,l:56};
+  const lo=Math.min(...d), hi=Math.max(...d);
+  const log=hi/Math.max(lo,1)>12, f=v=>log?Math.log10(Math.max(v,1)):v;
+  let flo=f(lo), fhi=f(hi); const pad=(fhi-flo)*0.1||1; flo-=pad; fhi+=pad;
+  const X=i=>M.l+i/(d.length-1)*(W-M.l-M.r);
+  const Y=v=>M.t+(1-(f(v)-flo)/(fhi-flo))*(H-M.t-M.b);
+  let tik=[]; for(let k=0;k<=4;k++) tik.push(lo+(hi-lo)*k/4);
+  let g='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Portföyün 12 aylık seyri, 100 TL bazlı">';
+  tik.forEach(v=>{ const y=Y(v).toFixed(1);
+    g+='<line x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+y+'" y2="'+y+'" stroke="var(--rule-soft)"/>'+
+       '<text x="'+(M.l-9)+'" y="'+(+y+4)+'" text-anchor="end" font-size="12" fill="var(--ink-3)" '+
+       'font-family="IBM Plex Mono, monospace">'+Math.round(v).toLocaleString('tr-TR')+'</text>'; });
+  g+='<line x1="'+M.l+'" x2="'+(W-M.r)+'" y1="'+Y(100).toFixed(1)+'" y2="'+Y(100).toFixed(1)+
+     '" stroke="var(--ink-3)" stroke-dasharray="3 3"/>';
+  const yol=d.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+  g+='<path d="'+yol+'" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linejoin="round"/>';
+  g+='<text x="'+M.l+'" y="'+(H-6)+'" font-size="12" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">12 ay önce</text>';
+  g+='<text x="'+(W-M.r)+'" y="'+(H-6)+'" text-anchor="end" font-size="12" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">'+T.bit+'</text>';
+  g+='</svg>';
+  return '<div class="kars-graf"><h3>Portföyün 12 aylık seyri</h3>'+
+    '<p class="alt">Bugünkü ağırlıklar 12 ay önce kurulmuş olsaydı 100 TL ne olurdu. Yeniden dengeleme yok.</p>'+g+'</div>';
+}
+
+/* ---------- sekmeler ---------- */
+function sekmeAc(k){
+  sekme=k;
+  [['fon','p-fon'],['ev','p-ev'],['kars','p-kars'],['pf','p-pf'],['tah','p-tah']].forEach(([n,p])=>{
+    $('sk-'+n).setAttribute('aria-selected',String(k===n));
+    $(p).hidden=(k!==n);
+  });
+  urlYaz();
+}
+$('sk-fon').addEventListener('click',()=>sekmeAc('fon'));
+$('sk-ev').addEventListener('click',()=>sekmeAc('ev'));
+$('sk-kars').addEventListener('click',()=>sekmeAc('kars'));
+$('sk-pf').addEventListener('click',()=>sekmeAc('pf'));
+$('sk-tah').addEventListener('click',()=>sekmeAc('tah'));
+$('pfEkle').addEventListener('click',()=>{
+  pfEkle($('pfKod').value, parseFloat($('pfTutar').value));
+  $('pfKod').value=''; $('pfTutar').value=''; $('pfKod').focus();
+});
+['pfKod','pfTutar'].forEach(id=>$(id).addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault(); $('pfEkle').click();}
+}));
+$('pfTemizle').addEventListener('click',()=>{
+  if(!pf.length) return;
+  if(confirm('Portföydeki '+pf.length+' kalem silinecek. Emin misiniz?')){
+    pf=[]; pfKaydet(); pfCiz();
+  }
+});
+$('sepetAc').addEventListener('click',()=>sekmeAc('kars'));
+$('sepetBosalt').addEventListener('click',()=>{sepet=[]; sepetCiz(); karsCiz(); ciz();});
+
+/* ---------- paylasilabilir gorunum ----------
+   Filtreler URL'de tutuluyor; bir tarama baskasina gonderilebiliyor. */
+function urlYaz(){
+  const p=new URLSearchParams();
+  FILTRE.forEach(f=>{ if(durum[f.ad]!==f.def) p.set(f.ad,durum[f.ad]); });
+  if(evSuz) p.set('ev',evSuz);
+  if(supheli) p.set('sup','1');
+  if(aranan.trim()) p.set('q',aranan.trim());
+  if(sepet.length) p.set('sep',sepet.join(','));
+  // portfoy sekmesi URL'e yazilmiyor: kisisel veri baglantiyla dolasmasin
+  if(sekme!=='fon'&&sekme!=='pf') p.set('s',sekme);
+  if(siraSutun!=='toplam6'||siraYon!==-1) p.set('sir',siraSutun+':'+siraYon);
+  const y=p.toString();
+  // data: ve file: kaynaklarinda replaceState SecurityError atiyor; gorunum
+  // yine calissin diye sessizce gecilyor (yayindaki https sayfada sorun yok).
+  try{ history.replaceState(null,'',y?('#'+y):location.pathname+location.search); }
+  catch(e){ const b2=document.getElementById('kopyala'); if(b2) b2.hidden=true; }
+}
+function urlOku(){
+  const h=location.hash.replace(/^#/,''); if(!h) return false;
+  const p=new URLSearchParams(h);
+  FILTRE.forEach(f=>{ if(p.has(f.ad)) durum[f.ad]=+p.get(f.ad); });
+  if(p.has('ev')) evSuz=p.get('ev');
+  if(p.get('sup')==='1') supheli=true;
+  if(p.has('sir')){ const [a,y]=p.get('sir').split(':'); if(SUTUN.some(c=>c.ad===a)){siraSutun=a;siraYon=+y||-1;} }
+  if(p.has('q')) aranan=p.get('q');
+  if(p.has('sep')) sepet=p.get('sep').split(',').filter(k=>fonBul(k)).slice(0,SEPET_AZAMI);
+  const sk=p.get('s');
+  return sk==='pf' ? 'fon' : sk;   // portfoy baglantiyla paylasilmaz
+}
+$('kopyala').addEventListener('click',async()=>{
+  const b=$('kopyala'), esk=b.textContent;
+  try{ await navigator.clipboard.writeText(location.href); b.textContent='kopyalandı ✓'; }
+  catch(e){ b.textContent='kopyalanamadı — adres çubuğundan alın'; }
+  setTimeout(()=>{b.textContent=esk;},2200);
+});
+
+$('supheliGoster').addEventListener('change',e=>{supheli=e.target.checked; ciz();});
+$('sifirla').addEventListener('click',sifirla);
+let araZaman;
+$('ara').addEventListener('input',e=>{
+  clearTimeout(araZaman);
+  araZaman=setTimeout(()=>{aranan=e.target.value; acikSatir=null; ciz();},140);
+});
+$('evTemizle').addEventListener('click',()=>{evSuz=null; ciz();});
+['bit','evren','islenen','atlanan','hata'].forEach(k=>{
+  const el=$('f'+k[0].toUpperCase()+k.slice(1)); if(el) el.textContent=T[k];
+});
+$('fSup').textContent=T.satir.filter(r=>r[A.supheli]).length;
+if($('fEv')) $('fEv').textContent=(T.ev||[]).length;
+const rb=document.getElementById('raporBag'); if(rb&&T.raporUrl){rb.href=T.raporUrl; rb.target='_blank'; rb.rel='noopener';}
+
+kurFiltreler(); kurSorular();
+const acilis=urlOku();
+$('supheliGoster').checked=supheli; $('ara').value=aranan; esitleGirdiler();
+document.getElementById('fonListesi').innerHTML=
+  T.satir.map(r=>'<option value="'+r[A.kod]+'">'+r[A.ad].slice(0,60)+'</option>').join('');
+evCiz(); tahCiz(); sicilCiz(); sepetCiz(); karsCiz(); pfYukle(); pfCiz(); ciz();
+sekmeAc(['ev','kars','tah'].includes(acilis)?acilis:'fon');
+// tema degisince sepet renkleri de degisiyor
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{sepetCiz(); karsCiz();});
+</script>

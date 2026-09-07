@@ -1,0 +1,2093 @@
+<title>TLY ve DFI Fon Analizi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&family=Fraunces:opsz,wght@9..144,600..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --paper:#f1f5fb;  --surface:#ffffff;  --surface-2:#e8eef8;  --surface-3:#dbe5f4;
+  --ink:#0b1524;  --ink-2:#3a4a63;  --ink-3:#63758f;
+  --rule:#d3dfee;  --rule-soft:#e5ecf7;
+  --accent:#1d4ed8;  --accent-soft:#e8effd;
+  --s-tly:#7c3aed;  --s-dfi:#e06010;  --s-dze:#0e8ea8;  --s-afo:#c98a00;  --s-ale:#7b8ba6;
+  --s-hisse:#2563eb;
+  --pos:#047857;  --neg:#dc2626;
+  --grad:linear-gradient(96deg,#2563eb 0%,#7c3aed 55%,#0e8ea8 100%);
+  --shadow:0 1px 2px rgba(23,16,41,.05), 0 12px 32px -20px rgba(23,16,41,.35);
+  --shadow-lift:0 2px 4px rgba(23,16,41,.06), 0 20px 44px -24px rgba(23,16,41,.42);
+
+  /* --- olcek: 8px ritmi --- */
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:40px; --s6:56px; --s7:72px; --s8:96px;
+  /* --- tipografi olcegi: 9 kademe --- */
+  --fs-display:clamp(52px,9.5vw,104px);
+  --fs-h2:clamp(29px,4.2vw,42px);
+  --fs-h3:21px; --fs-h4:16px;
+  --fs-lead:19px; --fs-body:17px; --fs-sm:15px; --fs-xs:13px; --fs-2xs:12px;
+  /* --- radius: 4 kademe + pill --- */
+  --r-xs:4px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-pill:999px;
+}
+
+/* aralik yardimcilari — satir ici margin dagilmasini bitirir */
+.mt1{margin-top:var(--s1)} .mt2{margin-top:var(--s2)} .mt3{margin-top:var(--s3)}
+.mt4{margin-top:var(--s4)} .mt5{margin-top:var(--s5)} .mt6{margin-top:var(--s6)}
+.mb0{margin-bottom:0}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+  --paper:#070c16;  --surface:#0f1826;  --surface-2:#172234;  --surface-3:#213047;
+  --ink:#eef4fd;  --ink-2:#b2c2da;  --ink-3:#8395b2;
+  --rule:#25334a;  --rule-soft:#1b2637;
+  --accent:#7fa8ff;  --accent-soft:#152238;
+  --s-tly:#8343f6;  --s-dfi:#e56418;  --s-dze:#32a3bd;  --s-afo:#c58700;  --s-ale:#8395b2;
+  --s-hisse:#5b93ff;
+
+  --pos:#3ddc84;  --neg:#ff5c5c;
+  --grad:linear-gradient(96deg,#5b93ff 0%,#8343f6 55%,#32a3bd 100%);
+    --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 32px -20px rgba(0,0,0,.85);
+    --shadow-lift:0 2px 4px rgba(0,0,0,.55), 0 20px 44px -24px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#070c16;  --surface:#0f1826;  --surface-2:#172234;  --surface-3:#213047;
+  --ink:#eef4fd;  --ink-2:#b2c2da;  --ink-3:#8395b2;
+  --rule:#25334a;  --rule-soft:#1b2637;
+  --accent:#7fa8ff;  --accent-soft:#152238;
+  --s-tly:#8343f6;  --s-dfi:#e56418;  --s-dze:#32a3bd;  --s-afo:#c58700;  --s-ale:#8395b2;
+  --s-hisse:#5b93ff;
+  --pos:#3ddc84;  --neg:#ff5c5c;
+  --grad:linear-gradient(96deg,#5b93ff 0%,#8343f6 55%,#32a3bd 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 32px -20px rgba(0,0,0,.85);
+  --shadow-lift:0 2px 4px rgba(0,0,0,.55), 0 20px 44px -24px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif;
+  font-size:var(--fs-body); line-height:1.62; margin:0; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1200px; margin:0 auto; padding:0 30px 110px}
+a{color:var(--accent)}
+h1,h2,h3{text-wrap:balance; margin:0}
+.num{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+
+/* ---------- masthead ---------- */
+header.mast{padding:64px 0 0; position:relative}
+.tape{
+  display:flex; gap:0; height:7px; border-radius:4px; overflow:hidden; margin-bottom:30px;
+  background:var(--grad);
+}
+.kicker{
+  font-family:"IBM Plex Mono",monospace; font-size:var(--fs-2xs); letter-spacing:.16em;
+  text-transform:uppercase; color:var(--accent); font-weight:500;
+}
+h1{
+  font-family:"Fraunces","Georgia",serif; font-weight:900;
+  font-size:var(--fs-display); line-height:.9; letter-spacing:-.025em;
+  margin:16px 0 0; background:var(--grad); -webkit-background-clip:text;
+  background-clip:text; color:transparent;
+}
+@supports not (background-clip:text){ h1{color:var(--ink); background:none} }
+.dek{font-size:var(--fs-h3); line-height:1.5; color:var(--ink-2); max-width:58ch; margin:22px 0 0}
+.mast-foot{
+  display:flex; flex-wrap:wrap; gap:10px; margin:32px 0 0;
+}
+.chip{
+  display:inline-flex; align-items:center; gap:8px; background:var(--surface);
+  border:1px solid var(--rule); border-radius:var(--r-pill); padding:7px 15px;
+  font-size:var(--fs-xs); color:var(--ink-2); box-shadow:var(--shadow);
+}
+.chip b{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+.chip i{width:7px; height:7px; border-radius:50%; background:var(--accent); display:block}
+
+/* ---------- sections ---------- */
+section{margin-top:var(--s7);scroll-margin-top:76px}
+.sec-head{margin-bottom:26px}
+.sec-head .eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:"IBM Plex Mono",monospace; font-size:var(--fs-2xs); letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); font-weight:500; margin-bottom:12px;
+}
+.sec-head .eyebrow::before{content:""; width:26px; height:3px; border-radius:var(--r-xs); background:var(--grad)}
+h2{
+  font-family:"Archivo",sans-serif; font-variation-settings:"wdth" 112; font-weight:700;
+  font-size:var(--fs-h2); line-height:1.08; letter-spacing:-.02em;
+}
+h3{font-family:"Archivo",sans-serif; font-variation-settings:"wdth" 108; font-weight:700;
+   font-size:var(--fs-h3); line-height:1.25; margin:0 0 var(--s2)}
+.callout-title,.vcard .vt,.fund h3{font-family:"Archivo",sans-serif;
+   font-variation-settings:"wdth" 106; font-weight:700; font-size:var(--fs-h4); margin-bottom:10px}
+p{margin:0 0 18px; max-width:66ch; font-size:var(--fs-body)}
+.lead{font-size:var(--fs-lead); line-height:1.55; color:var(--ink-2)}
+ul{margin:0 0 18px; padding-left:22px; max-width:66ch}
+li{margin-bottom:9px}
+em{font-style:italic}
+
+/* ---------- fon kartları ---------- */
+.funds{display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:22px}
+.fund{
+  background:var(--surface); border:1px solid var(--rule); border-radius:var(--r-md);
+  padding:0 26px 26px; box-shadow:var(--shadow); overflow:hidden; position:relative;
+}
+.fund::before{content:""; position:absolute; inset:0 0 auto 0; height:5px}
+.fund.tly::before{background:var(--s-tly)} .fund.dfi::before{background:var(--s-dfi)}
+.fund-top{display:flex; align-items:flex-start; gap:14px; justify-content:space-between; padding-top:28px}
+.tick{font-family:"Fraunces",serif; font-size:46px; font-weight:900; line-height:.9; letter-spacing:-.02em}
+.tick.tly{color:var(--s-tly)} .tick.dfi{color:var(--s-dfi)}
+.rank{text-align:right; font-size:var(--fs-2xs); color:var(--ink-3); line-height:1.35}
+.rank b{display:block; font-family:"IBM Plex Mono",monospace; font-size:var(--fs-h3); color:var(--ink); font-weight:600}
+.fund h3{font-size:var(--fs-sm); margin:14px 0 3px; max-width:32ch}
+.fund .kur{font-size:var(--fs-xs); color:var(--ink-3); margin-bottom:20px}
+.kv{display:grid; grid-template-columns:1fr auto; gap:9px 16px; font-size:var(--fs-xs);
+    border-top:1px solid var(--rule-soft); padding-top:16px}
+.kv dt{color:var(--ink-3)}
+.kv dd{margin:0; text-align:right; font-family:"IBM Plex Mono",monospace;
+       font-variant-numeric:tabular-nums; color:var(--ink); font-weight:500}
+.alloc{margin-top:20px; border-top:1px solid var(--rule-soft); padding-top:16px}
+.alloc-bar{display:flex; height:12px; border-radius:var(--r-xs); overflow:hidden;
+           background:var(--surface-2); gap:2px; margin:12px 0 14px}
+.alloc-seg{height:100%}
+.alloc-list{display:grid; gap:7px; font-size:var(--fs-xs)}
+.alloc-row{display:grid; grid-template-columns:12px 1fr auto; gap:10px; align-items:center; color:var(--ink-2)}
+.swatch{width:12px; height:12px; border-radius:var(--r-xs)}
+.alloc-row span:last-child{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; color:var(--ink)}
+
+/* ---------- manşet rakamlar ---------- */
+.figs{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:14px}
+.figs > *{min-width:0}
+.funds > *{min-width:0}
+.small-mult > *{min-width:0}
+.verdict > *{min-width:0}
+.fig{
+  background:var(--surface); border:1px solid var(--rule); border-radius:var(--r-md);
+  padding:22px 22px 20px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+}
+.fig::after{content:""; position:absolute; left:22px; right:22px; top:0; height:3px; border-radius:0 0 3px 3px}
+.fig.tly::after{background:var(--s-tly)} .fig.dfi::after{background:var(--s-dfi)}
+.fig .lbl{font-family:"IBM Plex Mono",monospace; font-size:var(--fs-2xs); letter-spacing:.1em;
+          text-transform:uppercase; color:var(--ink-3); margin-bottom:14px; line-height:1.4}
+.fig .val{font-family:"Fraunces",serif; font-size:clamp(29px,3.9vw,40px); font-weight:800;
+          line-height:.98; letter-spacing:-.035em; font-variant-numeric:tabular-nums;
+          white-space:nowrap}
+.fig .val.tly{color:var(--s-tly)} .fig .val.dfi{color:var(--s-dfi)}
+.fig .sub{font-size:var(--fs-xs); color:var(--ink-3); margin-top:11px; line-height:1.45}
+
+/* ---------- grafikler ---------- */
+figure{
+  margin:0; background:var(--surface); border:1px solid var(--rule); border-radius:var(--r-md);
+  padding:24px 24px 18px; box-shadow:var(--shadow);
+}
+figure + figure{margin-top:22px}
+.fig-title{font-family:"Archivo",sans-serif; font-variation-settings:"wdth" 106;
+           font-weight:700; font-size:var(--fs-body); letter-spacing:-.005em}
+.fig-note{font-size:var(--fs-xs); color:var(--ink-3); margin-top:6px; max-width:76ch; line-height:1.5}
+.chart-holder{position:relative; margin-top:18px}
+.chart-holder svg{display:block; width:100%; height:auto; overflow:visible}
+.legend{display:flex; flex-wrap:wrap; gap:10px 22px; margin-top:16px; font-size:var(--fs-xs); color:var(--ink-2)}
+.legend .item{display:flex; align-items:center; gap:8px}
+.legend .key{width:18px; height:4px; border-radius:var(--r-xs)}
+.legend .key.dash{background:none !important; border-top:3px dashed var(--s-ale)}
+figcaption{font-size:var(--fs-xs); color:var(--ink-3); margin-top:16px; border-top:1px solid var(--rule-soft);
+           padding-top:12px; line-height:1.5}
+.tip{
+  position:absolute; pointer-events:none; opacity:0; transition:opacity .1s;
+  background:var(--surface); border:1px solid var(--rule); border-radius:var(--r-sm);
+  box-shadow:var(--shadow-lift); padding:11px 13px; font-size:var(--fs-xs); min-width:168px; z-index:5;
+}
+.tip .tdate{font-family:"IBM Plex Mono",monospace; font-size:var(--fs-2xs); letter-spacing:.05em;
+            color:var(--ink-3); margin-bottom:8px}
+.tip .trow{display:grid; grid-template-columns:10px 1fr auto; gap:9px; align-items:center; margin-top:4px}
+.tip .trow i{width:10px; height:10px; border-radius:var(--r-xs); display:block}
+.tip .trow b{font-family:"IBM Plex Mono",monospace; font-weight:600; font-variant-numeric:tabular-nums}
+.small-mult{display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:22px}
+
+/* ---------- tablolar ---------- */
+.tbl-scroll{overflow-x:auto; border:1px solid var(--rule); border-radius:var(--r-md);
+            background:var(--surface); box-shadow:var(--shadow)}
+table{border-collapse:collapse; width:100%; font-size:var(--fs-sm); min-width:660px}
+th,td{padding:13px 16px; text-align:right; border-bottom:1px solid var(--rule-soft); white-space:nowrap}
+th{
+  font-family:"IBM Plex Mono",monospace; font-size:var(--fs-2xs); letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink-2); font-weight:600; border-bottom:1.5px solid var(--rule); background:var(--surface-2);
+}
+th:first-child,td:first-child{text-align:left}
+td{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; color:var(--ink)}
+td:first-child{font-family:"Archivo",sans-serif; font-weight:500}
+tbody tr:last-child td{border-bottom:none}
+tr.hi td{background:var(--accent-soft)}
+.dot{display:inline-block; width:11px; height:11px; border-radius:var(--r-xs); margin-right:9px; vertical-align:-1px}
+.pos{color:var(--pos); font-weight:600} .neg{color:var(--neg); font-weight:600}
+.muted{color:var(--ink-3)}
+
+/* ---------- ısı haritası ---------- */
+.heat{overflow-x:auto; margin-top:16px}
+.heat table{min-width:640px; font-size:var(--fs-xs); border-collapse:separate; border-spacing:3px}
+.heat th,.heat td{padding:0; border:none; text-align:center; background:none}
+.heat th{font-family:"IBM Plex Mono",monospace; font-size:var(--fs-2xs); color:var(--ink-3);
+         text-transform:none; letter-spacing:0; font-weight:500; padding-bottom:4px}
+.heat td.yr,.heat th.yr{text-align:left; padding-right:10px; font-family:"IBM Plex Mono",monospace;
+                        color:var(--ink-2); font-size:var(--fs-xs); font-weight:600}
+.cell{display:block; padding:9px 4px; border-radius:var(--r-xs);
+      font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;
+      font-size:var(--fs-2xs); font-weight:500; color:var(--ink)}
+.cell.empty{color:var(--ink-3); opacity:.4}
+.heat-legend{display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin-top:18px;
+             font-size:var(--fs-xs); color:var(--ink-3)}
+.heat-ramp{display:flex; height:12px; border-radius:var(--r-xs); overflow:hidden; width:200px}
+.heat-ramp i{flex:1}
+
+/* ---------- callout / karar ---------- */
+.callout{
+  border:1px solid var(--rule); border-radius:var(--r-md); background:var(--surface);
+  padding:24px 26px; margin:26px 0; box-shadow:var(--shadow); position:relative; overflow:hidden;
+}
+.callout::before{content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--s-dfi)}
+.callout.info::before{background:var(--accent)}
+.callout p:last-child{margin-bottom:0}
+.callout ul:last-child{margin-bottom:0}
+.verdict{display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:22px}
+.vcard{background:var(--surface); border:1px solid var(--rule); border-radius:var(--r-md);
+       padding:26px; box-shadow:var(--shadow); position:relative; overflow:hidden}
+.vcard::before{content:""; position:absolute; inset:0 0 auto 0; height:5px}
+.vcard.tly::before{background:var(--s-tly)} .vcard.dfi::before{background:var(--s-dfi)}
+.vcard .vt{display:flex; align-items:center; gap:12px; margin:6px 0 14px}
+.vcard .vt .tick{font-size:30px}
+.vcard .vt span:last-child{font-size:var(--fs-xs); color:var(--ink-3); line-height:1.3}
+.vcard p{font-size:var(--fs-sm); margin-bottom:14px}
+.vcard ul{font-size:var(--fs-sm); padding-left:20px}
+
+footer{margin-top:90px; padding-top:26px; border-top:1px solid var(--rule); font-size:var(--fs-xs); color:var(--ink-3)}
+footer p{max-width:82ch; margin-bottom:14px; font-size:var(--fs-xs); line-height:1.6}
+footer .tape{height:5px; margin-bottom:26px}
+
+/* ---------- yön bulma: yapışkan bölüm çubuğu ---------- */
+.skip{position:absolute;left:-9999px;top:0;z-index:60;background:var(--surface);
+  color:var(--ink);border:1px solid var(--rule);border-radius:var(--r-sm);
+  padding:10px 16px;font-size:var(--fs-sm);font-weight:600}
+.skip:focus{left:var(--s2);top:var(--s2)}
+
+.topbar{position:fixed;inset:0 0 auto 0;z-index:50;background:var(--surface);
+  border-bottom:1px solid var(--rule);box-shadow:var(--shadow);
+  transform:translateY(-100%);transition:transform .22s ease}
+.topbar.show{transform:none}
+.topbar-progress{position:absolute;inset:0 0 auto 0;height:2px;background:var(--rule-soft)}
+.topbar-progress i{display:block;height:100%;width:0;background:var(--grad)}
+.topbar-in{max-width:1200px;margin:0 auto;padding:0 30px;height:52px;
+  display:flex;align-items:center;gap:var(--s2)}
+.topbar-brand{font-family:"Fraunces",serif;font-weight:900;font-size:var(--fs-h4);
+  letter-spacing:-.01em;background:var(--grad);-webkit-background-clip:text;
+  background-clip:text;color:transparent;white-space:nowrap}
+@supports not (background-clip:text){.topbar-brand{color:var(--ink);background:none}}
+.topbar-jump{margin-left:auto;display:inline-flex;align-items:center;gap:9px;
+  background:var(--surface-2);border:1px solid var(--rule);border-radius:var(--r-pill);
+  padding:7px 14px;font:inherit;font-size:var(--fs-xs);color:var(--ink-2);cursor:pointer;
+  max-width:60%;transition:border-color .15s,color .15s}
+.topbar-jump:hover{border-color:var(--accent);color:var(--ink)}
+.topbar-jump b{font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar-jump svg{flex:none;transition:transform .18s ease}
+.topbar-jump[aria-expanded="true"] svg{transform:rotate(180deg)}
+.navlist{max-width:1200px;margin:0 auto;padding:var(--s1) 30px var(--s3);
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:2px;
+  border-top:1px solid var(--rule-soft);max-height:60vh;overflow-y:auto}
+.navlist[hidden]{display:none}
+.navlist a{display:flex;gap:11px;align-items:baseline;padding:9px 12px;
+  border-radius:var(--r-xs);color:var(--ink-2);text-decoration:none;font-size:var(--fs-xs);
+  transition:background .12s,color .12s}
+.navlist a:hover{background:var(--surface-2);color:var(--ink)}
+.navlist a[aria-current="true"]{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.navlist a i{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-2xs);
+  color:var(--ink-3);font-style:normal;min-width:16px}
+
+/* tablo yatay kaydırma ipucu */
+.tbl-scroll{position:relative}
+.tbl-scroll.kaydir::after{content:"";position:absolute;top:1px;right:1px;bottom:1px;width:44px;
+  border-radius:0 var(--r-md) var(--r-md) 0;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--surface) 78%)}
+.tbl-ipucu{display:none;font-size:var(--fs-2xs);color:var(--ink-3);margin-top:6px;
+  font-family:"IBM Plex Mono",monospace}
+.tbl-ipucu.gor{display:block}
+
+@media (max-width:660px){
+  .topbar-in{padding:0 18px;height:48px}
+  .navlist{padding:var(--s1) 18px var(--s3);grid-template-columns:1fr}
+}
+@media (max-width:660px){
+  body{font-size:var(--fs-h4)}
+  .wrap{padding:0 18px 72px}
+  header.mast{padding-top:40px}
+  p{font-size:var(--fs-h4)}
+  .fig .val{font-size:30px}
+  section{margin-top:62px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important}}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+/*__ORTAK_CSS__*/
+</style>
+
+<!--__NAV__-->
+
+<div class="topbar" id="topbar">
+  <div class="topbar-progress"><i id="ilerleme"></i></div>
+  <div class="topbar-in">
+    <span class="topbar-brand">TLY &amp; DFI</span>
+    <button class="topbar-jump" id="navBtn" aria-expanded="false" aria-controls="navList">
+      <b id="navCur">Künye</b>
+      <svg width="11" height="7" viewBox="0 0 11 7" aria-hidden="true" fill="none">
+        <path d="M1 1l4.5 4.5L10 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <nav class="navlist" id="navList" hidden aria-label="Rapor bölümleri"></nav>
+</div>
+
+<div class="wrap" lang="tr">
+
+<header class="mast">
+  <div class="tape"></div>
+  <div class="kicker">TEFAS verisiyle kantitatif fon incelemesi</div>
+  <h1>TLY &amp; DFI</h1>
+  <p class="dek">Türkiye'nin en sıra dışı iki serbest fonu. Aynı kategoride, aynı dört yılda, neredeyse aynı oynaklıkta &mdash; ve tamamen farklı iki risk karakteri. Getirinin nereden geldiğine bakıyoruz.</p>
+  <div class="mast-foot">
+    <span class="chip"><i></i>Kaynak <b>TEFAS</b></span>
+    <span class="chip">Veri kesimi <b id="asof"></b></span>
+    <span class="chip">Ortak dönem <b id="commonperiod"></b></span>
+    <span class="chip">TÜFE <b>%31,51</b> y/y</span>
+  </div>
+</header>
+
+<main id="icerik">
+
+<section id="kunye">
+  <div class="sec-head"><span class="eyebrow">Künye</span><h2>İki fon, iki büyüklük ligi</h2></div>
+  <p class="lead">İkisi de <strong>serbest fon</strong> &mdash; portföy sınırlamaları en gevşek, kaldıraç ve türev kullanabilen, risk sınıfı en yüksek fon türü. İkisi de hisse ağırlıklı. Ama TLY, DFI'nin sekiz katı büyüklükte ve portföyünde repo borcuyla hafif kaldıraç taşıyor.</p>
+  <div class="funds" id="funds"></div>
+</section>
+
+<section id="ozet">
+  <div class="sec-head"><span class="eyebrow">Manşet rakamlar</span><h2>Önce ölçeğe alışmak gerekiyor</h2></div>
+  <p>Aşağıdaki sayılar yazım hatası değil. TEFAS'ın kendi fon sayfası TLY için son bir yıl getirisini %689,54, DFI için %1.025,60 olarak veriyor; bu analizdeki tüm hesaplamalar aynı günlük fiyat serisinden üretildi ve bu resmî rakamlarla birebir örtüşüyor.</p>
+  <div class="figs" id="figs"></div>
+  <p class="mt3">Kıyas için aynı 12 ayda BIST 100 endeks fonu <span class="num">%28,3</span>, altın fonu <span class="num">%44,3</span>, para piyasası fonu <span class="num">%46,0</span> getirdi. TÜFE %31,51 olduğuna göre <strong>BIST 100'ü tutan yatırımcı reel olarak para kaybetti</strong>; para piyasası fonu bile reel %11 kazandırdı. Bu iki fon ise ayrı bir evrende.</p>
+</section>
+
+<section id="buyume">
+  <div class="sec-head"><span class="eyebrow">Birikim</span><h2>100 lira ne oldu?</h2></div>
+  <p>DFI'nin kuruluşundan bu yana geçen dört yıl bir ay. Dikey eksen <strong>logaritmik</strong> &mdash; her kademe 10 katı temsil eder. Doğrusal bir eksende TLY dışındaki dört seri, grafiğin en alt pikselinde düz bir çizgi hâline gelirdi.</p>
+  <figure>
+    <div class="fig-title">₺100'ün seyri, logaritmik ölçek</div>
+    <div class="fig-note">Ortak dönemin ilk gününde 100'e endekslendi. Haftalık kapanış gözlemleri. Çizginin üzerine gelince o tarihteki değerleri görebilirsin.</div>
+    <div class="chart-holder" id="c-growth"></div>
+    <figcaption>TEFAS günlük birim pay fiyatları; yönetim ve performans ücretleri düşülmüş net değerlerdir.</figcaption>
+  </figure>
+</section>
+
+<section id="risk">
+  <div class="sec-head"><span class="eyebrow">Risk ve getiri</span><h2>Aynı oynaklık, çok farklı iki deneyim</h2></div>
+  <p>Ortak dönemde ikisinin yıllık oynaklığı neredeyse aynı: TLY %48,1, DFI %47,9. Standart sapma bu iki fonu birbirinden ayıramıyor. Ayıran şey oynaklığın <em>yönü</em>: TLY'nin maksimum kaybı %33 iken DFI %88,5 düşmüş.</p>
+  <div class="tbl-scroll"><table id="t-ortak"></table></div>
+  <p class="fig-note mt2">Sharpe ve Sortino, risksiz getiri olarak para piyasası fonunun (ALE) aynı günkü getirisi kullanılarak hesaplandı &mdash; Türkiye'de mevduat/repo faizi bu fonların gerçek eşiğidir. Calmar = CAGR ÷ |maksimum düşüş|. VaR %95, günlük kayıpların en kötü %5'lik diliminin eşiği.</p>
+
+  <figure class="mt4">
+    <div class="fig-title">Su altı grafiği &mdash; zirveden itibaren kayıp</div>
+    <div class="fig-note">Her noktada, o güne kadarki en yüksek fiyata göre kayıp. Sıfır çizgisi = yeni zirve.</div>
+    <div class="chart-holder" id="c-dd"></div>
+    <figcaption>DFI, 28 Temmuz 2022'deki seviyesini ancak 22 Eylül 2025'te geri aldı: <strong>38 ay su altında</strong>.</figcaption>
+  </figure>
+
+  <div class="callout">
+    <div class="callout-title">DFI'nin ilk yılı</div>
+    <p>Fon 2022 Temmuz'unda 1,00 TL'den başladı, 2023 Mayıs'ında <span class="num">0,115</span> TL'ye indi &mdash; <strong>%88,5 kayıp</strong>. Tek bir çöküş günü yok; en sert gün −%10,4. Aylarca süren istikrarlı bir erime. Üstelik bu, borsanın en iyi dönemlerinden birine denk geliyor: aynı pencerede BIST 100 endeks fonu <strong>+%81,1</strong> yaptı.</p>
+    <p>O pencerede fonun yakalama oranları her iki yönde de aleyhine: borsanın yükseldiği günlerde <span class="num">−%38</span> (endeks çıkarken fon <em>düşmüş</em>), düştüğü günlerde <span class="num">+%94</span> (endeksle birlikte neredeyse tam düşmüş). Bir portföyün ikisini birden yapması, piyasanın yönünden bağımsız bir pozisyon seçimi sorununa işaret eder.</p>
+  </div>
+</section>
+
+<section id="kalicilik">
+  <div class="sec-head"><span class="eyebrow">Kalıcılık</span><h2>Şans mı, süreklilik mi?</h2></div>
+  <p>Tek bir dönemin getirisi hiçbir şey söylemez. Asıl soru şu: <em>hangi güne girseydiniz</em>, sonraki 12 ayda ne olurdu? Aşağıda her gün için kayan 252 işlem günlük getiri var. Kesikli çizgi %31,51'lik enflasyon eşiği.</p>
+  <div class="small-mult">
+    <figure>
+      <div class="fig-title">TLY &mdash; kayan 1 yıllık getiri</div>
+      <div class="fig-note">En kötü pencere <span class="num">+%25</span>. Negatif pencere yok.</div>
+      <div class="chart-holder" id="c-roll-tly"></div>
+    </figure>
+    <figure>
+      <div class="fig-title">DFI &mdash; kayan 1 yıllık getiri</div>
+      <div class="fig-note">En kötü pencere <span class="num">−%79</span>. Pencerelerin %6'sı negatif.</div>
+      <div class="chart-holder" id="c-roll-dfi"></div>
+    </figure>
+  </div>
+  <div class="tbl-scroll mt3"><table id="t-roll"></table></div>
+</section>
+
+<section id="yogunlasma">
+  <div class="sec-head"><span class="eyebrow">Dayanıklılık</span><h2>Getiri kaç güne bağlı?</h2></div>
+  <p>Bir performans birkaç patlama gününden mi ibaret, yoksa geniş tabana mı yayılmış? Testi basit: en iyi günleri seriden çıkarıp ne kaldığına bakmak. Sonuç, bu iki fonu birbirinden en keskin ayıran bulgu.</p>
+  <div class="tbl-scroll"><table id="t-conc"></table></div>
+  <figure class="mt3">
+    <div class="fig-title">DFI &mdash; en iyi günler çıkarıldığında dört yıllık getiri</div>
+    <div class="fig-note">1.032 işlem gününden yalnızca 20'sini çıkarmak, dört yıllık kazancın tamamını silip zarara çeviriyor.</div>
+    <div class="chart-holder" id="c-conc"></div>
+  </figure>
+  <p class="mt3">TLY'de aynı test sonucu değiştirmiyor: en iyi 20 günü atsanız bile geriye <strong>%103.711</strong> kalıyor. Yani TLY'nin performansı ~1.000 işlem gününe yayılmış bir bileşiklenme; DFI'ninki 2025 sonbaharında yoğunlaşmış bir patlama.</p>
+</section>
+
+<section id="capture">
+  <div class="sec-head"><span class="eyebrow">Piyasa ilişkisi</span><h2>Borsa düşerken ne oluyor?</h2></div>
+  <p>Yakalama oranı, endeks %1 hareket ettiğinde fonun ortalama ne yaptığını ölçer. Dört yılın tamamına bakınca TLY'nin düşüş yakalama oranı <strong>negatif</strong>: BIST 100'ün düştüğü günlerde fon ortalamada <em>yükselmiş</em>. Yükselişlerin ise %95'ini almış. Bu asimetri, uzun/kısa ya da piyasadan bağımsız bir strateji imzasıdır.</p>
+  <figure>
+    <div class="fig-title">BIST 100'e göre yükseliş / düşüş yakalama</div>
+    <div class="fig-note">Ortak dönem, günlük. Endeks vekili: Deniz Portföy BIST 100 Endeksi H.S. Fonu (550 artı / 482 eksi gün).</div>
+    <div class="chart-holder" id="c-cap"></div>
+  </figure>
+
+  <p class="mt4">Ama bu oran <strong>sabit bir fon özelliği değil</strong>. Tek bir dönem ortalaması, içindeki değişimi gizliyor. Yıl yıl bakınca ikisinin de karakteri değişmiş &mdash; ve değişim ikisinde de <strong>2025'te</strong> oluyor.</p>
+  <figure>
+    <div class="fig-title">Düşüş yakalama oranı, yıl yıl</div>
+    <div class="fig-note">Sıfırın altı = borsa düşerken fon yükseliyor. 2022 ve 2026 kısmi yıllardır (ortak dönem 28.07.2022'de başlıyor, veri 04.09.2026'da bitiyor).</div>
+    <div class="chart-holder" id="c-yillik"></div>
+  </figure>
+  <div class="tbl-scroll mt3"><table id="t-yillik"></table></div>
+  <p class="fig-note mt2">Her yıl kendi işlem günleri üzerinden hesaplandı. "Diğer fonla kor." sütunu TLY ile DFI'nin o yılki günlük getiri korelasyonu.</p>
+
+  <p class="mt3"><strong>TLY ters dönmedi, keskinleşti.</strong> 2023'te düşüş yakalaması <span class="num">+%26</span>'ydı &mdash; yani borsayla birlikte düşüyordu. 2024'te <span class="num">−%27</span>'ye, 2025'te <span class="num">−%131</span>'e indi. Aynı yıl yükseliş yakalaması da %165'e çıktı. Yani fonun bugün övülen asimetrisi kuruluşundan beri var olan bir özellik değil, 2025'te ortaya çıkan bir şey.</p>
+
+  <p><strong>DFI ise gerçekten ters döndü.</strong> 2023 ve 2024'te sıradan bir uzun hisse fonu gibi davranmış: düşüş yakalaması <span class="num">+%25</span> ve <span class="num">+%61</span>, 2024'te endeksle korelasyonu <span class="num">0,45</span>. 2025'te işaret değişiyor (<span class="num">−%73</span>) ve endeksle korelasyon <span class="num">0,03</span>'e düşüyor.</p>
+
+  <div class="callout">
+    <div class="callout-title">Önceki çerçevelemenin düzeltmesi</div>
+    <p style="margin-bottom:0">Bu raporun daha önceki bir sürümü, DFI'nin karakter değişimini dip noktası olan 11 Mayıs 2023'e bağlıyordu. Yıllık kırılım bunun fazla kesin bir iddia olduğunu gösteriyor: o tarih fonun <em>düşmeyi bıraktığı</em> gün, karakter değiştirdiği gün değil. Düşüş yakalaması 2023 ve 2024 boyunca pozitif kalmaya devam etmiş. Gerçek kırılma 2025'te.</p>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-title">2025 olağanüstü bir yıldı &mdash; 2026 ise başka bir şey</div>
+    <p style="margin-bottom:0">BIST 100 endeks fonu 2025'te <span class="num">+%13,9</span> yaparken TLY <span class="num">+%4.414</span>, DFI <span class="num">+%684</span> getirdi. 2026'da ise getiriler yüksek kalırken oynaklık çöktü. Bu, ayrı bir incelemeyi hak ediyor &mdash; <a href="#oynaklik">aşağıdaki bölüm</a> ona ayrıldı.</p>
+  </div>
+
+  <div class="tbl-scroll mt4"><table id="t-corr"></table></div>
+  <p class="fig-note mt2">Günlük getiri korelasyonları, ortak dönem. İki fon birbirinden de (0,12), piyasadan da büyük ölçüde bağımsız hareket ediyor.</p>
+</section>
+
+<section id="oynaklik">
+  <div class="sec-head"><span class="eyebrow">Değerleme tanısı</span><h2>2026'da oynaklık nereye gitti?</h2></div>
+  <p class="lead">İki fonun da 2026'daki oynaklığı, önceki üç yılın üçte birine indi. Getiriler ise yüksek kaldı. Yüksek getirinin düşük oynaklıkla birlikte gelmesi olağan bir piyasa sonucu değildir; ya portföy gerçekten değişmiştir, ya da <em>ölçtüğümüz şey</em> varlık fiyatları değil, değerleme sürecidir. Bu bölüm ikisini ayırt etmeye çalışıyor.</p>
+
+  <figure>
+    <div class="fig-title">Ay ay yıllandırılmış oynaklık</div>
+    <div class="fig-note">Her ayın kendi günlük getirilerinden hesaplandı (en az 8 işlem günü olan aylar). Kıyas çizgisi BIST 100 endeks fonu.</div>
+    <div class="chart-holder" id="c-aylikvol"></div>
+    <figcaption>DFI'nin düşüşü ani: Kasım 2025'te %54, Aralık 2025'te %3. TLY'ninki kademeli.</figcaption>
+  </figure>
+
+  <h3 class="mt5">Önce elenmesi gereken üç açıklama</h3>
+  <p><strong>Piyasa sakinleşti mi?</strong> Hayır. Aynı dönemde BIST 100 endeks fonunun oynaklığı %24'ten %23'e indi, altın fonununki %18'den <strong>%28'e çıktı</strong>. Düşüş bu iki fona özgü.</p>
+  <div class="tbl-scroll"><table id="t-yilvol"></table></div>
+
+  <p class="mt3"><strong>Veri mi seyreldi?</strong> Hayır. İki fon da 2026'da ayda 20&ndash;23 işlem günü fiyat yayımlamış &mdash; endeksle aynı. Serilerde <strong>tek bir tekrar eden fiyat yok</strong>, yani "fiyat güncellenmedi, TEFAS önceki günü taşıdı" durumu söz konusu değil. Fiyat her gün taze; sadece daha az hareket ediyor.</p>
+
+  <p><strong>Fonlar nakde mi geçti?</strong> Beyan edilen dağılım bunu desteklemiyor: 04.09.2026 itibarıyla TLY'nin %82'si, DFI'nin %56'sı hisse senedinde.</p>
+
+  <h3 class="mt5">Tanı tablosu</h3>
+  <p>Aşağıdaki ölçümler, bir fiyat serisinin gerçekten piyasada işlem gören varlıkları mı yansıttığını sınamak için kullanılır. <strong>ρ</strong> günlük getirilerin kendi dünüyle korelasyonu: likit bir portföyde sıfıra yakın çıkar, kalıcı pozitif değer gecikmeli/yumuşatılmış fiyatlamanın imzasıdır. <strong>İma edilen oynaklık</strong>, fonun kendi beyan ettiği hisse ağırlığının tek başına gerektirdiği taban.</p>
+  <div class="tbl-scroll"><table id="t-tani"></table></div>
+
+  <div class="verdict mt4">
+    <div class="vcard tly">
+      <div class="vt"><span class="tick tly">TLY</span><span>oynaklık düştü,<br>seri hâlâ canlı</span></div>
+      <p>TLY'nin serisi 2026'da da piyasayla birlikte nefes alıyor: <strong>25 eksi gün</strong>, en kötüsü <span class="num">−%4,22</span>, ortalama eksi gün <span class="num">−%0,72</span>. BIST ile korelasyonu <span class="num">0,50</span> &mdash; dört yılın en yükseği. Oto-korelasyonu <span class="num">−0,12</span>, yani yumuşatma imzası <em>yok</em>; tam tersi.</p>
+      <p style="margin-bottom:0">Beyan edilen %82 hisse ağırlığı ~%19 taban oynaklık ima ediyor, gerçekleşen %15,6. Aradaki fark bir korunma (hedge) veya endeksten daha sakin hisseler ile açıklanabilir. <strong>Bu seri, işaretlenmiş bir hisse portföyü gibi davranıyor.</strong> TLY'nin açıklanmayı bekleyen sorusu oynaklığı değil, getirisinin düzeyi.</p>
+    </div>
+    <div class="vcard dfi">
+      <div class="vt"><span class="tick dfi">DFI</span><span>seri hisse portföyü<br>gibi davranmıyor</span></div>
+      <p>167 işlem gününde <strong>7 eksi gün</strong>. Bunların beşi −%0,08 veya daha küçük, yani yuvarlama düzeyinde. En uzun kesintisiz artı serisi <span class="num">63 gün</span>. Tüm yılın maksimum düşüşü <span class="num">−%0,5</span>. Oto-korelasyon <span class="num">+0,31</span>.</p>
+      <p style="margin-bottom:0">Beyan edilen %56 hisse ağırlığı, hisse kolu <em>endeks gibi</em> hareket etseydi ~%13 taban oynaklık ima ederdi; gerçekleşen %8,2. Ama <a href="#kap">KAP doğrulaması</a> bu varsayımı çürüttü: fonun hisse tarafı neredeyse tümüyle tek bir isim (IEYHO) ve o hissenin kendi oynaklığı %17,7. Doğru hesapla beklenti %10 &mdash; yani <strong>seri, tuttuğu hisseyle tutarlı</strong>. Bilmece fonda değil, hissede.</p>
+    </div>
+  </div>
+
+  <figure class="mt3">
+    <div class="fig-title">DFI &mdash; 2026 günlük getirilerinin dağılımı</div>
+    <div class="fig-note">167 işlem günü. Dağılım bir piyasa getirisinin çan eğrisine değil, bir tahakkuka benziyor: kütlenin %87'si günlük %0 ile %1 arasında.</div>
+    <div class="chart-holder" id="c-dagilim"></div>
+  </figure>
+
+  <div class="tbl-scroll mt3"><table id="t-eksigun"></table></div>
+  <p class="fig-note mt2">DFI'nin 2026'daki bütün eksi günleri ve o gün BIST 100 endeks fonunun ne yaptığı. İki seri arasında bir ilişki görünmüyor: fonun düştüğü günlerin bazılarında endeks güçlü yükselmiş (9 Nisan'da <span class="num">+%4,91</span>), endeksin sert düştüğü günlerde ise fon kıpırdamamış.</p>
+
+  <h3 class="mt5">Ne anlama geliyor, ne anlama gelmiyor</h3>
+  <p>Bu ölçümler <strong>bir suçlama değil</strong>. TEFAS'ın yayımladığı fiyat serisi tek başına aşağıdaki açıklamaları birbirinden ayıramaz:</p>
+  <ul>
+    <li><strong>Korunmuş bir kitap.</strong> Hisse pozisyonu türevlerle dengelenmiş olabilir. TLY'nin dağılımında "vadeli işlem nakit teminatı" kalemi var; DFI'nin beyanında böyle bir kalem <em>yok</em> &mdash; bu, DFI için bu açıklamayı zayıflatıyor ama dışlamıyor.</li>
+    <li><strong>Sakin varlıklar.</strong> Portföydeki hisseler endeksten belirgin biçimde daha az oynak olabilir. Ancak %56 ağırlıkla %8 toplam oynaklığa inmek, o hisselerin endeksin üçte biri kadar oynaması demektir.</li>
+    <li><strong>Seyrek fiyatlanan varlıklar.</strong> Halka açık olmayan veya çok ince işlem gören pozisyonların değerlemesi gecikmeli hareket eder. Bu durumda ölçtüğümüz oynaklık, varlıkların değil <em>değerleme sürecinin</em> oynaklığıdır. Pozitif oto-korelasyon tam olarak bunun imzasıdır.</li>
+    <li><strong>Dağılım anlık.</strong> Elimizdeki varlık dağılımı yalnızca 04.09.2026 tarihine ait; yıl boyunca farklı olmuş olabilir.</li>
+  </ul>
+  <p>Ayırt etmek için fiyat serisinin ötesine geçmek gerekir: fonun KAP bildirimleri ve portföy dağılım raporları. <a href="#kap">Bir sonraki bölüm</a> o kaynaklara bakıyor &mdash; ve yukarıdaki dört açıklamadan birini eliyor, birini büyük ölçüde doğruluyor.</p>
+
+  <div class="callout warn">
+    <div class="callout-title">Raporun geri kalanı için sonucu</div>
+    <p>Oynaklık, Sharpe, Sortino, VaR ve maksimum düşüş &mdash; hepsi bu fiyat serisinden hesaplanıyor. Seri yumuşatılmışsa bu metriklerin tamamı riski <strong>olduğundan küçük</strong> gösterir.</p>
+    <p style="margin-bottom:0">Geltner tersine-yumuşatma düzeltmesi DFI için bir alt sınır veriyor: 2026 oynaklığı %8,2 yerine <span class="num">%11,3</span> (<span class="num">1,38×</span>), 2025 oynaklığı ise %58 yerine <span class="num">%98</span> (<span class="num">1,69×</span>). Bu bir tamir değil, yalnızca ölçüm hatasının yönünü ve büyüklük mertebesini gösteriyor. TLY'de oto-korelasyon pozitif olmadığı için böyle bir düzeltme uygulanmıyor.</p>
+  </div>
+</section>
+
+<section id="kap">
+  <div class="sec-head"><span class="eyebrow">KAP doğrulaması</span><h2>Portföyün içine bakınca</h2></div>
+  <p class="lead">Fiyat serisi tek başına açıklamaları ayırt edemediği için kaynağa gittik: <strong>denetlenmiş yıllık raporlar</strong> ve kurucuların yayımladığı <strong>portföy dağılım raporları</strong>. İki fon için de yaptık; sonuç, önceki bölümdeki varsayımlardan bazılarını doğruladı, bazılarını çürüttü &mdash; ve TLY'de hiç aramadığım bir şey çıktı.</p>
+
+  <h3 class="mt4">DFI &mdash; denetlenmiş 31 Aralık 2025 raporu</h3>
+  <p>Bağımsız denetim: Any Partners Bağımsız Denetim A.Ş. Portföyün varlık türlerine göre dağılımı:</p>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>31.12.2025 &mdash; fon portföyü</th><th>Tutar (TL)</th><th>Pay</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>Hisse senetleri</td><td>5.617.876.039</td><td>43,3%</td></tr>
+        <tr><td>Yatırım fonu katılma payları <span class="muted">(dipnot: grup içi PPT para piyasası fonu)</span></td><td>924.464.064</td><td>7,1%</td></tr>
+        <tr><td>Üçüncü kalem <span class="muted">(etiketi PDF metin katmanında yok)</span></td><td>6.429.806.662</td><td>49,6%</td></tr>
+        <tr><td>Finansman bonosu</td><td class="muted">—</td><td class="muted">—</td></tr>
+        <tr><td><strong>Toplam portföy</strong></td><td><strong>12.972.146.765</strong></td><td>100%</td></tr>
+        <tr><td>Fon toplam değeri <span class="muted">(borçlar düşülmüş)</span></td><td>12.588.317.774</td><td class="muted">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fig-note mt2">Aynı rapordan: net dönem kârı <span class="num">3.782.818.445 TL</span>, yönetim ücretleri <span class="num">39.045.953 TL</span>, faiz gideri <span class="num">81.096.551 TL</span>, borçların tamamı 0&ndash;3 ay vadeli. <strong>NOT 8: yatırım amaçlı gayrimenkul yok.</strong></p>
+
+  <h3 class="mt4">Aylık portföy dağılım raporları</h3>
+  <p><strong>Ocak 2026</strong> &mdash; oynaklığın çöktüğü aydan hemen sonra &mdash; portföyde göze çarpan şey <strong>Takasbank Para Piyasası</strong> işlemleri ve <strong>Halkbank vadeli mevduatı</strong>: 1,3&ndash;1,6 milyar TL'lik kalemler her gün çevriliyor.</p>
+  <p><strong>Temmuz 2026</strong> raporunda fon portföy değeri <span class="num">33.146.206.658,89 TL</span>, borçlar <span class="num">690.749.676,72 TL</span> (−%2,13). Hisse tarafında iki isim görünüyor: <strong>ISKPL</strong> (Işık Plastik) ve <strong>LIDER</strong> (LDR Turizm). Ayrıca PFS (Atlas Portföy Fon Sepeti Fonu) katılma payı ile Halkbank ve Ziraat Bankası mevduatları.</p>
+
+  <h3 class="mt4">Hangi açıklama ayakta kaldı?</h3>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Hipotez</th><th>Sonuç</th><th>Dayanak</th></tr></thead>
+      <tbody>
+        <tr><td>Halka açık olmayan, seyrek fiyatlanan varlıklar</td><td class="neg">Elendi</td><td>Portföyde borsa dışı varlık yok; gayrimenkul yok. Her kalem BIST'te işlem gören hisse, banka mevduatı veya para piyasası.</td></tr>
+        <tr class="hi"><td>Fon para piyasasına / mevduata geçti</td><td class="pos">Büyük ölçüde doğrulandı</td><td>Hem Ocak hem Temmuz 2026'da büyük mevduat + Takasbank defteri. Oynaklık düşüşünün önemli bölümünü olağan biçimde açıklıyor.</td></tr>
+        <tr><td>Türevle korunmuş hisse kitabı</td><td class="muted">Desteklenmedi</td><td>Beyanda vadeli işlem / opsiyon pozisyonu görünmüyor.</td></tr>
+        <tr><td>Fon düzeyinde yumuşatılmış değerleme</td><td class="neg">Elendi</td><td>Fonun oynaklığı, tuttuğu hisselerin borsa fiyatlarından hesaplanan %10,0&ndash;10,6'lık beklentiyle uyumlu. Yumuşaklık hisseden geliyor, fondan değil.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="mt4">DFI'nin ortaklık payları</h3>
+  <p>TLY'de olduğu gibi, DFI'nin tuttuğu şirketlerin ortaklık yapısına bakınca fon doğrudan karşımıza çıkıyor:</p>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Şirket</th><th>DFI'nin payı</th><th>Şirket piyasa değeri</th><th>Payın TL değeri</th><th>Fon içindeki ağırlık</th><th>2026 getirisi</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>Işıklar Enerji ve Yapı Holding (IEYHO)</td><td><strong>15,04%</strong></td><td>116,7 mlr TL</td><td>17,55 mlr TL</td><td><strong>55,0%</strong></td><td class="pos">+217,2%</td></tr>
+        <tr><td>Işık Plastik (ISKPL)</td><td>8,21%</td><td>10,9 mlr TL</td><td>0,89 mlr TL</td><td>2,8%</td><td class="neg">−35,0%</td></tr>
+        <tr><td><strong>Toplam</strong></td><td class="muted">—</td><td class="muted">—</td><td><strong>18,44 mlr TL</strong></td><td><strong>57,8%</strong></td><td class="muted">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fig-note mt2">Fon büyüklüğü 31,89 mlr TL. Hesaplanan %57,8'lik hisse ağırlığı, TEFAS'ın beyan ettiği <strong>%56,01</strong> ile 1,8 puan farkla örtüşüyor &mdash; yani <strong>DFI'nin hisse tarafı pratikte bu iki isimden ibaret</strong>, ikisi de Işıklar grubu şirketi. IEYHO'da ayrıca kardeş fon "Atlas Portföy Dördüncü Serbest (TL) Fon" %11,25 pay taşıyor; iki Atlas fonu birlikte <strong>%26,29</strong>.</p>
+
+    <div class="callout warn mt3">
+    <div class="callout-title">Bir önceki sürümün düzeltmesi</div>
+    <p style="margin-bottom:0">Bu raporun daha önceki bir sürümü, TLY'nin en büyük hisse pozisyonunu <strong>Destek Faktoring</strong> olarak veriyordu. Yanlıştı: o tespit yalnızca 31.12.2025 denetlenmiş raporundaki isimlere dayanıyordu. Fonun bugünkü en büyük pozisyonu <strong>Özata Denizcilik (OZATD)</strong> &mdash; sermayesinin %19,69'u, fonun dörtte birinden fazlası &mdash; ve 2026'da <span class="num">+%2.836</span> yapmış. Ortaklık tablolarına bakmadan yalnızca yıl sonu raporuyla yetinmek, fonun bugünkü riskinin en büyük parçasını görmemek demekmiş.</p>
+  </div>
+
+  <h3 class="mt5">TRHOL: grubun fonları, grubun holdingi</h3>
+  <p>Tabloda en çok dikkat çeken satır TRHOL. Şirketin ortaklık yapısına bakınca <strong>Tera'nın üç ayrı fonu</strong> aynı anda ortak çıkıyor:</p>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Tera Fin. Yatırımlar Holding (TRHOL) ortağı</th><th>Pay</th></tr></thead>
+      <tbody>
+        <tr><td>Tera Yatırım Menkul Değerler A.Ş. <span class="muted">grubun aracı kurumu</span></td><td>43,76%</td></tr>
+        <tr class="hi"><td>Tera Portföy Birinci Serbest Fon <span class="muted">(TLY)</span></td><td>19,27%</td></tr>
+        <tr class="hi"><td>Tera Portföy Hisse Senedi (TL) Fonu</td><td>5,20%</td></tr>
+        <tr class="hi"><td>Tera Portföy Algoritmik Stratejiler Serbest Fon <span class="muted">(TMV)</span></td><td>5,07%</td></tr>
+        <tr><td><strong>Tera kompleksi toplam</strong></td><td><strong>73,30%</strong></td></tr>
+        <tr><td>Diğer <span class="muted">serbest dolaşım</span></td><td>26,70%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fig-note mt2">Grubun aracı kurumu ve üç fonu birlikte şirketin dörtte üçünü tutuyor; kalan serbest dolaşım %26,7. TRHOL 2026'da <span class="num pos">+%521</span> yaptı. Aynı soruyu IEYHO'da sormuştuk, muhatabı farklı: <strong>bir şirketin paylarının bu kadarı tek bir grubun elindeyse, o payın borsa fiyatı ne kadar bağımsız bir referanstır?</strong> Bu bir usulsüzlük iddiası değil &mdash; yapı usulüne uygun biçimde kamuya açıklanmış. Ama fonun net varlık değeri, grubun kendi holdinginin fiyatına bağlı hâle geliyor.</p>
+
+<div class="callout warn mt3">
+    <div class="callout-title">Ve oynaklık bilmecesi çözülüyor &mdash; ama fonda değil</div>
+    <p>IEYHO'nun kendi borsa fiyatını çektik. 2026'da hisse <span class="num pos">+%217,2</span> yapmış &mdash; ve bunu yaparken <strong>oynaklığı yalnızca %17,7</strong>, 168 işlem gününde <strong>29 eksi gün</strong>, en kötü günü <span class="num">−%2,0</span>, tüm yılın maksimum düşüşü <span class="num">−%3,6</span>.</p>
+    <p>Bu ağırlıklarla fonun oynaklığını yeniden hesaplayınca <strong>%10,0&ndash;10,6</strong> çıkıyor; gerçekleşen %8,2. Getiri tarafında da: IEYHO'nun +%217'si ve nakdin ~+%30'u, fonun +%128'ini <strong>%52'lik bir yıl başı IEYHO ağırlığıyla</strong> veriyor &mdash; bugünkü %55 ile uyumlu.</p>
+    <p style="margin-bottom:0"><strong>Sonuç: DFI'nin yumuşak fiyat serisi fon düzeyinde bir değerleme yapaylığı değil.</strong> Fon, borsada oluşan fiyattan doğru şekilde değerliyor. Anomali bir kademe aşağıda: <em>hissenin kendisinde</em>.</p>
+  </div>
+
+  <figure class="mt3">
+    <div class="fig-title">IEYHO ve DFI &mdash; 2026'da aynı yol</div>
+    <div class="fig-note">02.01.2026 = 100. DFI'nin birim pay fiyatı, portföyünün %55'ini oluşturan IEYHO'nun yaklaşık yarı eğimiyle ilerliyor &mdash; kalan yarısı mevduatta olduğu için. Aynı grubun diğer şirketi ISKPL ise ters yöne gidiyor.</div>
+    <div class="chart-holder" id="c-ieyho"></div>
+    <figcaption>Hisse fiyatları: İş Yatırım günlük kapanış. Fon fiyatları: TEFAS.</figcaption>
+  </figure>
+
+  <figure class="mt2">
+    <div class="fig-title">Aynı dönemde zirveden kayıp</div>
+    <div class="fig-note">Asıl anomali burada görünür: IEYHO üçe katlanırken tüm yıl boyunca en derin düşüşü <strong>−%3,6</strong> olmuş. Endeks −%11,8, aynı grubun diğer şirketi −%73,9.</div>
+    <div class="chart-holder" id="c-ieyho-dd"></div>
+  </figure>
+
+  <figure class="mt2">
+    <div class="fig-title">Günlük getirilerin dağılımı &mdash; IEYHO ve BIST 100</div>
+    <div class="fig-note">168 işlem gününün yüzde kaçı hangi aralığa düşmüş. Yatay eksendeki aralıklar günlük getiri yüzdesidir (½ = %0,5); her çubuğun altında o aralığa düşen gün sayısı yazılı.</div>
+    <div class="chart-holder" id="c-ieyho-dagilim"></div>
+    <figcaption>IEYHO'nun <strong>−%2'den kötü tek günü yok</strong> ve kütlenin %57'si 0 ile +%1 arasında sıkışmış. Endeksin dağılımı ise iki yana simetrik. Aynı grubun diğer şirketi ISKPL'de tablo tam tersi: 168 günün <strong>54'ü −%2'nin altında, 47'si +%2'nin üstünde</strong> &mdash; ortası neredeyse boş, tipik tavan/taban davranışı.</figcaption>
+  </figure>
+
+  <h3 class="mt5">IEYHO hep böyle miydi? Hayır.</h3>
+  <p>2026'daki seri gerçekten sıra dışı olduğuna göre asıl soru şu: bu hisse her zaman böyle mi hareket ediyordu? Seriyi 2023'e kadar geri çektik. Cevap net &mdash; <strong>hayır</strong>.</p>
+  <div class="tbl-scroll"><table id="t-ieyho-yil"></table></div>
+  <p class="mt3">2023, 2024 ve 2025'te IEYHO <strong>sıradan bir Türk küçük/orta ölçekli hissesi</strong> gibi davranmış: %60&ndash;65 oynaklık, günlerin yaklaşık yarısı eksi, −%10'luk tavan/taban günleri, %26&ndash;40 arası düşüşler. 2026'da bunların hepsi kayboluyor.</p>
+
+  <figure class="mt3">
+    <div class="fig-title">Değişim tam olarak ne zaman oldu?</div>
+    <div class="fig-note">Ay ay yıllandırılmış oynaklık. IEYHO Kasım 2025'te %60, <strong>Aralık 2025'te %5</strong>. Fon da aynı ay %55'ten %3'e iniyor &mdash; çünkü fon bu hisseyi tutuyor.</div>
+    <div class="chart-holder" id="c-ieyho-vol"></div>
+    <figcaption>Aynı grubun diğer borsa şirketi ISKPL'de böyle bir kırılma <strong>yok</strong>: %36&ndash;116 bandında dalgalanmaya devam ediyor. Yani bu ne piyasa geneli ne de grup geneli bir olay.</figcaption>
+  </figure>
+
+  <figure class="mt2">
+    <div class="fig-title">IEYHO'nun dağılımı: 2025 &rarr; 2026</div>
+    <div class="fig-note">Aynı hisse, iki dönem. Ortalama günlük getiri neredeyse aynı kalmış (+%0,802 → +%0,700); değişen şey yolun dokusu.</div>
+    <div class="chart-holder" id="c-ieyho-dagilim2"></div>
+    <figcaption>2025'te dağılım iki uçta yığılıydı: 250 günün <strong>46'sı −%2'nin altında, 76'sı +%2'nin üstünde</strong>. 2026'da her iki kuyruk da kayboluyor: −%2 altı <strong>sıfır gün</strong>, kütle 0 ile +%1 arasına toplanıyor. Yükseliş hızı değişmedi, oynaklık yok oldu.</figcaption>
+  </figure>
+
+  <h3 class="mt5">IEYHO'nun KAP kaydı: geçiş ayında ne oluyordu?</h3>
+  <p>Fiyat verisi "ne olduğunu" söylüyor ama "neden"i söyleyemez. O yüzden IEYHO'nun KAP bildirimlerini Kasım 2025 &ndash; Ocak 2026 penceresinde okuduk. Kayıtta göze çarpanlar:</p>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Tarih</th><th>Bildirim</th><th>Kaynak</th></tr></thead>
+      <tbody>
+        <tr><td>03.11.2025</td><td>Pay bazında devre kesici</td><td class="muted">Borsa İstanbul</td></tr>
+        <tr><td>07.11.2025</td><td><strong>Olağan Dışı Fiyat ve Miktar Hareketleri</strong> açıklaması</td><td class="muted">IEYHO</td></tr>
+        <tr><td>10.11.2025</td><td>Pay bazında devre kesici <span class="muted">(aynı gün iki kez)</span></td><td class="muted">Borsa İstanbul</td></tr>
+        <tr class="hi"><td>10&ndash;12.11.2025</td><td><strong>Pay Alım Satım Bildirimi / ABG, DFI, IEYHO</strong> &mdash; üç ayrı gün</td><td class="muted">Atlas Portföy</td></tr>
+        <tr><td>11.11 · 18.11.2025</td><td>Endekslerde kullanılan <strong>fiili dolaşımdaki pay oranı değişikliği</strong></td><td class="muted">Borsa İstanbul</td></tr>
+        <tr><td>03.12.2025</td><td>Ortaklık aleyhine dava açılması</td><td class="muted">IEYHO</td></tr>
+        <tr><td>09.12.2025</td><td>Genel kurul işlemlerine ilişkin bildirim</td><td class="muted">IEYHO</td></tr>
+        <tr class="hi"><td>16.12.2025</td><td><strong>Fiili dolaşımdaki pay oranı değişikliği</strong> &mdash; üçüncüsü</td><td class="muted">Borsa İstanbul</td></tr>
+        <tr><td>05.12 · 24.12.2025</td><td>IEYHO pay <em>alım</em> bildirimi</td><td class="muted">Alnus Yatırım</td></tr>
+        <tr><td>31.12.2025</td><td>IEYHO pay <em>satım</em> bildirimi</td><td class="muted">Alnus Yatırım</td></tr>
+        <tr><td>13.01 · 20.01.2026</td><td>Fiili dolaşımdaki pay oranı değişikliği &mdash; dördüncü ve beşinci</td><td class="muted">Borsa İstanbul</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="mt4">Fiili dolaşım oranı: rakamlar</h3>
+  <p>Bildirimlerin başlıkları "değişiklik" diyor ama değeri vermiyor. Duyuruların içeriğini çıkarınca ortaya <strong>tek yönlü ve hızlı bir daralma</strong> çıkıyor:</p>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Duyuru</th><th>Geçerlilik</th><th>IEYHO fiili dolaşım oranı</th><th>Değişim</th></tr></thead>
+      <tbody>
+        <tr><td>11.11.2025</td><td>12.11.2025</td><td><strong>%69</strong></td><td class="muted">başlangıç</td></tr>
+        <tr><td>18.11.2025</td><td>19.11.2025</td><td><strong>%58</strong></td><td class="neg">−11 puan</td></tr>
+        <tr class="hi"><td>16.12.2025</td><td>17.12.2025</td><td><strong>%46</strong></td><td class="neg">−12 puan</td></tr>
+        <tr><td>13.01.2026</td><td>14.01.2026</td><td><strong>%38</strong></td><td class="neg">−8 puan</td></tr>
+        <tr><td>20.01.2026</td><td>21.01.2026</td><td class="muted">bulunamadı</td><td class="muted">—</td></tr>
+        <tr><td>02.06.2026</td><td>03.06.2026</td><td><strong>%33</strong></td><td class="neg">−5 puan</td></tr>
+        <tr><td colspan="2">Bugün <span class="muted">(İş Yatırım şirket kartı)</span></td><td><strong>%35,8</strong></td><td class="pos">+2,8 puan</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fig-note mt2">Kasım ortasından Haziran'a <strong>%69'dan %33'e</strong>: serbest dolaşımın <strong>yarıdan fazlası</strong> piyasadan çekilmiş. Daralmanın en hızlı bölümü Kasım&ndash;Ocak arasında, yani oynaklığın çöktüğü aylarda. Aynı dönemde Atlas Portföy (DFI dâhil), Alnus Yatırım ve Pardus Portföy alım bildiriyor &mdash; kimin aldığı da kayıtta. <span class="muted">20.01.2026 duyurusunun IEYHO değerine ulaşılamadı; 21.01 ile 03.06 arasında ara bir adım olabilir.</span></p>
+
+  <figure class="mt3">
+    <div class="fig-title">Serbest dolaşım daralırken oynaklık da düştü</div>
+    <div class="fig-note">Fiili dolaşım oranı, Borsa İstanbul duyurularının geçerlilik tarihlerine göre basamaklı çizildi. Üstteki oynaklık grafiğiyle aynı olayı farklı ölçekten gösterdiği için ayrı panel: ikisini tek eksene koymak yanıltıcı olurdu.</div>
+    <div class="chart-holder" id="c-fdpo"></div>
+    <figcaption>Normalde serbest dolaşımın daralması oynaklığı <strong>artırır</strong>. Burada ikisi birlikte düşmüş.</figcaption>
+  </figure>
+  <p>Bir ayrıntı daha: ikincil kaynaklara göre IEYHO payları <strong>7 Kasım &ndash; 5 Aralık 2025 arasında açığa satışa ve kredili işlemlere konu edilemez</strong> hâle getirilmiş (Borsa İstanbul tedbiri). Yani geçişin hemen öncesinde, aşağı yönlü baskı üreten mekanizmalardan biri bir ay boyunca devre dışıydı. Bu duyurunun tam metnini açamadık; başlık düzeyinde aktarıyoruz.</p>
+
+  <div class="callout warn mt3">
+    <div class="callout-title">Kayıt ne söylüyor, ne söylemiyor</div>
+    <p><strong>Söylemediği şey önce:</strong> Aralık 2025'te fiyat davranışını mekanik olarak değiştirecek <em>hiçbir sermaye işlemi yok</em> &mdash; bölünme, bedelsiz, birleşme, unvan değişikliği yok. Yani oynaklık düşüşü teknik bir fiyat düzeltmesinden kaynaklanmıyor. Bu, "veri artefaktı" ihtimalini büyük ölçüde eliyor.</p>
+    <p><strong>Kayıtta öne çıkan iki tema var.</strong> Birincisi kurumsal alım: Atlas Portföy 10, 11 ve 12 Kasım'da üç ayrı gün IEYHO işlemlerini bildiriyor ve bildirimlerde <strong>DFI'nin kodu açıkça geçiyor</strong>; Alnus Yatırım ve Pardus Portföy de aynı haftalarda alım bildiriyor. İkincisi ve ölçülebilir olanı: <strong>fiili dolaşım oranı %69'dan %38'e iniyor</strong> &mdash; serbest dolaşımın neredeyse yarısı iki ayda piyasadan çekiliyor.</p>
+    <p><strong>Ve burada beklenenin tersi oluyor.</strong> Serbest dolaşımın daralması normalde oynaklığı <em>artırır</em>: daha az işlem gören pay, her emrin fiyata etkisini büyütür. Burada tam tersi olmuş &mdash; float %69'dan %38'e daralırken oynaklık %60'tan %5'e inmiş. Bu ikisinin bir arada görülmesi, azalan payların <em>satmayan</em> ellerde toplandığı ve kalan arzın tek yönlü alım baskısıyla karşılaştığı durumlarda beklenen örüntüdür.</p>
+    <p><strong>Düzenleyici dikkat, değişimden önceye ait.</strong> Üç devre kesici ve Borsa'nın "olağan dışı fiyat ve miktar hareketleri" sorgusu Kasım 2025'te &mdash; yani <em>yüksek oynaklık</em> döneminde. Aralık'tan sonra bunların hiçbiri tekrarlamıyor; şirkete özgü bildirimler de seyreliyor.</p>
+    <p style="margin-bottom:0">Bunlar birbirine bağlanabilir gibi duruyor, ama <strong>KAP kaydı bir açıklama sunmuyor ve biz de nedensellik kurmuyoruz.</strong> Ortada tespit edilebilen şey bir eşzamanlılıktır: yoğun kurumsal alım ve tekrarlanan serbest dolaşım oranı güncellemeleriyle aynı döneme denk gelen, ondan sonra dokuz ay süren bir düşük oynaklık rejimi.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Yatırımcı açısından pratik sonuç</div>
+    <p style="margin-bottom:0">DFI'nin bugünkü düşük oynaklığı fonun risk yönetiminden gelmiyor. Fonun <strong>%55'i tek bir hissede</strong> ve o hissenin fiyat davranışı Aralık 2025'ten beri, önceki üç yılında hiç görülmemiş biçimde pürüzsüz. Fonun Sharpe'ı, VaR'ı, maksimum düşüşü &mdash; hepsi bu tek serinin türevidir. Rejim değişirse bu metriklerin hepsi aynı anda değişir.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">Kıyas: aynı dönemde diğer hisseler</div>
+    <div class="tbl-scroll"><table id="t-hisse"></table></div>
+    <p class="mt2 mb0">Üçe katlanan bir hissenin oynaklığının endeksin altında kalması olağan değil. Aynı grubun diğer şirketi ISKPL %80,9 oynaklıkla hareket ediyor; TLY'nin ana pozisyonu DSTKF %69,9 ile. <strong>Ayrıksı olan tek seri IEYHO.</strong> Bunun neden böyle olduğu artık bir fon muhasebesi sorusu değil, o hissenin piyasa yapısına ilişkin bir soru &mdash; ve bu raporun cevaplayabileceği bir soru değil.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Bir de künye tutarsızlığı</div>
+    <p style="margin-bottom:0">Portföy dağılım raporlarının başlığı <strong>"DFI &mdash; Atlas Portföy İkinci Serbest TL Fon"</strong>; TEFAS ve KAP ise fonu <strong>"Atlas Portföy Serbest Fon"</strong> olarak gösteriyor. Aynı fon kodu, iki farklı unvan.</p>
+  </div>
+
+  <hr style="border:none;border-top:1px solid var(--rule);margin:44px 0">
+
+  <h3 style="font-size:22px">TLY &mdash; denetlenmiş 31 Aralık 2025 raporu</h3>
+  <p>Bağımsız denetim: Ulusal Bağımsız Denetim ve YMM A.Ş. İlk bulgu bir <strong>doğrulama</strong>: raporun net varlık değeri <span class="num">35.298.733.502 TL</span>, dolaşımdaki pay <span class="num">11.903.840</span> &mdash; birim pay <span class="num">2.965,32 TL</span>. TEFAS'ın 02.01.2026'da yayımladığı fiyat <span class="num">2.965,68 TL</span>. Fark <strong>%0,01</strong>. Bu raporun dayandığı fiyat serisi, denetlenmiş tabloya birebir oturuyor.</p>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>TLY &mdash; 31.12.2025</th><th>Tutar (TL)</th><th>Portföy payı</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>Yatırım fonları</td><td>18.878.432.469</td><td>46,1%</td></tr>
+        <tr><td>Ters repo</td><td>5.266.193.067</td><td>12,8%</td></tr>
+        <tr><td>Takas alacakları</td><td>8.126.951.478</td><td>23,0%</td></tr>
+        <tr><td>VIOP nakit teminatı</td><td>39.217.165</td><td>0,1%</td></tr>
+        <tr><td><strong>Fon portföy değeri</strong></td><td><strong>40.985.593.146</strong></td><td>100%</td></tr>
+        <tr><td>Borçlar <span class="muted">(takas borçları 8.472.948.183 dâhil)</span></td><td class="neg">13.815.116.891</td><td class="neg">−33,7%</td></tr>
+        <tr><td><strong>Fon toplam değeri</strong></td><td><strong>35.298.733.502</strong></td><td class="muted">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fig-note mt2">Yönetim ücreti: fon toplam değerinin <strong>günlük %0,00548'i</strong> (yıllık ≈ %2). 2025'te tahakkuk eden tutar <span class="num">481.755.542 TL</span>. Denetim ücreti 35.000 TL. Borçların portföye oranı %33,7 &mdash; TEFAS'ın varlık dağılımında görünen −%7,61 repo kalemiyle aynı yönde: fon kaldıraç kullanıyor.</p>
+
+  <h3 class="mt4">Asıl bulgu: fon, şirketlerin ortağı</h3>
+  <p>Raporun portföy değeri tablosunda açıkça görünen en büyük hisse pozisyonları. TERA'da <strong>aynı ISIN'de ikisi zıt yönlü iki satır</strong> var; tabloda ikisi de gösterildi:</p>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>31.12.2025 &mdash; açıklanan hisse pozisyonları</th><th>Nominal (lot)</th><th>Tutar (TL)</th><th>Portföy payı</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>Destek Finans Faktoring (DSTKF)</td><td>6.843.190</td><td>3.797.970.450</td><td><strong>9,27%</strong></td></tr>
+        <tr><td>Tera Menkul Değerler (TERA) &mdash; uzun bacak <span class="muted">kurucunun kendi grubu</span></td><td>26.999.522</td><td>4.643.917.800</td><td>11,33%</td></tr>
+        <tr><td>Tera Menkul Değerler (TERA) &mdash; ters bacak</td><td class="neg">−7.800.950</td><td class="neg">−1.341.763.400</td><td class="neg">−3,27%</td></tr>
+        <tr class="hi"><td><strong>Tera Menkul Değerler &mdash; net</strong></td><td><strong>19.198.572</strong></td><td><strong>3.302.154.400</strong></td><td><strong>8,06%</strong></td></tr>
+        <tr><td>Peker GYO (PEKGY)</td><td>131.424.772</td><td>1.655.952.127</td><td>4,04%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="fig-note mt2">İki TERA satırı da aynı ISIN (TRETERA00013) ve aynı fiyattan (172,00 TL) değerlenmiş; ikincisinin nominali ve tutarı negatif. Bu bir açığa satış ya da ödünç işlemidir &mdash; raporun risk bölümünde "Açığa Satış Riski" başlığı zaten var &mdash; ama <strong>satırın kendi etiketini PDF'in metin katmanından güvenilir biçimde okuyamadım</strong>, o yüzden hangisi olduğunu kesinleştirmiyorum. Net etkisi her iki durumda da aynı: TERA'ya olan gerçek maruziyet brüt değil, <strong>net 3,30 milyar TL</strong>.</p>
+  <p class="mt3">Bu isimlerin ortaklık yapısına bakınca fonun kendisi karşımıza çıkıyor. İş Yatırım şirket kartlarına göre:</p>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>Şirket</th><th>TLY'nin payı</th><th>Tera grubunun toplamı</th><th>Şirket piyasa değeri</th><th>2026 getirisi</th><th>Payın değeri</th><th>Fon içindeki ağırlık</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>Özata Denizcilik (OZATD)</td><td><strong>19,69%</strong></td><td class="muted">—</td><td>333,9 mlr TL</td><td class="pos">+2.836%</td><td><strong>65,7 mlr</strong></td><td><strong>26,4%</strong></td></tr>
+        <tr class="hi"><td>Destek Faktoring (DSTKF)</td><td><strong>8,14%</strong></td><td>≈15,5% <span class="muted">(+ Tera Portföy Para Piyasası Fonu %7,34)</span></td><td>773,3 mlr TL</td><td class="pos">+318,0%</td><td>62,9 mlr</td><td>25,2%</td></tr>
+        <tr class="hi"><td>Tera Fin. Yatırımlar Holding (TRHOL) <span class="muted">grubun kendi holdingi</span></td><td><strong>19,27%</strong></td><td><strong>≈73,3%</strong> <span class="muted">(aşağıdaki tablo)</span></td><td>108,8 mlr TL</td><td class="pos">+521,3%</td><td>21,0 mlr</td><td>8,4%</td></tr>
+        <tr><td>Peker GYO (PEKGY)</td><td>30,34%</td><td>≈42% <span class="muted">(+ Tera Yatırım Holding %6,3, Tera Menkul %5,32)</span></td><td>52,5 mlr TL</td><td class="neg">−16,7%</td><td>15,9 mlr</td><td>6,4%</td></tr>
+        <tr><td>Tera Yatırım (TERA)</td><td>2,74% <span class="muted">net</span></td><td class="muted">Tera Fin. Yatırımlar Holding %7,49</td><td>136,1 mlr TL</td><td class="pos">+13,0%</td><td>3,7 mlr</td><td>1,5%</td></tr>
+        <tr><td><strong>Beş ismin toplamı</strong></td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td><strong>169,3 mlr</strong></td><td><strong>67,9%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info mt3">
+    <div class="callout-title">TERA pozisyonu: ortaklık yapısından doğrulama</div>
+    <p>PEKGY ve DSTKF'de fon doğrudan ortaklık tablosunda görünüyordu; TERA'da görünmüyor. Sebebi hesapla ortaya çıkıyor. TERA'nın ödenmiş sermayesi <span class="num">700.000.000 TL</span> (1 TL nominal, yani 700 milyon pay). Bunu iki bağımsız kontrolle doğruladık:</p>
+    <ul>
+      <li>700.000.000 pay × bugünkü fiyat <span class="num">194,40 TL</span> = <span class="num">136.080 mn TL</span> &mdash; İş Yatırım'ın gösterdiği piyasa değerinin <strong>birebir aynısı</strong>.</li>
+      <li>Raporun yıl sonu değerleme fiyatı <span class="num">172,00 TL</span>; 172,00 → 194,40 = <span class="num">+%13,02</span> &mdash; İş Yatırım'ın "yıl içi getiri" rakamıyla <strong>birebir aynı</strong>. Demek ki 2026'da sermaye değişikliği (bedelsiz, bölünme) olmamış; pay sayısı yıl sonunda da 700 milyon.</li>
+    </ul>
+    <p>Buna göre TLY'nin TERA'daki payı: uzun bacak <span class="num">26.999.522 / 700.000.000 = %3,86</span>, net <span class="num">19.198.572 / 700.000.000 = %2,74</span>.</p>
+    <p style="margin-bottom:0"><strong>Sonuç: pozisyon KAP/MKK'nın %5'lik ortaklık bildirim eşiğinin altında.</strong> Fonun TERA'nın ortaklık tablosunda görünmemesi bir tutarsızlık değil, tam olarak beklenen şey. Doğrulama üç kaynağı birbirine bağlıyor: denetlenmiş raporun lot adedi, şirketin ödenmiş sermayesi ve ortaklık tablosunun eşiği.</p>
+  </div>
+
+  <div class="callout warn mt3">
+    <div class="callout-title">Bu ne anlama geliyor</div>
+    <ul>
+      <li><strong>TLY çeşitlendirilmiş bir hisse fonu değil.</strong> Açıklanan beş isim fonun <strong>%67,9</strong>'unu oluşturuyor; ikisi tek başına yarısını. Bir GYO'nun %30'una, bir denizcilik şirketinin %19,7'sine sahip olmak portföy yatırımından çok ortaklıktır.</li>
+      <li><strong>İlişkili taraf yoğunlaşması.</strong> Beş açıklanan pozisyondan üçü grup şirketi: TRHOL (grubun holdingi, fonun %8,4'ü), TERA (aracı kurumu) ve PEKGY (yanında Tera şirketleri ortak). TRHOL'de grubun toplam payı %73,3.</li>
+      <li><strong>Değerleme piyasa fiyatından.</strong> DFI'deki belirsizliğin aksine burada model değerleme yok; hepsi BIST'te işlem gören şirketler. Bu önemli bir güvence.</li>
+      <li><strong>Ama fiyat bağımsızlığı zayıflar.</strong> Bir fon bir şirketin %30'una, grup toplamda %42'sine sahipse geriye kalan serbest dolaşım incelir. O noktada "piyasa fiyatı" göründüğü kadar bağımsız bir referans olmaktan çıkar; fonun değeri ile pozisyonunun fiyatı arasında geri besleme doğar.</li>
+      <li><strong>2026 getirisinin motoru görünür hâle geliyor.</strong> DSTKF yıl içi <span class="num pos">+%318</span>. Bugünkü piyasa değerine göre TLY'nin %8,14'lük payı ≈ 63 mlr TL, yani fonun (249 mlr TL) yaklaşık <strong>dörtte biri</strong>. PEKGY payı ≈ 16 mlr TL, ~%6. İki isim fonun kabaca üçte biri.</li>
+    </ul>
+    <p style="margin-bottom:0">Bunların hiçbiri kural ihlali iddiası değildir &mdash; serbest fonlarda portföy sınırlamaları gevşektir ve bu pozisyonlar usulüne uygun biçimde <em>kamuya açıklanmıştır</em>. Ama "Sharpe 3,92, oynaklık %48" gibi metrikler, arkasında bu yapı olduğu bilinmeden okunursa yanıltır.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">Bu doğrulamanın kendi sınırları</div>
+    <ul style="margin-bottom:0">
+      <li>PDF'lerin metin katmanı eksik: denetlenmiş rapordaki iki kalemin <strong>etiketi okunamadı</strong> (tutarları okundu). Üçüncü kalemin para piyasası/mevduat olduğu, Ocak 2026 raporuyla uyumlu ama kesin değil.</li>
+      <li>Aylık raporlardan hisse tarafının <strong>tam listesini ve ağırlığını</strong> çıkaramadım; göremediğim başka pozisyonlar olabilir. Bu yüzden "hisse ağırlığı ile oynaklık uyuşmuyor" iddiasını kesinleştirmiyorum.</li>
+      <li>Ortaklık yapısı ve piyasa değeri rakamları <strong>ikincil kaynaktan</strong> (İş Yatırım şirket kartı); KAP'ın kendi ortaklık bildirimleriyle çapraz kontrol edilmedi.</li>
+      <li>TERA'daki ters bacağın <strong>niteliği</strong> (açığa satış mı, ödünç mü) satır etiketi okunamadığı için kesinleşmedi; net tutar her iki okumada da aynı.</li>
+      <li>TLY tarafında pay oranları ve piyasa değerleri de aynı ikincil kaynaktan; "fonun dörtte biri" gibi tahminler, <strong>31.12.2025 pay oranını bugünkü piyasa değeriyle çarparak</strong> bulundu &mdash; oran o tarihten beri değişmiş olabilir.</li>
+      <li>IEYHO'nun KAP bildirimleri <strong>başlık düzeyinde</strong> okundu (KAP'ın satırlarında bağlantı yok, doğrudan API çağrısını güvenlik duvarı engelliyor). Fiili dolaşım oranı değerleri, bu duyuruları aktaran <strong>ikincil kaynaklardan</strong> derlendi; bugünkü değer İş Yatırım şirket kartından. 11.11.2025 ve 20.01.2026 duyurularının IEYHO değerlerine ulaşılamadı, tablo dört gözlemle sınırlı.</li>
+      <li>Bunların hiçbiri bir usulsüzlük iddiası değildir. Kesin cevap için bildirimlerin tam metinleri, fonların değerleme esasları belgeleri ve SPK/Borsa kayıtları incelenmelidir.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="vakalar">
+  <div class="sec-head"><span class="eyebrow">Üçüncü ve dördüncü vaka</span><h2>Aynı sinyal, farklı mekanizmalar</h2></div>
+  <p class="lead">Tarayıcı, "sessiz yükseliş" ölçütünü (6 ay getiri ≥%30, oynaklık ≤%25, eksi gün ≤%20) geçen <strong>12 fon</strong> buldu; TLY ve DFI listenin 2. ve 3. sırasındaydı. Listenin başındaki ve en uç değerli fonlara da aynı yöntemi uyguladık. Sonuç, aracın kendi çerçevesini doğruluyor: <strong>aynı sinyal, birbiriyle alakasız sebeplerden gelebiliyor.</strong></p>
+
+  <h3 class="mt5">Vaka 3 &mdash; TMV: aynı ev, zıt profil</h3>
+  <p><strong>Tera Portföy Algoritmik Stratejiler Serbest Fon.</strong> TLY ile aynı kurucu, ama tanı ölçütlerinin hiçbirine takılmıyor.</p>
+  <div class="figs" id="v-TMV-figs"></div>
+
+  <p class="mt3">DFI Aralık 2025'te <em>sessizleşmişti</em>. TMV'de tam tersi olmuş: Ekim 2025'e kadar aylık oynaklığı %1,3&ndash;2,0 bandında, yani para piyasası fonu gibi. Ekim'de %21,7'ye fırlıyor ve orada kalıyor.</p>
+  <figure>
+    <div class="fig-title">Üç fon, üç ayrı rejim hikâyesi</div>
+    <div class="fig-note">Ay ay yıllandırılmış oynaklık. TMV yükseliyor, DFI çöküyor, TLY kademeli iniyor &mdash; hepsi 2025 sonbaharı ile Aralık arasında.</div>
+    <div class="chart-holder" id="c-tmv-vol"></div>
+  </figure>
+  <div class="tbl-scroll mt3"><table id="t-TMV-yil"></table></div>
+  <p class="fig-note mt2">Fon 31.12.2025'te <span class="num">2,77 milyar</span> TL'ydi, bugün <span class="num">44,4 milyar</span> &mdash; 16 katı. Performans bunun 3,4 katını açıklıyor; gerisi para girişi. Portföyü <strong>49 hisseye</strong> dağılmış; beyan ettiği strateji "algoritma destekli sistemlerle, pay ve türev araçlarda kısa vadeli sermaye kazancı".</p>
+  <div class="funds" id="v-TMV-dagilim"></div>
+  <div class="callout warn mt3">
+    <div class="callout-title">Tek açıklanan pozisyonu yine TRHOL</div>
+    <p style="margin-bottom:0">TMV'nin %5 bildirim eşiğini aşan tek payı, grubun kendi holdingi <strong>TRHOL</strong>'de: <span class="num">%5,07</span> ≈ 5,5 milyar TL, yani <strong>fonun %12,4'ü</strong>. Fon dağıtılmış olabilir; ama en büyük tek bildirimi, TLY ve bir kardeş fonla birlikte tuttuğu grup şirketi. <a href="#kap">Yukarıdaki TRHOL tablosu</a> üç fonu birlikte gösteriyor.</p>
+  </div>
+
+  <hr style="border:none;border-top:1px solid var(--rule);margin:var(--s6) 0">
+
+  <h3 style="font-size:var(--fs-h3)">Vaka 4 &mdash; Pusula: aynı evde üç ayrı evren</h3>
+  <p>Dördüncü vakayı tarayıcının en uç değeri açtı: 168 işlem gününde <strong>3 eksi gün</strong> yapan bir fon. Ama asıl bulgu o fonun kendisi değil, <em>kardeşleri</em> oldu.</p>
+  <h4 class="mt4">PBE &mdash; sessizlik anomali değil, enstrümanın kendisi</h4>
+  <p><strong>Pusula Portföy Batı Serbest Fon.</strong> Tarayıcıdaki en uç değer buydu: 168 işlem gününde <strong>3 eksi gün</strong>. Varlık dağılımına bakınca sebep tek bakışta anlaşılıyor &mdash; ve tablo yalnızca iki satır:</p>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>PBE &mdash; varlık dağılımı (04.09.2026)</th><th>Oran</th></tr></thead>
+      <tbody>
+        <tr class="hi"><td>Varlığa Dayalı Menkul Kıymetler</td><td class="pos"><strong>+544,03%</strong></td></tr>
+        <tr class="hi"><td>Repo <span class="muted">borç</span></td><td class="neg"><strong>−444,03%</strong></td></tr>
+        <tr><td><strong>Net varlık</strong></td><td><strong>100,00%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="mt3"><strong>5,4 kat kaldıraçlı bir taşıma (carry) işlemi.</strong> Repo ile borçlanıp varlığa dayalı menkul kıymet alıyor, aradaki makası büyütüyor. Hisse yok, türev yok, tek kalem. VDMK borsada işlem gören bir varlık değil; <strong>günlük tahakkukla</strong> değerlenir. Yani serinin pürüzsüz olması bir anomali değil, enstrümanın tanımı.</p>
+  <div class="figs" id="v-PBE-figs"></div>
+  <div class="tbl-scroll mt3"><table id="t-PBE-yil"></table></div>
+  <p class="fig-note mt2">Bugünkü sessizlik yalnızca 2026'ya ait: fon 2024'te %55,5 oynaklıkla <span class="num neg">−%37,5</span>, 2025'te %42,4 oynaklıkla <span class="num pos">+%312,5</span> yapmış ve bir ara <span class="num">−%48,8</span> düşmüş. Strateji değişmiş.</p>
+
+  <figure class="mt3">
+    <div class="fig-title">PBE &mdash; 2026 günlük getirilerinin dağılımı</div>
+    <div class="fig-note">167 işlem günü. Kütle tek bir dar bantta toplanmış; kuyruk yok. Tahakkukla değerlenen bir enstrümanın imzası.</div>
+    <div class="chart-holder" id="c-pbe-dagilim"></div>
+  </figure>
+  <div class="tbl-scroll mt3"><table id="t-PBE-eksi"></table></div>
+  <p class="fig-note mt2">Fonun 2026 boyunca su altında kaldığı toplam süre <strong>4 işlem günü</strong>; en uzun kesintisiz kayıp serisi 3 gün.</p>
+
+  <div class="callout warn mt3">
+    <div class="callout-title">Ölçek ve risk: metriklerin göstermediği</div>
+    <p>Önce ölçek: fon <span class="num">49,4 milyon TL</span> ve <strong>11 yatırımcısı</strong> var. Bu bir perakende fonu değil, bir avuç nitelikli yatırımcı için kurulmuş özel bir araç. Kategori sıralamasında DFI'yle yan yana görünüyor ama büyüklüğü onun binde biri.</p>
+    <p style="margin-bottom:0">Sonra risk: Sharpe <span class="num">10,36</span>, Sortino <span class="num">57,80</span>. Bu rakamlar 5,4 kat kaldıraçlı bir kredi taşımasında <strong>kuyruk riskini yapısı gereği eksik ölçer</strong> &mdash; yanlış fiyatlama yüzünden değil, tahakkukla değerlenen bir enstrümanın günlük dalgalanmaması yüzünden. Kaldıraçlı taşımada risk günlük oynaklıkta görünmez; fonlama kesildiğinde ya da varlık tarafında sorun çıktığında bir anda görünür.</p>
+  </div>
+
+  <h4 class="mt5">PBE'nin kardeşleri &mdash; PHN ve PKZ</h4>
+  <p>Aynı kurucunun aynı şemsiyesindeki diğer fonlarına bakınca tablo tersine dönüyor. Tarayıcının 1.209 fonluk evreninde <strong>bir yıllık getiride ilk iki sıra</strong> &mdash; pay bölünmesi kaynaklı yapay sıçramalar ayıklandıktan sonra &mdash; bu iki fona ait:</p>
+  <div class="figs" id="v-kardes-figs"></div>
+  <p class="mt3">Varlık dağılımları ikisinin farklı araçlar olduğunu söylüyor:</p>
+  <div class="funds mt2" id="v-kardes-dagilim"></div>
+  <p class="mt3"><strong>PHN 2,33 kat brüt kaldıraçlı</strong> (%128 hisse + %105 fon katılma payı, karşılığında %128 repo ve %5 para piyasası borcu). <strong>PKZ ise kâğıt üzerinde kaldıraçsız</strong> &mdash; %101,7 hisse, o kadar. Ama getirileri PBE'nin dünyasıyla hiç ilgisi olmayan bir yerde:</p>
+  <div class="tbl-scroll mt3"><table id="t-kardes"></table></div>
+
+  <div class="callout warn mt3">
+    <div class="callout-title">PKZ: bir yılın tamamı 20 güne bağlı</div>
+    <p style="margin-bottom:0">PKZ'nin 2026 getirisi <span class="num pos">+%1.575</span>. En iyi 20 günü seriden çıkarınca geriye kalan: <span class="num">+%12</span>. Bu, raporda ölçtüğümüz en uç yoğunlaşma &mdash; DFI'de +%69, TLY'de +%98, TMV'de +%104, PBE'de +%71'di. Ayrıca fon <strong>%101,7 hisseye yatırılmış olmasına rağmen BIST 100 ile neredeyse ilişkisiz</strong> (R<sup>2</sup> 0,01). Endeksle birlikte hareket etmeyen, tam yatırımlı bir hisse fonu, tanımı gereği çok dar bir isim kümesinde demektir.</p>
+  </div>
+
+  <h4 class="mt5">Son dört gün</h4>
+  <p>Bu bölüm yazılırken iki fon da düşüyordu. Aynı dört günde piyasanın geri kalanı ve raporun diğer vakaları neredeyse hiç oynamadı:</p>
+  <figure>
+    <div class="fig-title">Son 10 işlem günü &mdash; 100 TL ne oldu?</div>
+    <div class="fig-note">Aynı pencere, aynı günler. PHN ve PKZ dışındaki her şey yatay.</div>
+    <div class="chart-holder" id="c-son-gunler"></div>
+  </figure>
+  <div class="tbl-scroll mt3"><table id="t-son-gunler"></table></div>
+  <p class="fig-note mt2">PKZ'nin dört günü de <span class="num">−%9,3</span>, <span class="num">−%10,3</span>, <span class="num">−%10,2</span>, <span class="num">−%10,3</span>. Borsa İstanbul'da günlük fiyat marjı ±%10; kaldıraçsız bir fonun dört gün üst üste bu değere yapışması, portföyünün <strong>taban fiyattan işlem gören dar bir isim kümesinde</strong> yoğunlaştığı anlamına gelir. PHN'in son günü <span class="num">−%24,7</span> &mdash; kabaca marjın 2,4 katı, brüt kaldıracıyla aynı mertebe.</p>
+
+  <h4 class="mt4">Hangi hisseler? &mdash; taradık, cevap çıkmadı</h4>
+  <p>PKZ kaldıraçsız ve dört gün marja yapıştıysa, portföyündeki isimler de taban fiyattan işlem görmüş olmalı. Borsadaki <strong>710 payın tamamını</strong> aynı dört gün için taradık. Sonuç dar: yalnızca <strong>22 pay</strong> bu pencerede iki veya daha fazla gün marja indi; <strong>dördü</strong> dört günün dördünde de.</p>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th>Dört gün üst üste taban fiyat</th><th>1 Eyl</th><th>2 Eyl</th><th>3 Eyl</th><th>4 Eyl</th><th>4 gün</th></tr></thead>
+    <tbody>
+      <tr><td>ODINE</td><td class="neg">−9,99%</td><td class="neg">−9,99%</td><td class="neg">−9,99%</td><td class="neg">−9,95%</td><td class="neg"><strong>−34,3%</strong></td></tr>
+      <tr><td>PASEU</td><td class="neg">−9,99%</td><td class="neg">−10,00%</td><td class="neg">−9,98%</td><td class="neg">−9,95%</td><td class="neg"><strong>−34,3%</strong></td></tr>
+      <tr><td>GESAN</td><td class="neg">−9,99%</td><td class="neg">−9,95%</td><td class="neg">−9,98%</td><td class="neg">−9,97%</td><td class="neg"><strong>−34,3%</strong></td></tr>
+      <tr><td>HEDEF</td><td class="neg">−9,97%</td><td class="neg">−9,95%</td><td class="neg">−9,96%</td><td class="neg">−10,00%</td><td class="neg"><strong>−34,3%</strong></td></tr>
+      <tr class="hi"><td><strong>PKZ</strong> <span class="muted">fon</span></td><td class="neg">−9,28%</td><td class="neg">−10,31%</td><td class="neg">−10,21%</td><td class="neg">−10,28%</td><td class="neg"><strong>−34,4%</strong></td></tr>
+    </tbody>
+  </table></div>
+  <p class="fig-note mt2">Fonun dört günlük kaybı <span class="num">−%34,4</span>, bu kümenin <span class="num">−%34,3</span>'üyle neredeyse birebir. Aritmetik uyuyor.</p>
+
+  <div class="callout warn mt3">
+    <div class="callout-title">Ama hangi hisse olduğunu söyleyemiyoruz</div>
+    <p>Uyan aritmetik bir isim vermeye yetmiyor. Adayların 2026 boyunca günlük getirilerini fonlarınkiyle karşılaştırdık: <strong>hiçbiri fonu açıklamıyor.</strong> En yüksek ilişki PKZ&ndash;KTLEV'de r&nbsp;=&nbsp;0,31 (R<sup>2</sup>&nbsp;0,10), PHN&ndash;PEKGY'de r&nbsp;=&nbsp;0,32. Bir fonun portföyünün ağırlığını tek bir hisse taşısaydı bu sayıların 0,8&ndash;0,9 bandında olması gerekirdi.</p>
+    <p style="margin-bottom:0">Yani portföy ya yıl içinde döndü, ya rotasyonlu bir sepet, ya da taramamızın dışında kaldı &mdash; 710 payın <strong>107'sinde veri çekilemedi</strong>. Bu soruyu kesin olarak yalnızca fonun KAP portföy raporları kapatır. <strong>Açık soru olarak bırakıyoruz.</strong></p>
+  </div>
+
+  <div class="callout mt3">
+    <div class="callout-title">Test ettik: PHN kardeş fonları tutuyor olabilir mi?</div>
+    <p style="margin-bottom:0">PHN'in varlıklarının <strong>%104,6'sı "yatırım fonları katılma payları"</strong>; yani kendi net varlığından fazlasını başka fonlarda tutuyor. Akla gelen ilk soru, bunların kardeş fonlar olup olmadığı. Ölçtük: 2026'nın 167 işlem gününde <strong>PHN ile PKZ'nin günlük getirileri neredeyse ilişkisiz</strong> (r&nbsp;=&nbsp;+0,23, R<sup>2</sup>&nbsp;0,05); PBE ile PKZ arasında ilişki hiç yok (r&nbsp;=&nbsp;−0,04). Yani veri bu açıklamayı desteklemiyor &mdash; hangi fonların tutulduğu <strong>açık bir soru olarak kalıyor</strong>. Yıl boyunca birbirinden bağımsız hareket eden iki fonun aynı hafta birlikte çökmesi de ayrıca cevaplanmamış bir soru.</p>
+  </div>
+
+  <div class="callout warn mt3">
+    <div class="callout-title">Veri notu: PKZ'nin &minus;%84'lük günü bir kayıp değil</div>
+    <p style="margin-bottom:0">Ham seride PKZ 30.05.2025'te <span class="num neg">−%84,05</span> düşmüş görünüyor (1,005929 → 0,160421). Bu bir <strong>pay bölünmesi</strong>; fonun 2025 getirisi ham veride −%43,5 çıkarken bölünme ayıklandığında <span class="num pos">+%254</span>. Raporun tüm PKZ rakamları bölünme gününden başlatıldı. Tarayıcının "şüpheli" bayrağı tam bu tür sıçramaları işaretlemek için var; bu vakada bayrak yanmadı çünkü olay 12 aylık tarama penceresinin dışında kaldı.</p>
+  </div>
+
+  <h3 class="mt5">Dört fon, dört mekanizma</h3>
+  <div class="tbl-scroll"><table id="t-vaka-kiyas"></table></div>
+  <div class="callout info mt3">
+    <div class="callout-title">Bu dördü ne öğretiyor</div>
+    <p>Dördü de aynı kategoride, dördü de olağanüstü getirili, dördü de "serbest fon" ve dördü de tarayıcının aynı ölçütünü geçiyor. Ama arkalarındaki mekanizmalar birbiriyle alakasız:</p>
+    <ul>
+      <li><strong>DFI</strong> &mdash; getirisi tek bir hissenin (IEYHO) olağandışı fiyat davranışından geliyor. Fon doğru değerliyor; soru hissede.</li>
+      <li><strong>TLY</strong> &mdash; birkaç şirkette kontrol büyüklüğünde pay, üçü grup içi. Değerleme borsa fiyatından, ama o fiyatların serbest dolaşımı ince.</li>
+      <li><strong>TMV</strong> &mdash; 49 hisse ve türevlerle kısa vadeli algoritmik işlem. Tanı ölçütlerine takılmıyor; tek not grup holdingindeki payı.</li>
+      <li><strong>PBE</strong> &mdash; 5,4 kat kaldıraçlı VDMK taşıması. Pürüzsüzlük anomali değil, enstrümanın kendisi; risk başka yerde.</li>
+    </ul>
+    <p class="mt2" style="margin-bottom:0">Yani "yüksek getirili serbest fon" tek bir şey değil. Aynı rakamların &mdash; %240 getiri, 10 Sharpe &mdash; arkasında birbiriyle alakasız yapılar olabiliyor. <strong>Metrik, yapıyı göstermez; yapıyı görmek için portföye bakmak gerekir.</strong> Tarayıcının hüküm değil soru üretmesinin sebebi de bu.</p>
+  </div>
+</section>
+
+<section id="siralama">
+  <div class="sec-head"><span class="eyebrow">Aracın kendi üzerine dönmesi</span><h2>Sıralama neyi ölçüyor?</h2></div>
+  <p class="lead">PKZ'nin künyesinde "son 1 yıllık kategori derecesi: <strong>2 / 1.333</strong>" yazıyor. Tek başına okununca bu bir başarı belgesi. Aynı kurucunun diğer fonlarıyla birlikte okununca başka bir şey söylüyor &mdash; ve bu, tarayıcının gösterdiği <em>sıralama</em> sütununun nasıl okunması gerektiğine dair bir uyarı.</p>
+
+  <figure>
+    <div class="fig-title">Kurucu içi getiri yayılımı</div>
+    <div class="fig-note">En az 5 serbest fonu olan her kurucu için, fonların 1 yıllık getirilerinde %90'lık ile %10'luk dilim arasındaki fark. Pay bölünmesi olan fonlarda düzeltilmiş getiri kullanıldı.</div>
+    <div class="chart-holder" id="c-kurucu"></div>
+  </figure>
+  <div class="tbl-scroll mt3"><table id="t-kurucu"></table></div>
+  <p class="fig-note mt2">Sektörün ortancası <span class="num" id="s-ortanca"></span>. Büyük perakende kurucularının hemen hepsi %26&ndash;50 bandında toplanıyor: fonları birbirine benziyor, sonuçları da.</p>
+
+  <div class="callout warn mt3">
+    <div class="callout-title">Aynı çatı altında hem birinci hem sonuncu</div>
+    <p>Pusula'nın <strong>12 fonu</strong> aynı yılda <span class="num pos">+%2.990</span> ile <span class="num neg">−%89</span> arasına dağılmış; yayılımı <span class="num">%1.909</span>, sektör ortancasının <strong>kırk katından fazla</strong>. Pardus'un <strong>51 fonundan 5'i</strong> yılı ≤<span class="num neg">−%90</span> ile kapatmış; aynı evin bir başka fonu <span class="num pos">+%1.146</span>.</p>
+    <p style="margin-bottom:0">Listenin ikinci sırasında <strong>Tera</strong> var &mdash; bu raporun ilk iki vakasının (TLY, TMV) kurucusu. Altı serbest fonu <span class="num pos">+%690</span> ile <span class="num neg">−%78</span> arasına dağılmış.</p>
+    <p style="margin-bottom:0">Bir yıllık getiride evrenin ilk sıralarına bakınca &mdash; pay bölünmesi kaynaklı yapay sıçramalar ayıklandıktan sonra &mdash; ilk dokuz fonun <strong>yedisi</strong> yayılımı en yüksek üç kurucudan geliyor: Pusula (PKZ, PHN), Pardus (PKU, PGE, PYI, PDH), Atlas (DFI).</p>
+  </div>
+
+  <h3 class="mt5">Pardus: 51 fonun tamamı</h3>
+  <p>Yayılım listesinin ikinci sırasındaki eve yakından baktık. Pardus Portföy'ün TEFAS'ta <strong>65 fonu</strong> var; <strong>51'i serbest fon</strong> ve hepsi bugün hâlâ işlem görüyor &mdash; yani aşağıdaki tabloda kapanmış fonların gizlediği bir kayıp yok, dağılımın tamamı görünür durumda.</p>
+  <div class="figs" id="v-ev-figs"></div>
+  <figure class="mt3">
+    <div class="fig-title">51 serbest fon &mdash; kuruluşundan bugüne</div>
+    <div class="fig-note">Her fon kendi ömrü boyunca. Pay bölünmeleri düzeltilmiş (aşağıya bakınız).</div>
+    <div class="chart-holder" id="c-ev-dagilim"></div>
+  </figure>
+
+  <div class="callout warn mt3">
+    <div class="callout-title">Fonların %63'ü para piyasası fonunu geçememiş</div>
+    <p style="margin-bottom:0">Her fonu <em>kendi</em> ömrünün penceresinde nakitle karşılaştırdık. 51 fonun yalnızca <strong id="s-nakit">19'u</strong> para piyasası fonunu geçmiş. Medyan fonun yıllık getirisi <span class="num" id="s-medyan-cagr"></span>; aynı pencerelerde para piyasası fonunun medyanı <span class="num" id="s-nakit-cagr"></span>. Kategori sıralamasının tepesinde iki fonu bulunan bir evin fonlarının çoğunluğu, risksiz getirinin altında kalmış.</p>
+  </div>
+
+  <h4 class="mt5">Doğal deney: aynı hafta açılan fonlar</h4>
+  <p>Fonlar farklı tarihlerde kurulduğu için getirileri doğrudan karşılaştırılamaz &mdash; ama aynı hafta açılanlar karşılaştırılabilir. Pardus'ta böyle <strong>on kohort</strong> var. En kalabalığı 2025 Temmuz'unda 13 gün içinde açılan altı fon:</p>
+  <div class="tbl-scroll"><table id="t-ev-kohort"></table></div>
+  <p class="fig-note mt2">Aynı ev, aynı ekip, aynı iki hafta, aynı piyasa. Sonuç <span class="num pos">+%2.623</span> ile <span class="num neg">−%99</span> arasında. Dört "yön" fonu (Kuzey, Güney, Doğu, Batı) aynı anda açılmış ve dördü de kazanmış; kuralla tanımlı tek fon (Sanayi Sektörü Dışı) neredeyse tamamen silinmiş.</p>
+
+  <div class="callout mt3">
+    <div class="callout-title">Kuralla tanımlı mandalar toplu hâlde kaybetmiş</div>
+    <p style="margin-bottom:0">Pardus'un evreni kuralla belirlenen beş fonu var &mdash; "BIST 30 dışı", "BIST 50 dışı", "BIST 100 dışı", "Sanayi sektörü dışı", "Bankacılık sektörü dışı". Bir yıllık getirileri: <span class="num neg">−%100</span>, <span class="num neg">−%99</span>, <span class="num neg">−%72</span>, <span class="num neg">−%22</span>, <span class="num pos">+%22</span>. Yöneticinin isim seçme serbestisinin en dar olduğu grup, en kötü sonucu vermiş. Bu gruplar tanımı gereği küçük ve az işlem gören şirketlerde yoğunlaşıyor; yine de bu fonlar pasif endeks fonu değil, kaldıraç ve türev kullanabilen serbest fonlar.</p>
+  </div>
+
+  <h4 class="mt5">Ağırlıklandırma yanılsaması</h4>
+  <p>Aynı 51 fonun ortalama getirisi, hangi ağırlıkla baktığınıza göre işaret değiştiriyor:</p>
+  <div class="tbl-scroll"><table id="t-ev-agirlik"></table></div>
+  <p class="fig-note mt2">Fark hile değil, mekanik: <strong>kaybeden fonlar küçüldüğü için bugünkü ağırlıkta neredeyse hiç yer kaplamıyor.</strong> Bugünkü büyüklüğe göre bakan biri <span class="num pos">+%724</span> görüyor; paranın fona <em>girdiği andaki</em> büyüklüğe göre bakan biri eksi. İkinci rakam kaba bir tahmin (fona giriş-çıkış olmadığını varsayıyor) ve bilinen iki yanlılığın ikisi de onu <strong>iyimser</strong> tarafa itiyor: kazanan fonların bugünkü büyüklüğünün önemli kısmı sonradan gelen para, <span class="num neg">−%100</span>'e giden iki fon ise hesabın tamamen dışında kalıyor.</p>
+
+  <div class="callout warn mt3">
+    <div class="callout-title">Veri notu: bölünmeler kayıpları küçük gösteriyor</div>
+    <p style="margin-bottom:0">51 fonun <strong id="s-duzeltilen">7'sinde</strong> günlük <span class="num">+%100</span>'ün üzerinde sıçrama var &mdash; bunlar getiri değil, pay bölünmesi veya yeniden değerleme. Ham seriyle hesaplanan getiriler bu yüzden <em>yanıltıcı biçimde iyi</em>: DHI ham veride <span class="num neg">−%58</span> görünüyor, bölünme günü (bir günde <span class="num">×9,5</span>) ayıklandığında <span class="num neg">−%99</span>. Aynı şekilde BHH −%81 → −%93, PDS −%69 → −%89, OHI −%90 → −%96. Bu raporun tüm Pardus rakamları düzeltilmiş serilerden.</p>
+  </div>
+
+  <div class="callout info mt3">
+    <div class="callout-title">Bu ne demek, ne demek değil</div>
+    <p>Yüksek yayılımın en az iki masum okuması var. Birincisi: bu fonların çoğu <strong>nitelikli yatırımcıya özel araçlar</strong> &mdash; PKZ'nin 16, PHN'in 17, PBE'nin 11 yatırımcısı var. Her müşteriye ayrı bir kap açılıyorsa, kapların sonuçlarının birbirinden çok farklı olması beklenir; bu bir portföy yönetimi tercihi, kusur değil. İkincisi: yoğun ve kaldıraçlı stratejiler zaten doğaları gereği geniş dağılım üretir.</p>
+    <p>Ama her iki okumada da <strong>aynı sonuç çıkıyor</strong>: 1.333 fonluk bir listede sıra numarası, bu popülasyonda beceriyi ölçmez. Çok sayıda yoğun ve birbirinden bağımsız bahis yapan bir ev, hiçbir beceri olmasa bile listenin tepesinde de dibinde de fon bulundurur. Tepedeki fonu tek başına görmek, listenin geri kalanını görmemektir.</p>
+    <p style="margin-bottom:0">Bu bir usulsüzlük iddiası değil. Fonların hepsi kayıtlı, dağılımları kamuya açık, sonuçları TEFAS'ta yayımlanıyor. Söylenen tek şey şu: <strong>sıra numarası bir sonuç değil, bir soru.</strong> Bu yüzden tarayıcı sıralama gösteriyor ama hüküm vermiyor.</p>
+  </div>
+</section>
+
+
+<section id="aylik">
+  <div class="sec-head"><span class="eyebrow">Ay ay</span><h2>Aylık getiri haritası</h2></div>
+  <p>Renk yönü gösterir, sayı büyüklüğü: <strong>kâr yeşil, zarar kırmızı</strong>. Bu çift renk körlüğünde zayıflayabildiği için her hücrede işaretli sayı yazılı &mdash; renk hiçbir yerde tek başına bilgi taşımıyor.</p>
+  <figure>
+    <div class="fig-title">TLY &mdash; aylık getiri</div>
+    <div class="heat" id="h-tly"></div>
+  </figure>
+  <figure class="mt3">
+    <div class="fig-title">DFI &mdash; aylık getiri</div>
+    <div class="heat" id="h-dfi"></div>
+    <div class="heat-legend">
+      <span>−%60</span><span class="heat-ramp" id="ramp"></span><span>+%150</span>
+      <span>renk doygunluğu %100'de sınırlandırıldı; kesin değer her hücrede yazılı</span>
+    </div>
+  </figure>
+</section>
+
+<section id="karisim">
+  <div class="sec-head"><span class="eyebrow">Birlikte</span><h2>İkisini karıştırmak ne yapar?</h2></div>
+  <p>Korelasyon 0,12 olduğuna göre çeşitlendirme faydası beklenir. Beklenti kısmen doğru: karışım oynaklığı düşürüyor (%35,8'e kadar), ama <strong>maksimum düşüşü düşürmüyor</strong> &mdash; DFI'nin 2022–23 çöküşü portföye orantısız geçiyor. Günlük yeniden dengeleme varsayımıyla, ortak dönem:</p>
+  <div class="tbl-scroll"><table id="t-mix"></table></div>
+  <p class="fig-note mt2">Geriye dönük ağırlık optimizasyonu her zaman geçmişe aşırı uyar; bu tablo bir tahsis önerisi değil, iki serinin nasıl etkileştiğini gösteren bir duyarlılık analizidir.</p>
+</section>
+
+<section id="okuma">
+  <div class="sec-head"><span class="eyebrow">Değerlendirme</span><h2>Sayılar ne diyor, ne demiyor</h2></div>
+  <div class="verdict">
+    <div class="vcard tly">
+      <div class="vt"><span class="tick tly">TLY</span><span>Tera Portföy<br>Birinci Serbest Fon</span></div>
+      <p>Veri olağanüstü tutarlı bir seri gösteriyor: 1.032 işlem gününe yayılmış, en iyi 20 gün çıkarılınca bile ayakta kalan bir bileşiklenme, hiç negatif olmayan kayan yıllık pencereler, negatif düşüş yakalama.</p>
+      <ul>
+        <li>Sharpe <span class="num">3,92</span> &mdash; kurumsal fonlarda 1,0 üstü iyi kabul edilir.</li>
+        <li>En uzun su altı süresi <span class="num">4 ay</span>.</li>
+        <li>Portföyün %82'si hisse, buna rağmen BIST ile korelasyon yalnızca 0,22.</li>
+        <li>Ama asimetri yeni: düşüş yakalaması 2023'te <span class="num">+%26</span>, 2025'te <span class="num">−%131</span>.</li>
+      </ul>
+      <p style="margin-bottom:0"><strong>Sorulacak soru:</strong> <a href="#kap">KAP doğrulaması</a> bu sorunun cevabını büyük ölçüde veriyor &mdash; fon, birkaç şirkette kontrol büyüklüğünde pay taşıyor (Peker GYO'nun %30,34'ü) ve en büyük iki pozisyonundan biri kendi grubunun aracı kurumu. Asıl soru artık kapasite değil: bu yoğunlaşma ve ilişkili taraf yapısı, ölçtüğümüz risk metriklerinin neyi ölçtüğünü değiştiriyor mu?</p>
+    </div>
+    <div class="vcard dfi">
+      <div class="vt"><span class="tick dfi">DFI</span><span>Atlas Portföy<br>Serbest Fon</span></div>
+      <p>Aynı dört yılda toplam getirisi TLY'nin binde biri kadar, ama son 12 ayda ondan daha hızlı. İki farklı fon gibi davranmış: 2022–23'te çöken bir fon, 2025–26'da patlayan bir fon.</p>
+      <ul>
+        <li>Maksimum düşüş <span class="num">−%88,5</span>, toparlanma <span class="num">38 ay</span>.</li>
+        <li>Sürenin <span class="num">%79</span>'unu zirvenin altında geçirmiş.</li>
+        <li>En iyi 20 gün çıkarıldığında dört yıllık getiri <span class="num neg">−%18</span>.</li>
+      </ul>
+      <p style="margin-bottom:0"><strong>Sorulacak soru:</strong> <a href="#kap">KAP doğrulaması</a> fonun hisse tarafının pratikte <strong>tek bir isim</strong> olduğunu gösterdi: Işıklar Enerji ve Yapı Holding, fonun %55'i. Fonun 2026 getirisi de oynaklığı da bu tek pozisyonla açıklanıyor. O hâlde soru fon hakkında değil: bu, bir portföy fonu mu, yoksa tek bir hisseye kaldıraçsız bir bahis mi?</p>
+    </div>
+  </div>
+
+  <div class="callout info mt4">
+    <div class="callout-title">Bu analizin sınırları</div>
+    <ul style="margin-bottom:0">
+      <li><strong>Fiyat serisi tek girdi.</strong> Portföyün içindeki tekil hisseleri, kaldıraç seviyesinin zaman içindeki seyrini veya türev pozisyonlarını görmüyoruz. Varlık dağılımı yalnızca son duruma ait.</li>
+      <li><strong>Değerleme riski.</strong> Serbest fonlar yoğunlaşmış ve zaman zaman düşük likiditeli pozisyon taşıyabilir. Böyle pozisyonların fiyatlanması gerçekleşmiş oynaklığı olduğundan düşük gösterebilir &mdash; yani gerçek risk, hesapladığımız %48'in üzerinde olabilir.</li>
+      <li><strong>Ücretler serinin içinde.</strong> TEFAS fiyatları yönetim ve varsa performans ücreti düşülmüş nettir; ayrıca bir kesinti yapılmadı. Buna karşılık serbest fonların giriş/çıkış valörü ve asgari yatırım koşulları burada modellenmedi.</li>
+      <li><strong>Enflasyon düzeltmesi tek noktadan.</strong> Reel getiriler yalnızca son 12 ay için, TÜİK'in Ağustos 2026 yıllık TÜFE'siyle (%31,51) hesaplandı. Çok yıllı reel getiri için zincirlenmiş TÜFE endeksi gerekir; onun yerine para piyasası fonu nominal eşik olarak kullanıldı.</li>
+      <li><strong>Geçmiş performans gelecek için bağlayıcı değildir</strong> ve bu belge bir yatırım tavsiyesi değildir; kişiye özel tahsis önerisi içermez.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="tape"></div>
+  <p><strong>Yöntem.</strong> Tüm metrikler TEFAS'ın <span class="num">fonFiyatBilgiGetir</span> uç noktasından çekilen günlük birim pay fiyatlarından hesaplandı; 5 fon, 2021-09-06 – 2026-09-04 aralığı, sıfır fiyatlı gözlemler ayıklandı. Yıllıklandırma 252 işlem günü üzerinden. Oynaklık günlük basit getirilerin standart sapmasının √252 katı. Sharpe/Sortino, para piyasası fonuna göre aşırı getiri üzerinden. Maksimum düşüş, günlük kapanışlar üzerinden koşan zirveye göre. Yakalama oranları, endeksin pozitif/negatif olduğu günlerdeki ortalama fon getirisinin ortalama endeks getirisine bölümü; yıllık kırılım, her takvim yılının kendi işlem günleri üzerinden hesaplandı; 2022 ve 2026 kısmi yıllardır. Grafiklerdeki çizgi serileri haftalık kapanışa seyreltildi; tablolardaki tüm istatistikler tam günlük seriden.</p>
+  <p><strong>Kıyas fonları.</strong> BIST 100 için <span class="num">DZE</span> (Deniz Portföy BIST 100 Endeksi H.S. Fonu), altın için <span class="num">AFO</span> (Ak Portföy Altın Fonu), TL nakit eşiği için <span class="num">ALE</span> (Ak Portföy Para Piyasası TL Fonu). Enflasyon: TÜİK TÜFE, Ağustos 2026, yıllık %31,51.</p>
+  <p><strong>Şirket ve bildirim verisi.</strong> BIST günlük kapanışları İş Yatırım'ın açık veri ucundan; ortaklık yapıları ve piyasa değerleri İş Yatırım şirket kartlarından (ikincil kaynak, MKK/KAP bildirimlerine dayanır). Fon portföyleri: KAP'taki denetlenmiş yıllık raporlar ve kurucuların yayımladığı aylık portföy dağılım raporları. IEYHO bildirim kaydı: KAP şirket bildirimleri, Kasım 2025 &ndash; Ocak 2026, başlık düzeyinde.</p>
+  <p><strong>Renk.</strong> Arayüz mavi bir nötr sistem üzerine kurulu; <strong>kâr yeşil, zarar kırmızı</strong> olarak anlamlandırıldı. Bu iki rengin renk körlüğündeki ayrımı ölçüldü ve eşiği geçen çift seçildi: OKLab ΔE <span class="num">8,6</span> protanopi / <span class="num">13,0</span> döteranopi (açık tema), <span class="num">24,9</span> / <span class="num">9,2</span> (koyu tema); eşik 8,0. Yine de renk hiçbir yerde tek başına bilgi taşımıyor: her değer işaretiyle (+/−) yazılı.</p>
+  <p>Grafik seri renkleri kâr/zarar anlamıyla çakışmasın diye yeşil ve kırmızıdan kaçınıldı (mor, turuncu, camgöbeği, kehribar) ve aynı yöntemle doğrulandı: en kötü komşu çift ΔE <span class="num">18,1</span> açık / <span class="num">19,3</span> koyu. Açık temada kehribar yüzeye karşı 3:1 kontrastın hemen altında (2,95) kaldığı için her seri doğrudan etiketlendi ve tüm grafiklerin sayısal karşılığı tabloda verildi.</p>
+</footer>
+
+</div>
+
+<script>
+/* ---------- bölüm gezinmesi: 12 bölümlük belgede konum ve atlama ---------- */
+(function(){
+  const bar=document.getElementById('topbar'), btn=document.getElementById('navBtn'),
+        cur=document.getElementById('navCur'), list=document.getElementById('navList'),
+        prog=document.getElementById('ilerleme');
+  const bolumler=[...document.querySelectorAll('main section[id]')].map(sec=>({
+    id:sec.id, ad:(sec.querySelector('h2')||{}).textContent||sec.id, el:sec}));
+  if(!bolumler.length) return;
+  list.innerHTML=bolumler.map((b,i)=>
+    '<a href="#'+b.id+'"><i>'+String(i+1).padStart(2,'0')+'</i><span>'+b.ad+'</span></a>').join('');
+  const baglar=[...list.querySelectorAll('a')];
+  const kapat=()=>{list.hidden=true;btn.setAttribute('aria-expanded','false');};
+  btn.addEventListener('click',()=>{
+    const acik=btn.getAttribute('aria-expanded')==='true';
+    list.hidden=acik; btn.setAttribute('aria-expanded',String(!acik));
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')kapat();});
+  document.addEventListener('click',e=>{if(!bar.contains(e.target))kapat();});
+  baglar.forEach(a=>a.addEventListener('click',kapat));
+  let tik=false;
+  function guncelle(){
+    tik=false;
+    const y=scrollY, h=document.documentElement.scrollHeight-innerHeight;
+    prog.style.width=(h>0?Math.min(100,y/h*100):0)+'%';
+    bar.classList.toggle('show', y>420);
+    let aktif=bolumler[0];
+    for(const b of bolumler){ if(b.el.getBoundingClientRect().top<=140) aktif=b; }
+    if(cur.textContent!==aktif.ad){
+      cur.textContent=aktif.ad;
+      baglar.forEach(a=>a.setAttribute('aria-current',
+        String(a.getAttribute('href')==='#'+aktif.id)));
+    }
+  }
+  addEventListener('scroll',()=>{if(!tik){tik=true;requestAnimationFrame(guncelle);}},{passive:true});
+  addEventListener('resize',guncelle); guncelle();
+})();
+
+/* ---------- tablolar kaydırılabilir mi: görünür ipucu ---------- */
+function tabloIpucu(){
+  document.querySelectorAll('.tbl-scroll').forEach(k=>{
+    const tasiyor=k.scrollWidth>k.clientWidth+4;
+    k.classList.toggle('kaydir', tasiyor && k.scrollLeft < k.scrollWidth-k.clientWidth-4);
+    let ip=k.nextElementSibling;
+    if(!ip||!ip.classList.contains('tbl-ipucu')){
+      ip=document.createElement('div'); ip.className='tbl-ipucu';
+      ip.textContent='→ tabloyu yana kaydırın'; k.after(ip);
+    }
+    ip.classList.toggle('gor', tasiyor);
+    if(!k.dataset.baglandi){ k.dataset.baglandi='1';
+      k.addEventListener('scroll',()=>tabloIpucu(),{passive:true}); }
+  });
+}
+addEventListener('load',tabloIpucu); addEventListener('resize',tabloIpucu);
+</script>
+
+<script>
+const D = /*__DATA__*/;
+
+const nf=(v,d=1)=>new Intl.NumberFormat('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d}).format(v);
+const pct=(v,d=1)=>(v>=0?'':'−')+nf(Math.abs(v*100),d)+'%';
+const pctS=(v,d=1)=>(v>=0?'+':'−')+nf(Math.abs(v*100),d)+'%';
+const big=v=>new Intl.NumberFormat('tr-TR',{maximumFractionDigits:0}).format(v);
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const SER={TLY:'--s-tly',DFI:'--s-dfi',DZE:'--s-dze',AFO:'--s-afo',ALE:'--s-ale'};
+const col=k=>cssv(SER[k]);
+const trDate=s=>{const[y,m,d]=s.split('-');return d+'.'+m+'.'+y;};
+const monAbbr=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e;};
+const SVGNS='http://www.w3.org/2000/svg';
+const svg=(tag,at)=>{const e=document.createElementNS(SVGNS,tag);for(const k in at)e.setAttribute(k,at[k]);return e;};
+
+document.getElementById('asof').textContent=trDate(D.meta.bitis);
+document.getElementById('commonperiod').textContent=trDate(D.meta.ortak_baslangic)+' – '+trDate(D.meta.bitis);
+
+/* ---------- künye ---------- */
+const ALLOC_TINT=['--s-tly','--s-dze','--s-afo','--s-dfi','--accent','--ink-3','--ink-2','--neg'];
+function fundCard(kod){
+  const k=D.kunye[kod];
+  const c=el('div','fund '+kod.toLowerCase());
+  c.appendChild(el('div','fund-top','<span class="tick '+kod.toLowerCase()+'">'+kod+'</span>'+
+    '<span class="rank">kategori sırası<b>'+k.derece+' / '+big(k.kat_adet)+'</b>son 1 yıl</span>'));
+  c.appendChild(el('h3',null,k.unvan));
+  c.appendChild(el('div','kur',k.kurucu+' &middot; Serbest Şemsiye Fon &middot; risk 7/7'));
+  const dl=el('dl','kv');
+  [['Fon büyüklüğü','₺'+nf(k.buyukluk/1e9,1)+' mlr'],
+   ['Yatırımcı sayısı',big(k.yatirimci)],
+   ['Pazar payı',nf(k.pazar_payi,2)+'%'],
+   ['Son birim pay fiyatı','₺'+nf(k.sonfiyat,k.sonfiyat>100?0:4)],
+   ['TEFAS\'taki ilk gün',trDate(k.baslangic)]
+  ].forEach(([a,b])=>{dl.appendChild(el('dt',null,a));dl.appendChild(el('dd',null,b));});
+  c.appendChild(dl);
+  const al=el('div','alloc');
+  al.appendChild(el('div','kicker','Varlık dağılımı'));
+  const bar=el('div','alloc-bar');
+  const pos=k.dagilim.filter(d=>d[1]>0),tot=pos.reduce((s,d)=>s+d[1],0);
+  pos.forEach((d,i)=>{const s=el('div','alloc-seg');s.style.width=(d[1]/tot*100)+'%';
+    s.style.background=cssv(ALLOC_TINT[i%8]);bar.appendChild(s);});
+  al.appendChild(bar);
+  const list=el('div','alloc-list');
+  k.dagilim.forEach((d,i)=>{
+    const r=el('div','alloc-row');
+    const sw=el('span','swatch');
+    if(d[1]>0) sw.style.background=cssv(ALLOC_TINT[i%8]);
+    else {sw.style.background='transparent';sw.style.border='2px dashed '+cssv('--neg');}
+    r.appendChild(sw);r.appendChild(el('span',null,d[0]));r.appendChild(el('span',null,nf(d[1],2)+'%'));
+    list.appendChild(r);
+  });
+  al.appendChild(list);c.appendChild(al);
+  return c;
+}
+
+/* ---------- responsive çizgi grafik ----------
+   viewBox genişliği = kabın gerçek piksel genişliği, böylece SVG içindeki
+   12px yazı ekranda da 12px görünür (sabit 960'lık viewBox dar panelde
+   yazıyı 4-5 piksele düşürüyordu).                                        */
+function lineChart(hostId,opt){
+  const holder=document.getElementById(hostId);
+  const W=Math.max(300,Math.round(holder.getBoundingClientRect().width||640));
+  const narrow=W<560;
+  const H=opt.hRatio?Math.round(Math.min(Math.max(W*opt.hRatio,240),opt.hMax||480)):(opt.h||380);
+  const M={t:16,r:opt.labelRight?(narrow?74:104):16,b:34,l:opt.l||(narrow?52:62)};
+  const s=svg('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':opt.aria||''});
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+  const ymin=opt.ymin, ymax=opt.ymax;
+  const dates=opt.series[0].data.map(p=>p[0]);
+  const t0=+new Date(dates[0]), t1=+new Date(dates[dates.length-1]);
+  const X=d=>M.l+(+new Date(d)-t0)/(t1-t0)*iw;
+  const Y=opt.log
+    ?v=>M.t+ih-(Math.log10(Math.max(v,ymin))-Math.log10(ymin))/(Math.log10(ymax)-Math.log10(ymin))*ih
+    :v=>M.t+ih-(v-ymin)/(ymax-ymin)*ih;
+  const ink3=cssv('--ink-3'),ink2=cssv('--ink-2'),soft=cssv('--rule-soft'),hard=cssv('--rule');
+  const FS=narrow?12:13;
+
+  (opt.ticks||[]).forEach(t=>{
+    const y=Y(t.v);
+    s.appendChild(svg('line',{x1:M.l,x2:W-M.r,y1:y,y2:y,stroke:t.strong?hard:soft,
+      'stroke-width':t.strong?1.5:1,'stroke-dasharray':t.dash?'5 4':'none'}));
+    const tx=svg('text',{x:M.l-9,y:y+FS*0.35,'text-anchor':'end','font-size':FS,
+      fill:t.dash?ink2:ink3,'font-family':'IBM Plex Mono, monospace'});
+    tx.textContent=t.l; s.appendChild(tx);
+  });
+  (opt.xticks||[]).forEach(d=>{
+    const x=X(d);
+    s.appendChild(svg('line',{x1:x,x2:x,y1:M.t,y2:M.t+ih,stroke:soft,'stroke-width':1}));
+    const tx=svg('text',{x:x,y:H-11,'text-anchor':'middle','font-size':FS,fill:ink3,
+      'font-family':'IBM Plex Mono, monospace'});
+    tx.textContent=opt.xfmt?opt.xfmt(d):d.split('-')[0]; s.appendChild(tx);
+  });
+
+  const ends=[];
+  opt.series.forEach(se=>{
+    const c=se.color||col(se.key);
+    if(se.area){
+      let d='M'+X(se.data[0][0])+' '+Y(opt.areaBase!==undefined?opt.areaBase:0);
+      se.data.forEach(p=>{d+='L'+X(p[0])+' '+Y(p[1]);});
+      d+='L'+X(se.data[se.data.length-1][0])+' '+Y(opt.areaBase!==undefined?opt.areaBase:0)+'Z';
+      s.appendChild(svg('path',{d:d,fill:c,'fill-opacity':.16,stroke:'none'}));
+    }
+    let d='';
+    se.data.forEach((p,i)=>{d+=(i?'L':'M')+X(p[0]).toFixed(2)+' '+Y(p[1]).toFixed(2);});
+    s.appendChild(svg('path',{d:d,fill:'none',stroke:c,'stroke-width':se.w||2.4,
+      'stroke-linejoin':'round','stroke-linecap':'round','stroke-dasharray':se.dash||'none'}));
+    if(opt.labelRight){
+      const last=se.data[se.data.length-1];
+      ends.push({y:Y(last[1]),y0:Y(last[1]),x:X(last[0]),c:c,t:se.label||se.key});
+    }
+  });
+  if(ends.length){
+    const GAP=FS+5;
+    ends.sort((a,b)=>a.y-b.y);
+    for(let i=1;i<ends.length;i++)
+      if(ends[i].y-ends[i-1].y<GAP) ends[i].y=ends[i-1].y+GAP;
+    const over=ends[ends.length-1].y-(M.t+ih);
+    if(over>0) ends.forEach(l=>l.y-=over);
+    ends.forEach(l=>{
+      s.appendChild(svg('path',{d:'M'+(l.x+2)+' '+l.y0+'L'+(l.x+7)+' '+l.y0+'L'+(l.x+10)+' '+l.y,
+        fill:'none',stroke:l.c,'stroke-width':1.5,opacity:.65}));
+      const tx=svg('text',{x:l.x+14,y:l.y+FS*0.35,'font-size':FS,fill:l.c,'font-weight':700,
+        'font-family':'Archivo, sans-serif'});
+      tx.textContent=l.t; s.appendChild(tx);
+    });
+  }
+
+  const hg=svg('g',{opacity:0});
+  const vline=svg('line',{y1:M.t,y2:M.t+ih,stroke:ink3,'stroke-width':1,'stroke-dasharray':'4 3'});
+  hg.appendChild(vline);
+  const dots=opt.series.map(se=>{const c2=svg('circle',{r:5,fill:se.color||col(se.key),
+    stroke:cssv('--surface'),'stroke-width':2.5});hg.appendChild(c2);return c2;});
+  s.appendChild(hg);
+  holder.innerHTML=''; holder.appendChild(s);
+  const tip=el('div','tip'); holder.appendChild(tip);
+  function move(ev){
+    const r=s.getBoundingClientRect(); const px=(ev.clientX-r.left)/r.width*W;
+    if(px<M.l-10||px>W-M.r+10){hg.setAttribute('opacity',0);tip.style.opacity=0;return;}
+    let bi=0,bd=Infinity;
+    dates.forEach((d,i)=>{const dd=Math.abs(X(d)-px);if(dd<bd){bd=dd;bi=i;}});
+    const d=dates[bi];
+    hg.setAttribute('opacity',1);vline.setAttribute('x1',X(d));vline.setAttribute('x2',X(d));
+    let rows='';
+    opt.series.forEach((se,k)=>{
+      const p=se.data[bi];
+      if(!p){dots[k].setAttribute('opacity',0);return;}
+      dots[k].setAttribute('opacity',1);
+      dots[k].setAttribute('cx',X(p[0]));dots[k].setAttribute('cy',Y(p[1]));
+      rows+='<div class="trow"><i style="background:'+(se.color||col(se.key))+'"></i><span>'+
+        (se.label||se.key)+'</span><b>'+opt.fmt(p[1])+'</b></div>';
+    });
+    tip.innerHTML='<div class="tdate">'+trDate(d)+'</div>'+rows;
+    tip.style.opacity=1;
+    const rx=X(d)/W*r.width;
+    tip.style.left=Math.min(Math.max(rx+16,0),Math.max(0,r.width-tip.offsetWidth-4))+'px';
+    tip.style.top='6px';
+  }
+  s.addEventListener('pointermove',move);
+  s.addEventListener('pointerleave',()=>{hg.setAttribute('opacity',0);tip.style.opacity=0;});
+}
+function legend(hostId,items){
+  const h0=document.getElementById(hostId);
+  if(h0.nextElementSibling&&h0.nextElementSibling.classList.contains('legend'))
+    h0.nextElementSibling.remove();
+  const l=el('div','legend');
+  items.forEach(it=>{
+    const i=el('div','item');
+    const k=el('span','key'+(it.dash?' dash':''));
+    if(!it.dash)k.style.background=it.color;
+    i.appendChild(k);i.appendChild(el('span',null,it.label));
+    l.appendChild(i);
+  });
+  h0.after(l);
+}
+
+/* ---------- yatay çubuk ---------- */
+function barChart(hostId,rows,opt){
+  const holder=document.getElementById(hostId);
+  const W=Math.max(300,Math.round(holder.getBoundingClientRect().width||640));
+  const narrow=W<560;
+  const FS=narrow?12:13.5;
+  const labelW=Math.min(narrow?128:230,W*0.42);
+  const M={t:12,r:narrow?54:76,b:26,l:labelW+14};
+  const bh=narrow?24:30, rowH=bh+18;
+  const H=M.t+M.b+rows.length*rowH;
+  const s=svg('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':opt.aria||''});
+  const iw=W-M.l-M.r;
+  const lo=Math.min(opt.lo,...rows.map(r=>r.v)), hi=Math.max(opt.hi,...rows.map(r=>r.v))*1.02;
+  const X=v=>M.l+(v-lo)/(hi-lo)*iw;
+  (opt.grid||[]).forEach(v=>{
+    if(v<lo||v>hi)return;
+    s.appendChild(svg('line',{x1:X(v),x2:X(v),y1:M.t,y2:H-M.b,
+      stroke:v===0?cssv('--rule'):cssv('--rule-soft'),'stroke-width':v===0?1.5:1}));
+    if(opt.gridLabel){
+      const t=svg('text',{x:X(v),y:H-8,'text-anchor':'middle','font-size':FS-1.5,fill:cssv('--ink-3'),
+        'font-family':'IBM Plex Mono, monospace'});
+      t.textContent=opt.gridLabel(v); s.appendChild(t);
+    }
+  });
+  rows.forEach((r,i)=>{
+    const y=M.t+i*rowH+(rowH-bh)/2;
+    const neg=r.v<0, x0=neg?X(r.v):X(0), w=Math.abs(X(r.v)-X(0));
+    s.appendChild(svg('rect',{x:x0,y:y,width:Math.max(w,3),height:bh,rx:5,ry:5,
+      fill:r.color,'fill-opacity':r.faded?.45:1}));
+    const lb=svg('text',{x:M.l-14,y:y+bh/2+FS*0.35,'text-anchor':'end','font-size':FS,
+      fill:cssv('--ink-2'),'font-family':'Archivo, sans-serif'});
+    lb.textContent=r.label; s.appendChild(lb);
+    const vl=svg('text',{x:neg?x0-9:x0+w+9,y:y+bh/2+FS*0.35,'text-anchor':neg?'end':'start',
+      'font-size':FS,fill:cssv('--ink'),'font-weight':700,'font-family':'IBM Plex Mono, monospace'});
+    vl.textContent=r.etiket||opt.fmt(r.v); s.appendChild(vl);
+  });
+  holder.innerHTML=''; holder.appendChild(s);
+}
+
+/* ---------- gruplu dikey çubuk (yıl bazında) ---------- */
+function groupedBars(hostId,yillar,seriler,opt){
+  const holder=document.getElementById(hostId);
+  const W=Math.max(300,Math.round(holder.getBoundingClientRect().width||640));
+  const narrow=W<560;
+  const FS=narrow?12:13;
+  const H=Math.round(Math.min(Math.max(W*0.45,250),380));
+  const M={t:18,r:14,b:46,l:narrow?52:62};
+  const s=svg('svg',{viewBox:'0 0 '+W+' '+H,role:'img','aria-label':opt.aria||''});
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+  const vals=seriler.flatMap(se=>se.data);
+  const lo=Math.min(opt.lo,...vals), hi=Math.max(opt.hi,...vals);
+  const Y=v=>M.t+ih-(v-lo)/(hi-lo)*ih;
+  const bandW=iw/yillar.length;
+  const gap=narrow?3:5;
+  // bant etiketi bandin icine sigmiyorsa yaziyi kucult (tabani 8.5px)
+  const enUzun=Math.max(...yillar.map(y=>String(y).length));
+  const tahminW=enUzun*FS*0.56;
+  const labFS=tahminW>bandW-4 ? Math.max(8.5, FS*(bandW-4)/tahminW) : FS;
+  const bw=Math.min((bandW-gap*(seriler.length+1))/seriler.length, narrow?24:38);
+  (opt.ticks||[]).forEach(v=>{
+    const y=Y(v);
+    s.appendChild(svg('line',{x1:M.l,x2:W-M.r,y1:y,y2:y,
+      stroke:v===0?cssv('--rule'):cssv('--rule-soft'),'stroke-width':v===0?1.5:1}));
+    const t=svg('text',{x:M.l-9,y:y+FS*0.35,'text-anchor':'end','font-size':FS,
+      fill:cssv('--ink-3'),'font-family':'IBM Plex Mono, monospace'});
+    t.textContent=(opt.tickFmt||(x=>pct(x,0)))(v); s.appendChild(t);
+  });
+  yillar.forEach((yil,i)=>{
+    const x0=M.l+i*bandW;
+    const lab=svg('text',{x:x0+bandW/2,y:H-16,'text-anchor':'middle','font-size':labFS,
+      fill:cssv('--ink-2'),'font-weight':600,'font-family':'IBM Plex Mono, monospace'});
+    lab.textContent=yil; s.appendChild(lab);
+    if(opt.altEtiket&&opt.altEtiket[i]){
+      const k=svg('text',{x:x0+bandW/2,y:H-3,'text-anchor':'middle','font-size':Math.max(8,labFS-2.5),
+        fill:cssv('--ink-3'),'font-family':'Archivo, sans-serif'});
+      k.textContent=opt.altEtiket[i]; s.appendChild(k);
+    }
+    if(opt.kismi&&opt.kismi.includes(yil)){
+      const k=svg('text',{x:x0+bandW/2,y:H-3,'text-anchor':'middle','font-size':FS-2.5,
+        fill:cssv('--ink-3'),'font-family':'Archivo, sans-serif'});
+      k.textContent='kısmi'; s.appendChild(k);
+    }
+    seriler.forEach((se,j)=>{
+      const v=se.data[i]; if(v===undefined||v===null) return;
+      const cx=x0+(bandW-(bw*seriler.length+gap*(seriler.length-1)))/2+j*(bw+gap);
+      const yv=Y(v), y0=Y(0);
+      s.appendChild(svg('rect',{x:cx,y:Math.min(yv,y0),width:bw,
+        height:Math.max(Math.abs(yv-y0),2),rx:4,ry:4,fill:se.color}));
+      if(Math.abs(v)>=(opt.minEtiket||0)){
+        const t=svg('text',{x:cx+bw/2,y:v>=0?Math.min(yv,y0)-6:Math.max(yv,y0)+FS+2,
+          'text-anchor':'middle','font-size':FS-1.5,fill:cssv('--ink'),'font-weight':600,
+          'font-family':'IBM Plex Mono, monospace'});
+        t.textContent=(opt.etiketFmt||(x=>pctS(x,0)))(v); s.appendChild(t);
+      }
+    });
+  });
+  holder.innerHTML=''; holder.appendChild(s);
+}
+
+/* ---------- tablo ---------- */
+function table(id,head,rows){
+  const t=document.getElementById(id); if(!t)return;
+  // data-l: 700px altinda satirlar karta donusuyor, sutun basligi td'den geliyor
+  const et=h=>String(h).replace(/<[^>]*>/g,'').replace(/"/g,'&quot;').trim();
+  t.innerHTML='<thead><tr>'+head.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+
+    rows.map(r=>'<tr'+(r.hi?' class="hi"':'')+'>'+
+      r.c.map((c,i)=>'<td data-l="'+et(head[i]||'')+'">'+c+'</td>').join('')+'</tr>').join('')+
+    '</tbody>';
+}
+
+/* ---------- ısı haritası ---------- */
+const mixCol=(hex,a)=>'color-mix(in srgb, '+hex+' '+Math.round(a*100)+'%, '+cssv('--surface')+')';
+function heat(hostId,kod){
+  const m=D.aylik[kod];
+  const years=[...new Set(Object.keys(m).map(k=>k.slice(0,4)))].sort();
+  const posC=cssv('--pos'), negC=cssv('--neg');
+  let h='<table><thead><tr><th class="yr"></th>'+monAbbr.map(x=>'<th>'+x+'</th>').join('')+
+        '<th>Yıl</th></tr></thead><tbody>';
+  years.forEach(y=>{
+    h+='<tr><td class="yr">'+y+'</td>';
+    let yr=1,has=false;
+    for(let i=1;i<=12;i++){
+      const k=y+'-'+String(i).padStart(2,'0'), v=m[k];
+      if(v===undefined){h+='<td><span class="cell empty">·</span></td>';continue;}
+      has=true; yr*=(1+v);
+      const a=Math.pow(Math.min(Math.abs(v),1),0.6)*0.5;
+      h+='<td><span class="cell" style="background:'+mixCol(v>=0?posC:negC,a)+'">'+pctS(v,0)+'</span></td>';
+    }
+    const yv=yr-1;
+    h+='<td><span class="cell" style="font-weight:700;background:'+
+       (has?mixCol(yv>=0?posC:negC,Math.pow(Math.min(Math.abs(yv)/3,1),0.6)*0.5):'transparent')+
+       '">'+(has?pctS(yv,0):'·')+'</span></td></tr>';
+  });
+  document.getElementById(hostId).innerHTML=h+'</tbody></table>';
+}
+
+/* ---------- hepsini çiz ---------- */
+const ORDER=['TLY','DFI','DZE','AFO','ALE'];
+const nameCell=k=>'<span class="dot" style="background:'+col(k)+'"></span>'+D.meta.kisa[k];
+
+function renderAll(){
+  const F=document.getElementById('funds'); F.innerHTML='';
+  F.append(fundCard('TLY'),fundCard('DFI'));
+
+  const fg=document.getElementById('figs'); fg.innerHTML='';
+  [['TLY · son 1 yıl',pctS(D.stats.son1y.TLY.toplam,0),'tly','Reel (TÜFE sonrası) '+pctS(D.reel_1y.TLY.reel,0)],
+   ['DFI · son 1 yıl',pctS(D.stats.son1y.DFI.toplam,0),'dfi','Reel (TÜFE sonrası) '+pctS(D.reel_1y.DFI.reel,0)],
+   ['TLY · yıllık bileşik, 4 yıl',pctS(D.stats.ortak.TLY.cagr,0),'tly','Toplam '+pctS(D.stats.ortak.TLY.toplam,0)],
+   ['DFI · yıllık bileşik, 4 yıl',pctS(D.stats.ortak.DFI.cagr,0),'dfi','Toplam '+pctS(D.stats.ortak.DFI.toplam,0)],
+   ['TLY · maksimum düşüş',pct(D.stats.ortak.TLY.mdd,1),'tly',trDate(D.stats.ortak.TLY.mdd_zirve)+' → '+trDate(D.stats.ortak.TLY.mdd_dip)],
+   ['DFI · maksimum düşüş',pct(D.stats.ortak.DFI.mdd,1),'dfi',trDate(D.stats.ortak.DFI.mdd_zirve)+' → '+trDate(D.stats.ortak.DFI.mdd_dip)]
+  ].forEach(([l,v,cl,s])=>{
+    const d=el('div','fig '+cl);
+    d.appendChild(el('div','lbl',l));
+    d.appendChild(el('div','val '+cl,v));
+    d.appendChild(el('div','sub',s));
+    fg.appendChild(d);
+  });
+
+  lineChart('c-growth',{
+    series:[{key:'TLY',data:D.buyume.TLY,label:'TLY',w:2.8},
+            {key:'DFI',data:D.buyume.DFI,label:'DFI'},
+            {key:'DZE',data:D.buyume.DZE,label:'BIST 100'},
+            {key:'AFO',data:D.buyume.AFO,label:'Altın'},
+            {key:'ALE',data:D.buyume.ALE,label:'Para piy.',dash:'6 4',w:1.8}],
+    log:true,ymin:80,ymax:1200000,labelRight:true,hRatio:.52,hMax:520,
+    ticks:[{v:100,l:'100',strong:true},{v:1000,l:'1.000'},{v:10000,l:'10.000'},
+           {v:100000,l:'100.000'},{v:1000000,l:'1 milyon'}],
+    xticks:['2023-01-02','2024-01-02','2025-01-02','2026-01-02'],
+    fmt:v=>'₺'+big(v),aria:'100 liranın logaritmik ölçekte seyri'});
+  legend('c-growth',[{color:col('TLY'),label:'TLY'},{color:col('DFI'),label:'DFI'},
+    {color:col('DZE'),label:'BIST 100 endeks fonu'},{color:col('AFO'),label:'Altın fonu'},
+    {dash:true,label:'Para piyasası fonu (nakit eşiği)'}]);
+
+  lineChart('c-dd',{
+    series:[{key:'TLY',data:D.drawdown.TLY,label:'TLY',area:true},
+            {key:'DFI',data:D.drawdown.DFI,label:'DFI',area:true},
+            {key:'DZE',data:D.drawdown.DZE,label:'BIST 100',w:1.8}],
+    ymin:-0.95,ymax:0.03,hRatio:.42,hMax:400,
+    ticks:[{v:0,l:'0%',strong:true},{v:-0.25,l:'−25%'},{v:-0.5,l:'−50%'},{v:-0.75,l:'−75%'}],
+    xticks:['2023-01-02','2024-01-02','2025-01-02','2026-01-02'],
+    fmt:v=>pct(v,1),aria:'Zirveden itibaren kayıp'});
+  legend('c-dd',[{color:col('TLY'),label:'TLY'},{color:col('DFI'),label:'DFI'},
+    {color:col('DZE'),label:'BIST 100 endeks fonu'}]);
+
+  lineChart('c-roll-tly',{
+    series:[{key:'TLY',data:D.rolling.TLY,label:'TLY',area:true}],
+    ymin:-0.3,ymax:108,hRatio:.62,hMax:330,
+    ticks:[{v:0,l:'0%',strong:true},{v:0.3151,l:'TÜFE',dash:true},{v:25,l:'+2.500%'},
+           {v:50,l:'+5.000%'},{v:75,l:'+7.500%'},{v:100,l:'+10.000%'}],
+    xticks:['2024-01-02','2025-01-02','2026-01-02'],
+    fmt:v=>pctS(v,0),aria:'TLY kayan bir yıllık getiri'});
+  lineChart('c-roll-dfi',{
+    series:[{key:'DFI',data:D.rolling.DFI,label:'DFI',area:true}],
+    ymin:-1.05,ymax:15,hRatio:.62,hMax:330,
+    ticks:[{v:0,l:'0%',strong:true},{v:0.3151,l:'TÜFE',dash:true},{v:5,l:'+500%'},
+           {v:10,l:'+1.000%'}],
+    xticks:['2024-01-02','2025-01-02','2026-01-02'],
+    fmt:v=>pctS(v,0),aria:'DFI kayan bir yıllık getiri'});
+
+  const c=D.yogunlasma.DFI, dfiC=col('DFI'), negC=cssv('--neg');
+  barChart('c-conc',[
+    {label:'Tüm günler',v:c.tam,color:dfiC},
+    {label:'En iyi 5 gün hariç',v:c.x5,color:dfiC,faded:true},
+    {label:'En iyi 10 gün hariç',v:c.x10,color:dfiC,faded:true},
+    {label:'En iyi 20 gün hariç',v:c.x20,color:negC}],
+    {lo:-0.45,hi:0.1,grid:[-0.4,0,1,2,3,4,5],fmt:v=>pctS(v,0),
+     aria:'DFI getiri yoğunlaşması'});
+
+  barChart('c-cap',[
+    {label:'TLY · borsa yükselirken',v:D.capture.TLY.up,color:col('TLY')},
+    {label:'TLY · borsa düşerken',v:D.capture.TLY.down,color:col('TLY'),faded:true},
+    {label:'DFI · borsa yükselirken',v:D.capture.DFI.up,color:col('DFI')},
+    {label:'DFI · borsa düşerken',v:D.capture.DFI.down,color:col('DFI'),faded:true}],
+    {lo:-0.5,hi:1.05,grid:[-0.5,-0.25,0,0.25,0.5,0.75,1],gridLabel:v=>pct(v,0),
+     fmt:v=>pctS(v,0),aria:'Yükseliş ve düşüş yakalama oranları'});
+
+  const YIL=D.yillik.TLY.map(r=>r.yil);
+  groupedBars('c-yillik',YIL,
+    [{color:col('TLY'),data:D.yillik.TLY.map(r=>r.down)},
+     {color:col('DFI'),data:D.yillik.DFI.map(r=>r.down)}],
+    {lo:-1.45,hi:2.05,ticks:[2,1,0,-1],kismi:['2022','2026'],
+     aria:'Yıl bazında düşüş yakalama oranı'});
+  legend('c-yillik',[{color:col('TLY'),label:'TLY'},{color:col('DFI'),label:'DFI'}]);
+
+  table('t-yillik',
+    ['Yıl','Fon','Yükseliş yak.','Düşüş yak.','Fon getirisi','BIST 100 fonu','Oynaklık','Endeksle kor.','Diğer fonla kor.'],
+    YIL.flatMap(y=>['TLY','DFI'].map(k=>{
+      const r=D.yillik[k].find(x=>x.yil===y);
+      return {hi:y==='2025',c:[
+        y+((y==='2022'||y==='2026')?' <span class="muted">kısmi</span>':''),
+        nameCell(k), pctS(r.up,0),
+        (r.down<0?'<span class="pos">':'<span class="neg">')+pctS(r.down,0)+'</span>',
+        pctS(r.fon,0), pctS(r.endeks,0), pct(r.vol,0),
+        nf(r.kor_endeks,2).replace('-','−'), nf(r.kor_diger,2).replace('-','−')]};
+    })));
+
+  /* ---- 2026 oynaklık tanısı ---- */
+  const AV=D.aylik_vol;
+  const ortakAy=AV.TLY.map(r=>r.ay).filter(a=>AV.DFI.some(r=>r.ay===a)&&AV.DZE.some(r=>r.ay===a));
+  const avSeri=k=>{const m=new Map(AV[k].map(r=>[r.ay,r.vol]));return ortakAy.map(a=>[a+'-15',m.get(a)]);};
+  lineChart('c-aylikvol',{
+    series:[{key:'TLY',data:avSeri('TLY'),label:'TLY',w:2.6},
+            {key:'DFI',data:avSeri('DFI'),label:'DFI',w:2.6},
+            {key:'DZE',data:avSeri('DZE'),label:'BIST 100',w:1.8,dash:'6 4'}],
+    ymin:0,ymax:1.5,labelRight:true,hRatio:.45,hMax:420,
+    ticks:[{v:0,l:'0%',strong:true},{v:0.25,l:'25%'},{v:0.5,l:'50%'},
+           {v:0.75,l:'75%'},{v:1.0,l:'100%'},{v:1.25,l:'125%'}],
+    xticks:['2023-01-15','2024-01-15','2025-01-15','2026-01-15'],
+    fmt:v=>pct(v,0),aria:'Ay ay yıllandırılmış oynaklık'});
+  legend('c-aylikvol',[{color:col('TLY'),label:'TLY'},{color:col('DFI'),label:'DFI'},
+    {color:col('DZE'),label:'BIST 100 endeks fonu'}]);
+
+  const TN=D.tani.fonlar, TYIL=D.tani.yil;
+  barChart('c-dagilim', TN.DFI.kovalar.map(b=>({
+      label:(b.ad==='eksi'?'Eksi günler':b.ad)+'  ('+b.n+' gün)',
+      v:b.oran, color:b.ad==='eksi'?cssv('--neg'):col('DFI'), faded:b.ad==='eksi'})),
+    {lo:0,hi:0.38,grid:[0,0.1,0.2,0.3],gridLabel:v=>pct(v,0),fmt:v=>pct(v,1),
+     aria:'DFI 2026 günlük getiri dağılımı'});
+
+  const YILLAR=Object.keys(D.yillik_vol.TLY).sort();
+  table('t-yilvol',['Yıllık oynaklık'].concat(YILLAR.map(y=>y+(y==='2022'||y===TYIL?'*':''))),
+    ORDER.map(k=>({hi:k==='TLY'||k==='DFI',c:[nameCell(k)].concat(
+      YILLAR.map(y=>{const v=D.yillik_vol[k][y];
+        return v===undefined?'<span class="muted">—</span>':pct(v,0);}))})));
+
+  const T3=['TLY','DFI','DZE'];
+  const taniSatir=(ad,f)=>({c:[ad].concat(T3.map(k=>f(TN[k])))});
+  table('t-tani',[TYIL+' tanısı'].concat(T3.map(k=>nameCell(k))),[
+    taniSatir('Dönem getirisi',       t=>pctS(t.toplam,0)),
+    taniSatir('Yıllık oynaklık',      t=>'<b>'+pct(t.vol,1)+'</b>'),
+    taniSatir('Hisse ağırlığının ima ettiği taban',
+                                      t=>t.ima_vol?pct(t.ima_vol,1)+' <span class="muted">(%'+
+                                         Math.round(t.hisse_agirligi*100)+' hisse)</span>':'<span class="muted">—</span>'),
+    taniSatir('Oto-korelasyon ρ',     t=>(t.rho>0.15?'<span class="neg">':'<span class="muted">')+
+                                         nf(t.rho,2).replace('-','−')+'</span>'),
+    taniSatir('Geltner düzeltilmiş oynaklık',
+                                      t=>t.duzeltilmis_vol?pct(t.duzeltilmis_vol,1)+
+                                         ' <span class="muted">('+nf(t.carpan,2)+'×)</span>'
+                                         :'<span class="muted">düzeltme yok</span>'),
+    taniSatir('Eksi gün',             t=>t.eksi_gun+' <span class="muted">/ '+t.gun+'</span>'),
+    taniSatir('En uzun artı seri',    t=>t.en_uzun_seri+' gün'),
+    taniSatir('En kötü gün',          t=>pct(t.en_kotu_gun,2)),
+    taniSatir('Yılın maksimum düşüşü',t=>pct(t.mdd,1)),
+    taniSatir('Ortalama günlük getiri',t=>pctS(t.ort_gunluk,3)),
+    taniSatir('Sharpe',               t=>nf(t.sharpe,2).replace('-','\u2212')),
+    taniSatir('Sortino',              t=>nf(t.sortino,2).replace('-','\u2212')),
+  ]);
+
+  table('t-eksigun',['DFI\'nin '+TYIL+'\u2019daki eksi günleri','DFI','BIST 100 fonu aynı gün'],
+    TN.DFI.eksiler.map(e=>({c:[trDate(e[0]),
+      '<span class="neg">'+pct(e[1],2)+'</span>',
+      e[2]===null||e[2]===undefined?'<span class="muted">—</span>'
+        :(e[2]>=0?'<span class="pos">':'<span class="neg">')+pctS(e[2],2)+'</span>']})));
+
+  /* ---- IEYHO fiyat serisi: fonun oynaklığı hissesinden mi geliyor? ---- */
+  const HS=D.hisse, HC={IEYHO:cssv('--s-hisse'), ISKPL:cssv('--s-afo'),
+                        DSTKF:cssv('--s-tly'), DFI:col('DFI'), DZE:col('DZE'), TLY:col('TLY')};
+  function hizala(kodlar, kaynak){
+    const m=kodlar.map(k=>new Map(kaynak[k]));
+    const ortak=[...m[0].keys()].filter(d=>m.every(x=>x.has(d))).sort();
+    return kodlar.map((k,i)=>ortak.map(d=>[d, m[i].get(d)]));
+  }
+  const AY=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  const ayEtiket=d=>AY[+d.split('-')[1]-1];
+
+  (function(){
+    const kod=['IEYHO','DFI','DZE','ISKPL'];
+    const dz=hizala(kod, HS.seri);
+    // ortak ilk güne yeniden endeksle
+    const seri=kod.map((k,i)=>{const t=dz[i][0][1];
+      return {key:k, color:HC[k], label:k==='DZE'?'BIST 100':k,
+              data:dz[i].map(p=>[p[0], p[1]/t*100]), w:k==='IEYHO'?3.2:2.2};});
+    lineChart('c-ieyho',{series:seri, ymin:50, ymax:345, labelRight:true, hRatio:.5, hMax:470,
+      ticks:[{v:100,l:'100',strong:true},{v:150,l:'150'},{v:200,l:'200'},
+             {v:250,l:'250'},{v:300,l:'300'}],
+      xticks:['2026-02-02','2026-04-01','2026-06-01','2026-08-03'], xfmt:ayEtiket,
+      fmt:v=>nf(v,0), aria:'IEYHO, DFI, BIST 100 ve ISKPL 2026 fiyat seyri'});
+    legend('c-ieyho',[{color:HC.IEYHO,label:'IEYHO — DFI\'nin %55\'i'},{color:HC.DFI,label:'DFI (fon)'},
+      {color:HC.DZE,label:'BIST 100 endeks fonu'},{color:HC.ISKPL,label:'ISKPL — aynı grup'}]);
+  })();
+
+  (function(){
+    const kod=['IEYHO','DZE','ISKPL'];
+    const dz=hizala(kod, HS.dd);
+    lineChart('c-ieyho-dd',{
+      series:kod.map((k,i)=>({key:k,color:HC[k],label:k==='DZE'?'BIST 100':k,
+                              data:dz[i], area:k==='IEYHO'})),
+      ymin:-0.8, ymax:0.03, hRatio:.4, hMax:360,
+      ticks:[{v:0,l:'0%',strong:true},{v:-0.2,l:'−20%'},{v:-0.4,l:'−40%'},{v:-0.6,l:'−60%'}],
+      xticks:['2026-02-02','2026-04-01','2026-06-01','2026-08-03'], xfmt:ayEtiket,
+      fmt:v=>pct(v,1), aria:'2026 zirveden kayıp'});
+    legend('c-ieyho-dd',[{color:HC.IEYHO,label:'IEYHO'},{color:HC.DZE,label:'BIST 100 endeks fonu'},
+      {color:HC.ISKPL,label:'ISKPL'}]);
+  })();
+
+  (function(){
+    const a=HS.ist.IEYHO, b=HS.ist.DZE;
+    if(!a||!a.dagilim||!b||!b.dagilim) return;
+    groupedBars('c-ieyho-dagilim', a.dagilim.map(x=>x.ad),
+      [{color:HC.IEYHO, data:a.dagilim.map(x=>x.oran)},
+       {color:HC.DZE,   data:b.dagilim.map(x=>x.oran)}],
+      {lo:0, hi:0.34, ticks:[0.3,0.2,0.1,0],
+       tickFmt:v=>pct(v,0), etiketFmt:v=>nf(v*100,0)+'%', minEtiket:0.03,
+       altEtiket:a.dagilim.map(x=>x.n+' gün'),
+       aria:'IEYHO ve BIST 100 günlük getiri dağılımı'});
+    legend('c-ieyho-dagilim',[{color:HC.IEYHO,label:'IEYHO'},
+      {color:HC.DZE,label:'BIST 100 endeks fonu'}]);
+  })();
+
+  /* ---- IEYHO cok yilli kirilim ---- */
+  (function(){
+    const Y=HS.yillik; if(!Y||!Y.IEYHO) return;
+    table('t-ieyho-yil',['Yıl','Getiri','Oynaklık','Eksi gün','Maks. düşüş','En kötü gün','ρ'],
+      ['IEYHO','ISKPL'].flatMap(k=>(Y[k]||[]).map(r=>({
+        hi:k==='IEYHO'&&r.yil==='2026',
+        c:['<span class="dot" style="background:'+HC[k]+'"></span>'+k+' '+r.yil+
+             (r.yil==='2026'?' <span class="muted">kısmi</span>':''),
+           (r.toplam>=0?'<span class="pos">':'<span class="neg">')+pctS(r.toplam,1)+'</span>',
+           (k==='IEYHO'&&r.yil==='2026')?'<strong>'+pct(r.vol,1)+'</strong>':pct(r.vol,1),
+           r.eksi_gun+' / '+r.gun,
+           '<span class="neg">'+pct(r.mdd,1)+'</span>', pct(r.en_kotu,1),
+           nf(r.rho,2).replace('-','−')]}))));
+
+    const AV2=HS.aylik_vol||{};
+    const aySeri=(kaynak,k)=>((kaynak[k]||[]).map(r=>[r.ay+'-15', r.vol]));
+    const dfiAy=(D.aylik_vol&&D.aylik_vol.DFI||[]).filter(r=>r.ay>='2025-01');
+    const kodlar=['IEYHO','ISKPL'];
+    const m=new Map(dfiAy.map(r=>[r.ay,r.vol]));
+    const ortakAy2=(AV2.IEYHO||[]).map(r=>r.ay)
+      .filter(a=>(AV2.ISKPL||[]).some(r=>r.ay===a) && m.has(a));
+    if(ortakAy2.length>4){
+      const gs=k=>{const mm=new Map((AV2[k]||[]).map(r=>[r.ay,r.vol]));
+                   return ortakAy2.map(a=>[a+'-15', mm.get(a)]);};
+      lineChart('c-ieyho-vol',{
+        series:[{key:'IEYHO',color:HC.IEYHO,label:'IEYHO',data:gs('IEYHO'),w:3},
+                {key:'ISKPL',color:HC.ISKPL,label:'ISKPL',data:gs('ISKPL')},
+                {key:'DFI',color:HC.DFI,label:'DFI (fon)',data:ortakAy2.map(a=>[a+'-15',m.get(a)]),dash:'6 4'}],
+        ymin:0,ymax:1.45,labelRight:true,hRatio:.45,hMax:400,
+        ticks:[{v:0,l:'0%',strong:true},{v:0.25,l:'25%'},{v:0.5,l:'50%'},
+               {v:0.75,l:'75%'},{v:1.0,l:'100%'},{v:1.25,l:'125%'}],
+        xticks:['2025-04-15','2025-08-15','2025-12-15','2026-04-15','2026-08-15'],
+        xfmt:d=>{const[y,mo]=d.split('-');return AY[+mo-1]+' '+y.slice(2);},
+        fmt:v=>pct(v,0),aria:'IEYHO, ISKPL ve DFI aylık oynaklık'});
+      legend('c-ieyho-vol',[{color:HC.IEYHO,label:'IEYHO (hisse)'},
+        {color:HC.ISKPL,label:'ISKPL (aynı grup)'},{color:HC.DFI,label:'DFI (fon)'}]);
+    }
+
+    const DY=HS.dagilim_yil&&HS.dagilim_yil.IEYHO;
+    if(DY&&DY['2025']&&DY['2026']){
+      groupedBars('c-ieyho-dagilim2', DY['2026'].map(x=>x.ad),
+        [{color:cssv('--ink-3'), data:DY['2025'].map(x=>x.oran)},
+         {color:HC.IEYHO,        data:DY['2026'].map(x=>x.oran)}],
+        {lo:0,hi:0.34,ticks:[0.3,0.2,0.1,0],tickFmt:v=>pct(v,0),
+         etiketFmt:v=>nf(v*100,0)+'%',minEtiket:0.04,
+         aria:'IEYHO günlük getiri dağılımı 2025 ve 2026'});
+      legend('c-ieyho-dagilim2',[{color:cssv('--ink-3'),label:'2025 (250 gün)'},
+        {color:HC.IEYHO,label:'2026 (167 gün)'}]);
+    }
+  })();
+
+  (function(){
+    // Borsa Istanbul duyurularindan derlenen fiili dolasim orani (dis kaynak)
+    const fd=[['2025-11-12',69],['2025-11-19',58],['2025-12-17',46],
+              ['2026-01-14',38],['2026-06-03',33],['2026-09-05',35.8]];
+    const basamak=[];
+    fd.forEach((p,i)=>{ basamak.push([p[0],p[1]]);
+      if(fd[i+1]) basamak.push([fd[i+1][0], p[1]]); });
+    lineChart('c-fdpo',{
+      series:[{key:'FDPO',color:HC.IEYHO,label:'IEYHO',data:basamak,w:3,area:true}],
+      ymin:0,ymax:78,areaBase:0,hRatio:.34,hMax:280,l:58,
+      ticks:[{v:0,l:'0%',strong:true},{v:20,l:'20%'},{v:40,l:'40%'},{v:60,l:'60%'}],
+      xticks:['2025-12-01','2026-02-01','2026-04-01','2026-06-01','2026-08-01'],
+      xfmt:d=>{const[y,mo]=d.split('-');return AY[+mo-1]+' '+y.slice(2);},
+      fmt:v=>nf(v,1)+'%',aria:'IEYHO fiili dolaşım oranı'});
+  })();
+
+  table('t-hisse',['2026 (02.01 → 04.09)','Getiri','Oynaklık','Eksi gün','En kötü gün','Maks. düşüş','ρ'],
+    [['IEYHO',"DFI'nin ana pozisyonu"],['DSTKF',"TLY'nin ana pozisyonu"],
+     ['ISKPL','aynı grup'],['DZE','endeks']].map(([k,not_])=>{
+      const r=HS.ist[k]; if(!r) return {c:[k,'—','—','—','—','—','—']};
+      const vurgu=k==='IEYHO';
+      const b=x=>vurgu?'<strong>'+x+'</strong>':x;
+      return {hi:vurgu, c:[
+        '<span class="dot" style="background:'+HC[k]+'"></span>'+(k==='DZE'?'BIST 100 endeks fonu':k)+
+          ' <span class="muted">'+not_+'</span>',
+        (r.toplam>=0?'<span class="pos">':'<span class="neg">')+pctS(r.toplam,1)+'</span>',
+        b(pct(r.vol,1)), b(r.eksi_gun+' / '+r.gun), pct(r.en_kotu,1),
+        b('<span class="neg">'+pct(r.mdd,1)+'</span>'), nf(r.rho,2).replace('-','−')]};
+    }));
+
+  /* ---- üçüncü ve dördüncü vaka: TMV ve PBE ---- */
+  (function(){
+    const V=D.vakalar||{}, T=V.TMV, P=V.PBE; if(!T&&!P) return;
+    const HC3={TMV:cssv('--s-hisse'), PBE:cssv('--s-afo'), TLY:col('TLY'), DFI:col('DFI')};
+
+    const figs=(host,renk,kartlar)=>{
+      const fg=document.getElementById(host); if(!fg) return; fg.innerHTML='';
+      kartlar.forEach(([l,v,sub])=>{
+        const d=el('div','fig');
+        d.appendChild(el('div','lbl',l));
+        const val=el('div','val',v); val.style.color=renk; d.appendChild(val);
+        d.appendChild(el('div','sub',sub));
+        fg.appendChild(d);
+      });
+    };
+    const yilTablo=(host,kod,U)=>table(host,[kod+' · yıl','Getiri','Oynaklık','ρ','Eksi gün','Maks. düşüş'],
+      U.yillik.map(r=>({hi:r.yil===SON_YIL,c:[
+        r.yil+((r.yil===U.bas.slice(0,4)||r.yil===SON_YIL)?' <span class="muted">kısmi</span>':''),
+        (r.toplam>=0?'<span class="pos">':'<span class="neg">')+pctS(r.toplam,1)+'</span>',
+        pct(r.vol,1), nf(r.rho,2).replace('-','−'),
+        r.eksi_gun+' / '+r.gun, '<span class="neg">'+pct(r.mdd,1)+'</span>']})));
+    const SON_YIL=D.tani.yil;
+
+    /* --- vaka 3: TMV --- */
+    if(T){
+      figs('v-TMV-figs',HC3.TMV,[
+        ['TMV · '+SON_YIL+' getirisi', pctS(T.son.toplam,0), 'Tüm geçmiş '+pctS(T.tam.toplam,0)],
+        ['TMV · '+SON_YIL+' oynaklığı', pct(T.son.vol,1), 'Sharpe '+nf(T.son.sharpe,2)],
+        ['Fon büyüklüğü', '₺'+nf(T.buyukluk/1e9,1)+' mlr', big(T.yatirimci)+' yatırımcı'],
+        ['Kategori sırası', T.derece+' / '+big(T.kat_adet), 'son 1 yıl']]);
+
+      const AV=D.aylik_vol||{};
+      const m=k=>new Map((AV[k]||[]).map(r=>[r.ay,r.vol]));
+      const mT=m('TMV'), mL=m('TLY'), mD=m('DFI');
+      const ortak=[...mT.keys()].filter(a=>mL.has(a)&&mD.has(a)).sort();
+      if(ortak.length>4){
+        const g=(mm,k)=>({key:k,color:HC3[k],label:k,data:ortak.map(a=>[a+'-15',mm.get(a)]),
+                          w:k==='TMV'?3:2.2});
+        lineChart('c-tmv-vol',{series:[g(mT,'TMV'),g(mL,'TLY'),g(mD,'DFI')],
+          ymin:0,ymax:1.45,labelRight:true,hRatio:.44,hMax:400,
+          ticks:[{v:0,l:'0%',strong:true},{v:0.25,l:'25%'},{v:0.5,l:'50%'},
+                 {v:0.75,l:'75%'},{v:1.0,l:'100%'},{v:1.25,l:'125%'}],
+          xticks:['2025-04-15','2025-08-15','2025-12-15','2026-04-15','2026-08-15'],
+          xfmt:d=>{const[y,mo]=d.split('-');return AY[+mo-1]+' '+y.slice(2);},
+          fmt:v=>pct(v,0),aria:'TMV, TLY ve DFI aylık oynaklık'});
+        legend('c-tmv-vol',[{color:HC3.TMV,label:'TMV (algoritmik)'},
+          {color:HC3.TLY,label:'TLY'},{color:HC3.DFI,label:'DFI'}]);
+      }
+      yilTablo('t-TMV-yil','TMV',T);
+
+      const dv=document.getElementById('v-TMV-dagilim'); dv.innerHTML='';
+      const c=el('div','fund'); c.style.setProperty('--x','1');
+      c.appendChild(el('div','fund-top','<span class="tick" style="color:'+HC3.TMV+'">TMV</span>'+
+        '<span class="rank">kategori sırası<b>'+T.derece+' / '+big(T.kat_adet)+'</b>son 1 yıl</span>'));
+      c.appendChild(el('h3',null,T.unvan));
+      c.appendChild(el('div','kur',T.kurucu+' &middot; Serbest Şemsiye Fon'));
+      const al=el('div','alloc');
+      al.appendChild(el('div','kicker','Varlık dağılımı'));
+      const bar=el('div','alloc-bar');
+      const pos=T.dagilim.filter(d=>d[1]>0), tot=pos.reduce((s2,d)=>s2+d[1],0);
+      pos.forEach((d,i)=>{const q=el('div','alloc-seg');q.style.width=(d[1]/tot*100)+'%';
+        q.style.background=cssv(ALLOC_TINT[i%8]);bar.appendChild(q);});
+      al.appendChild(bar);
+      const list=el('div','alloc-list');
+      T.dagilim.forEach((d,i)=>{
+        const r=el('div','alloc-row'); const sw=el('span','swatch');
+        if(d[1]>0) sw.style.background=cssv(ALLOC_TINT[i%8]);
+        else {sw.style.background='transparent';sw.style.border='2px dashed '+cssv('--neg');}
+        r.appendChild(sw); r.appendChild(el('span',null,d[0]));
+        r.appendChild(el('span',null,nf(d[1],2)+'%'));
+        list.appendChild(r);
+      });
+      al.appendChild(list); c.appendChild(al); dv.appendChild(c);
+    }
+
+    /* --- vaka 4: PBE --- */
+    if(P){
+      const pt=P.tani;
+      figs('v-PBE-figs',HC3.PBE,[
+        ['PBE · '+SON_YIL+' getirisi', pctS(P.son.toplam,0), 'Oynaklık '+pct(P.son.vol,1)],
+        ['Eksi gün', pt.eksi_gun+' / '+pt.gun, 'En kötü '+pct(pt.en_kotu_gun,2)],
+        ['En uzun artı serisi', big(pt.en_uzun_seri)+' gün', 'Maks. düşüş '+pct(pt.mdd,1)],
+        ['Fon büyüklüğü', '₺'+nf(P.buyukluk/1e6,1)+' mn', big(P.yatirimci)+' yatırımcı']]);
+      yilTablo('t-PBE-yil','PBE',P);
+
+      barChart('c-pbe-dagilim', pt.kovalar.map(b=>({
+          label:(b.ad==='eksi'?'Eksi günler':b.ad)+'  ('+b.n+' gün)',
+          v:b.oran, color:b.ad==='eksi'?cssv('--neg'):HC3.PBE, faded:b.ad==='eksi'})),
+        {lo:0,hi:0.62,grid:[0,0.2,0.4,0.6],gridLabel:v=>pct(v,0),fmt:v=>pct(v,1),
+         aria:'PBE '+SON_YIL+' günlük getiri dağılımı'});
+
+      table('t-PBE-eksi',['PBE · eksi günler','Günlük getiri'],
+        pt.eksiler.map(([t,v])=>({c:[(([y,mo,g])=>(+g)+' '+AY[+mo-1]+' '+y)(t.split('-')),
+          '<span class="neg">'+pct(v,2)+'</span>']})));
+    }
+
+    /* --- PBE'nin kardesleri: PHN ve PKZ --- */
+    const H=V.PHN, Z=V.PKZ;
+    if(H&&Z){
+      const KR={PHN:cssv('--s-tly'), PKZ:cssv('--s-dfi'), PBE:HC3.PBE};
+      figs('v-kardes-figs',KR.PKZ,[
+        ['PKZ · tüm geçmiş', pctS(Z.tam.toplam,0), 'kategori '+Z.derece+' / '+big(Z.kat_adet)],
+        ['PHN · tüm geçmiş', pctS(H.tam.toplam,0), 'kategori '+H.derece+' / '+big(H.kat_adet)],
+        ['PKZ büyüklük', '₺'+nf(Z.buyukluk/1e9,1)+' mlr', big(Z.yatirimci)+' yatırımcı'],
+        ['PHN büyüklük', '₺'+nf(H.buyukluk/1e9,1)+' mlr', big(H.yatirimci)+' yatırımcı']]);
+
+      const dk=document.getElementById('v-kardes-dagilim'); dk.innerHTML='';
+      [['PHN',H],['PKZ',Z]].forEach(([kod,U])=>{
+        const c=el('div','fund'); c.style.setProperty('--x','1');
+        const brut=U.dagilim.filter(d=>d[1]>0).reduce((t,d)=>t+d[1],0);
+        c.appendChild(el('div','fund-top','<span class="tick" style="color:'+KR[kod]+'">'+kod+'</span>'+
+          '<span class="rank">brüt varlık<b>'+nf(brut/100,2)+'×</b>net varlığın katı</span>'));
+        c.appendChild(el('h3',null,U.unvan));
+        c.appendChild(el('div','kur',U.kurucu));
+        const al=el('div','alloc');
+        al.appendChild(el('div','kicker','Varlık dağılımı'));
+        const bar=el('div','alloc-bar');
+        const pos=U.dagilim.filter(d=>d[1]>0), tot=pos.reduce((t,d)=>t+d[1],0);
+        pos.forEach((d,i)=>{const q=el('div','alloc-seg');q.style.width=(d[1]/tot*100)+'%';
+          q.style.background=cssv(ALLOC_TINT[i%8]);bar.appendChild(q);});
+        al.appendChild(bar);
+        const list=el('div','alloc-list');
+        U.dagilim.forEach((d,i)=>{
+          const r=el('div','alloc-row'); const sw=el('span','swatch');
+          if(d[1]>0) sw.style.background=cssv(ALLOC_TINT[i%8]);
+          else {sw.style.background='transparent';sw.style.border='2px dashed '+cssv('--neg');}
+          r.appendChild(sw); r.appendChild(el('span',null,d[0]));
+          r.appendChild(el('span',null,nf(d[1],2)+'%'));
+          list.appendChild(r);
+        });
+        al.appendChild(list); c.appendChild(al); dk.appendChild(c);
+      });
+
+      const kk=['PKZ','PHN','PBE'];
+      const R2=k=>{const q=(D.ikili||{})[k+'~DZE']; return q?nf(q.r2,2):'<span class="muted">—</span>';};
+      const kr=[
+        [SON_YIL+' getirisi', k=>'<span class="pos">'+pctS(V[k].son.toplam,0)+'</span>'],
+        [SON_YIL+' oynaklığı', k=>pct(V[k].son.vol,1)],
+        ['Maks. düşüş', k=>'<span class="neg">'+pct(V[k].son.mdd,1)+'</span>'],
+        ['Eksi gün', k=>V[k].tani.eksi_gun+' / '+V[k].tani.gun],
+        ['En kötü gün', k=>'<span class="neg">'+pct(V[k].tani.en_kotu_gun,2)+'</span>'],
+        [SON_YIL+', en iyi 20 gün hariç', k=>{const x=V[k].yogunlasma.x20;
+          return (x<0?'<span class="neg">':'')+pctS(x,0)+(x<0?'</span>':'');}],
+        ['BIST 100 ile R²', R2],
+        ['Brüt varlık / net varlık', k=>nf(V[k].dagilim.filter(d=>d[1]>0).reduce((t,d)=>t+d[1],0)/100,2)+'×'],
+        ['Yatırımcı sayısı', k=>'<strong>'+big(V[k].yatirimci)+'</strong>'],
+      ];
+      table('t-kardes',['Aynı kurucu, aynı şemsiye'].concat(kk.map(k=>
+        '<span class="dot" style="background:'+KR[k]+'"></span>'+k)),
+        kr.map(([ad,f])=>({c:[ad].concat(kk.map(f))})));
+    }
+
+    /* --- son 10 gun: es zamanli cokus --- */
+    const SG=D.son_gunler;
+    if(SG&&SG.gunler&&SG.gunler.length){
+      // Yedi seri, alti dogrulanmis renk var. Anlatiyi tasiyan uc seri
+      // renkli; kalan dort vaka tek bir notr griyle "digerleri" olarak
+      // ciziliyor - hem renk cakismasini hem de mesaji cozuyor.
+      const REN={PHN:cssv('--s-tly'), PKZ:cssv('--s-dfi'), DZE:col('DZE')};
+      const GRI=cssv('--ink-3');
+      const sira=Object.keys(SG.seri).sort((x,y)=>SG.toplam[x]-SG.toplam[y]);
+      const seriler=sira.map(k=>{
+        let v=100; const d2=[[SG.gunler[0],100]];
+        SG.seri[k].forEach((r,i)=>{if(i===0)return; v*=(1+r); d2.push([SG.gunler[i],v]);});
+        return {key:k,color:REN[k]||GRI,label:REN[k]?k:'',data:d2,
+                w:REN[k]?3:1.6};
+      });
+      lineChart('c-son-gunler',{series:seriler,ymin:55,ymax:118,labelRight:true,
+        hRatio:.42,hMax:380,
+        ticks:[{v:100,l:'100',strong:true},{v:90,l:'90'},{v:80,l:'80'},{v:70,l:'70'},{v:60,l:'60'}],
+        xticks:SG.gunler.filter((d,i)=>i%2===0),
+        xfmt:d=>{const[y,mo,g]=d.split('-');return (+g)+' '+AY[+mo-1];},
+        fmt:v=>nf(v,1),aria:'Son 10 islem gunu, 100 TL bazli'});
+      legend('c-son-gunler',[
+        {color:REN.PHN,label:'PHN'}, {color:REN.PKZ,label:'PKZ'},
+        {color:REN.DZE,label:'BIST 100 endeks fonu'},
+        {color:GRI,label:'diğer vakalar (PBE, TLY, DFI, TMV)'}]);
+
+      table('t-son-gunler',['Fon'].concat(SG.gunler.slice(-4).map(d=>{
+          const[y,mo,g]=d.split('-'); return (+g)+' '+AY[+mo-1];})).concat(['4 gün']),
+        sira.map(k=>({hi:k==='PKZ'||k==='PHN',
+          c:['<span class="dot" style="background:'+(REN[k]||GRI)+'"></span>'+
+             (k==='DZE'?'BIST 100 endeks fonu':k)]
+            .concat(SG.seri[k].slice(-4).map(r=>(r<0?'<span class="neg">':'<span class="pos">')+pctS(r,2)+'</span>'))
+            .concat([(SG.dort[k]<0?'<span class="neg"><strong>'+pctS(SG.dort[k],1)+'</strong></span>'
+                                  :'<span class="pos">'+pctS(SG.dort[k],1)+'</span>')])})));
+    }
+
+    /* --- dört fon karşılaştırması --- */
+    const KOD=['TMV','PBE','TLY','DFI'].filter(k=>k==='TLY'||k==='DFI'||V[k]);
+    const tn=k=>(k==='TLY'||k==='DFI')?D.tani.fonlar[k]:V[k].tani;
+    const yk=k=>(k==='TLY'||k==='DFI')?(D.son_yil_kiyas[k]||{}):V[k];
+    const MEK={TMV:'49 hisse + türev, algoritmik',PBE:'VDMK + repo, 5,4x kaldıraç',
+               TLY:'5 şirkette kontrol payı',DFI:'tek hisse (IEYHO) %55'};
+    const HIS={TMV:'<strong>49</strong>',PBE:'<strong>0</strong>',
+               TLY:'5 <span class="muted">açıklanan</span>',DFI:'2'};
+    const satir=[
+      [SON_YIL+' getirisi', k=>'<span class="pos">'+pctS(tn(k).toplam,0)+'</span>'],
+      [SON_YIL+' oynaklığı', k=>pct(tn(k).vol,1)],
+      ['Oto-korelasyon ρ', k=>{const v=tn(k).rho;
+        return (v>0.15?'<span class="neg">':'<span class="muted">')+nf(v,2).replace('-','−')+'</span>';}],
+      ['Eksi gün', k=>tn(k).eksi_gun+' / '+tn(k).gun],
+      ['En uzun artı serisi', k=>big(tn(k).en_uzun_seri)+' gün'],
+      ['Maks. düşüş', k=>'<span class="neg">'+pct(tn(k).mdd,1)+'</span>'],
+      ['Düşüş yakalama', k=>{const y=yk(k).yakalama;
+        return y?(y.down<0?'<span class="pos">':'')+pctS(y.down,0)+(y.down<0?'</span>':''):'—';}],
+      [SON_YIL+' getirisi, en iyi 20 gün hariç', k=>{const y=yk(k).yogunlasma;
+        return y?((y.x20<0?'<span class="neg">':'')+pctS(y.x20,0)+(y.x20<0?'</span>':'')):'—';}],
+      ['Portföydeki hisse sayısı', k=>HIS[k]],
+      ['Getirinin kaynağı', k=>'<span class="muted">'+MEK[k]+'</span>'],
+    ];
+    table('t-vaka-kiyas',
+      [SON_YIL+' tanısı'].concat(KOD.map(k=>
+        '<span class="dot" style="background:'+(HC3[k]||col(k))+'"></span>'+k)),
+      satir.map(([ad,f])=>({c:[ad].concat(KOD.map(f))})));
+  })();
+
+
+  /* ---- kurucu ici getiri yayilimi ---- */
+  (function(){
+    const K=D.kurucu; if(!K||!K.satir||!K.satir.length) return;
+    const oc=document.getElementById('s-ortanca');
+    if(oc) oc.textContent=pct(K.ortanca_yayilim,0);
+    const ilgi=new Set(['PUSULA','PARDUS','ATLAS','TERA']);
+    const ust=K.satir.slice(0,14);
+    const TAVAN=4;   // Pusula %2.214 ile olcegi eziyor; cubuk kirpiliyor, etiket gercegi soyluyor
+    barChart('c-kurucu', ust.map(r=>({
+        label:r.kurucu.slice(0,16)+'  ('+r.fon+' fon)',
+        v:Math.min(r.yayilim,TAVAN),
+        etiket:(r.yayilim>TAVAN?'▸ ':'')+pct(r.yayilim,0),
+        color: ilgi.has(r.kurucu)?cssv('--s-dfi'):cssv('--ink-3'),
+        faded: !ilgi.has(r.kurucu)})),
+      {lo:0,hi:TAVAN,grid:[0,1,2,3,4],gridLabel:v=>pct(v,0),fmt:v=>pct(v,0),
+       aria:'Kurucu bazinda 1 yillik getiri yayilimi'});
+
+    table('t-kurucu',
+      ['Kurucu','Fon','En iyi','En kötü','Yayılım <span class="muted">%90−%10</span>',
+       '≤ −%90','Toplam büyüklük','Yatırımcı'],
+      ust.map(r=>({hi:ilgi.has(r.kurucu),c:[
+        r.kurucu, big(r.fon),
+        '<span class="pos">'+pctS(r.en_iyi,0)+'</span>',
+        (r.en_kotu<0?'<span class="neg">':'<span class="pos">')+pctS(r.en_kotu,0)+'</span>',
+        '<strong>'+pct(r.yayilim,0)+'</strong>',
+        r.dip90?'<span class="neg">'+r.dip90+'</span>':'<span class="muted">—</span>',
+        '₺'+nf(r.buyukluk/1e9,1)+' mlr', big(r.yatirimci)]})));
+  })();
+
+  /* ---- kurucu ici derinlemesine: Pardus ---- */
+  (function(){
+    const E=(D.ev||{}).PARDUS; if(!E) return;
+    const put=(id,t)=>{const n=document.getElementById(id); if(n)n.textContent=t;};
+    put('s-nakit', E.nakit_yenen+"'u");
+    put('s-medyan-cagr', pct(E.medyan_cagr,0));
+    put('s-nakit-cagr', pct(E.nakit_medyan_cagr,0));
+    put('s-duzeltilen', E.duzeltilen.length+"'sinde");
+
+    const YES=cssv('--pos'), HAY=cssv('--neg'), NOTR=cssv('--ink-3');
+    const fg=document.getElementById('v-ev-figs'); fg.innerHTML='';
+    [['Serbest fon sayısı', big(E.fon), '₺'+nf(E.buyukluk/1e9,1)+' mlr · '+big(E.yatirimci)+' yatırımcı'],
+     ['Medyan fon', pctS(E.medyan,0), 'kuruluşundan bugüne'],
+     ['Zirvesinin yarısından aşağıda', E.zirveden_yarim+' / '+E.fon, 'bugün itibarıyla'],
+     ['Nakdi geçen', E.nakit_yenen+' / '+E.fon, 'kendi ömrü boyunca']
+    ].forEach(([l,v,sub],ix)=>{
+      const d=el('div','fig');
+      d.appendChild(el('div','lbl',l));
+      const val=el('div','val',v);
+      val.style.color = ix===2 ? HAY : (ix===3 ? HAY : cssv('--s-dfi'));
+      d.appendChild(val); d.appendChild(el('div','sub',sub));
+      fg.appendChild(d);
+    });
+
+    // dagilim: kova kova kac fon
+    const KOVA=[[-1.01,-0.9,'−%90 ve altı'],[-0.9,-0.5,'−%90 … −%50'],[-0.5,0,'−%50 … 0'],
+                [0,1,'0 … +%100'],[1,5,'+%100 … +%500'],[5,1e9,'+%500 üstü']];
+    const say=KOVA.map(([lo,hi])=>E.fonlar.filter(f=>f.duz>lo&&f.duz<=hi).length);
+    barChart('c-ev-dagilim', KOVA.map(([lo,hi,ad],ix)=>({
+        label:ad+'  ('+say[ix]+' fon)', v:say[ix]/E.fon,
+        color: hi<=0?HAY:(lo>=1?YES:NOTR), faded:false})),
+      {lo:0,hi:0.42,grid:[0,0.1,0.2,0.3,0.4],gridLabel:v=>pct(v,0),fmt:v=>pct(v,0),
+       aria:'Pardus serbest fonlarinin getiri dagilimi'});
+
+    // en kalabalik kohort
+    const enBuyuk=E.kohort.slice().sort((a2,b2)=>b2.length-a2.length)[0]||[];
+    const idx={}; E.fonlar.forEach(f=>idx[f.kod]=f);
+    const kh=enBuyuk.map(k=>idx[k]).filter(Boolean).sort((a2,b2)=>b2.duz-a2.duz);
+    if(kh.length){
+      table('t-ev-kohort',
+        ['Fon','Açılış','Kuruluşundan bugüne','Yıllık','Zirvesinden','Yatırımcı','Büyüklük'],
+        kh.map(f=>({hi:f.duz>=1||f.duz<=-0.5, c:[
+          '<strong>'+f.kod+'</strong> <span class="muted">'+
+            f.ad.split('PORTFÖY')[1].trim().split(' HİSSE')[0].slice(0,26)+'</span>',
+          f.bas.split('-').reverse().join('.'),
+          (f.duz>=0?'<span class="pos">':'<span class="neg">')+pctS(f.duz,0)+'</span>',
+          (f.cagr>=0?'<span class="pos">':'<span class="neg">')+pctS(f.cagr,0)+'</span>',
+          '<span class="neg">'+pct(f.zirveden,0)+'</span>',
+          big(f.yatirimci), '₺'+nf((f.buyukluk||0)/1e9,2)+' mlr']})));
+    }
+
+    table('t-ev-agirlik',['Aynı 51 fon, üç farklı ağırlık','Getiri','Ne ölçüyor'],[
+      {c:['Medyan fon <span class="muted">eşit ağırlık</span>',
+          '<span class="pos">'+pctS(E.medyan,0)+'</span>',
+          '<span class="muted">rastgele bir fon seçseydiniz</span>']},
+      {hi:true, c:['Bugünkü büyüklükle ağırlıklı',
+          '<span class="pos"><strong>'+pctS(E.agirlik_bugun,0)+'</strong></span>',
+          '<span class="muted">bugün ayakta kalan paranın hikâyesi</span>']},
+      {hi:true, c:['Tahmini başlangıç büyüklüğüyle ağırlıklı',
+          '<span class="neg"><strong>'+pctS(E.agirlik_baslangic,0)+'</strong></span>',
+          '<span class="muted">giren paranın hikâyesi <em>(kaba tahmin)</em></span>']},
+    ]);
+  })();
+
+  table('t-ortak',
+    ['Fon','Toplam getiri','Yıllık (CAGR)','Oynaklık','Sharpe','Sortino','Maks. düşüş','Calmar','VaR %95','Artı gün'],
+    ORDER.map(k=>{const s=D.stats.ortak[k];return{hi:k==='TLY'||k==='DFI',c:[
+      nameCell(k),pctS(s.toplam,0),pctS(s.cagr,1),pct(s.vol,1),
+      k==='ALE'?'<span class="muted">—</span>':nf(s.sharpe,2),
+      k==='ALE'?'<span class="muted">—</span>':nf(s.sortino,2),
+      '<span class="neg">'+pct(s.mdd,1)+'</span>',
+      k==='ALE'?'<span class="muted">—</span>':nf(s.calmar,2),
+      pct(s.var95,1),pct(s.pozitif_gun,0)]};}));
+
+  table('t-roll',['Fon','En kötü 12 ay','Medyan 12 ay','En iyi 12 ay','Negatif pencere oranı'],
+    ['TLY','DFI','DZE','ALE'].map(k=>{const r=D.rolling_ozet[k];return{hi:k==='TLY'||k==='DFI',c:[
+      nameCell(k),(r.min<0?'<span class="neg">':'<span class="pos">')+pctS(r.min,0)+'</span>',
+      pctS(r.med,0),pctS(r.max,0),pct(r.neg,0)]};}));
+
+  table('t-conc',['Fon','Tüm günler','En iyi 5 gün hariç','En iyi 10 gün hariç','En iyi 20 gün hariç'],
+    ['TLY','DFI','DZE'].map(k=>{const cc=D.yogunlasma[k];return{hi:k!=='DZE',c:[
+      nameCell(k),pctS(cc.tam,0),pctS(cc.x5,0),pctS(cc.x10,0),
+      (cc.x20<0?'<span class="neg">':'')+pctS(cc.x20,0)+(cc.x20<0?'</span>':'')]};}));
+
+  table('t-corr',['Günlük korelasyon'].concat(ORDER.map(k=>D.meta.kisa[k])),
+    ORDER.map(a=>({hi:a==='TLY'||a==='DFI',c:[nameCell(a)].concat(
+      ORDER.map(b=>a===b?'<span class="muted">1,00</span>'
+        :nf(D.korelasyon.ortak.matris[a][b],2).replace('-','−')))})));
+
+  table('t-mix',['TLY ağırlığı','DFI ağırlığı','Yıllık getiri','Oynaklık','Sharpe','Maks. düşüş'],
+    D.karisim.filter(m=>Math.round(m.w_tly*100)%25===0).map(m=>({hi:Math.abs(m.w_tly-0.5)<1e-9,c:[
+      pct(m.w_tly,0),pct(1-m.w_tly,0),pctS(m.cagr,1),pct(m.vol,1),nf(m.sharpe,2),
+      '<span class="neg">'+pct(m.mdd,1)+'</span>']})));
+
+  heat('h-tly','TLY'); heat('h-dfi','DFI');
+  const posC=cssv('--pos');
+  document.getElementById('ramp').innerHTML=[-.6,-.35,-.15,0,.25,.6,1.0,1.5].map(v=>
+    '<i style="background:'+mixCol(v>=0?posC:cssv('--neg'),
+      Math.pow(Math.min(Math.abs(v),1),0.6)*0.5)+'"></i>').join('');
+}
+renderAll();
+
+/* tema veya genişlik değişince yeniden çiz */
+let _t;
+const redraw=()=>{clearTimeout(_t);_t=setTimeout(renderAll,120);};
+if(window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change',redraw);
+new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+let _w=innerWidth;
+addEventListener('resize',()=>{if(Math.abs(innerWidth-_w)>24){_w=innerWidth;redraw();}});
+</script>

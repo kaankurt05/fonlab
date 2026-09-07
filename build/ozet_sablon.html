@@ -1,0 +1,376 @@
+<title>Sayı Değil, Soru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&family=Fraunces:opsz,wght@9..144,600..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#f1f5fb; --surface:#ffffff; --surface-2:#e8eef8; --surface-3:#dbe5f4;
+  --ink:#0b1524; --ink-2:#3a4a63; --ink-3:#63758f;
+  --rule:#d3dfee; --rule-soft:#e5ecf7;
+  --accent:#1d4ed8; --accent-soft:#e8effd;
+  --pos:#047857; --neg:#dc2626; --uyari:#b45309;
+  --grad:linear-gradient(96deg,#2563eb 0%,#7c3aed 55%,#0e8ea8 100%);
+  --shadow:0 1px 2px rgba(11,21,36,.05), 0 12px 32px -20px rgba(11,21,36,.35);
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:44px; --s6:64px; --s7:88px;
+  --fs-h1:clamp(34px,5.6vw,58px); --fs-h2:clamp(22px,2.6vw,28px); --fs-h3:18px;
+  --fs-body:17px; --fs-sm:14.5px; --fs-xs:12.5px;
+  --r-sm:8px; --r-md:12px; --r-lg:18px; --r-pill:999px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --paper:#070c16; --surface:#0f1826; --surface-2:#172234; --surface-3:#213047;
+  --ink:#eef4fd; --ink-2:#b2c2da; --ink-3:#8395b2;
+  --rule:#25334a; --rule-soft:#1b2637;
+  --accent:#7fa8ff; --accent-soft:#152238;
+  --pos:#3ddc84; --neg:#ff5c5c; --uyari:#e0a52c;
+  --grad:linear-gradient(96deg,#5b93ff 0%,#8343f6 55%,#32a3bd 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 32px -20px rgba(0,0,0,.85);
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#070c16; --surface:#0f1826; --surface-2:#172234; --surface-3:#213047;
+  --ink:#eef4fd; --ink-2:#b2c2da; --ink-3:#8395b2;
+  --rule:#25334a; --rule-soft:#1b2637;
+  --accent:#7fa8ff; --accent-soft:#152238;
+  --pos:#3ddc84; --neg:#ff5c5c; --uyari:#e0a52c;
+  --grad:linear-gradient(96deg,#5b93ff 0%,#8343f6 55%,#32a3bd 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 12px 32px -20px rgba(0,0,0,.85);
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);margin:0;font-size:var(--fs-body);
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif;line-height:1.68;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:var(--s6) 28px var(--s7)}
+.kol{max-width:68ch}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+a{color:var(--accent);text-underline-offset:2px}
+.tape{height:6px;border-radius:3px;background:var(--grad);margin-bottom:var(--s5)}
+.kicker{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent);font-weight:500}
+h1{font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:var(--fs-h1);line-height:.98;
+  letter-spacing:-.025em;margin:var(--s2) 0 0;background:var(--grad);
+  -webkit-background-clip:text;background-clip:text;color:transparent;text-wrap:balance;
+  max-width:16ch}
+@supports not (background-clip:text){h1{color:var(--ink);background:none}}
+.dek{color:var(--ink-2);font-size:clamp(17px,2vw,20px);line-height:1.55;margin:var(--s3) 0 0;
+  max-width:60ch}
+.kunye{display:flex;flex-wrap:wrap;gap:var(--s1);margin-top:var(--s4)}
+.rozet{display:inline-flex;align-items:center;gap:7px;background:var(--surface);
+  border:1px solid var(--rule);border-radius:var(--r-pill);padding:6px 14px;
+  font-size:var(--fs-xs);color:var(--ink-2);font-family:"IBM Plex Mono",monospace}
+.rozet b{color:var(--ink);font-weight:600}
+section{margin-top:var(--s7)}
+.bas{display:flex;align-items:baseline;gap:14px;margin-bottom:var(--s3)}
+.bas .no{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-xs);color:var(--ink-3);
+  letter-spacing:.1em;padding-top:6px}
+h2{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:var(--fs-h2);line-height:1.15;
+  letter-spacing:-.015em;margin:0;text-wrap:balance}
+h3{font-family:"Archivo";font-variation-settings:"wdth" 108;font-weight:700;font-size:var(--fs-h3);
+  margin:var(--s5) 0 var(--s2)}
+p{margin:0 0 var(--s2)}
+.kol p:last-child{margin-bottom:0}
+strong{font-weight:700}
+.vakalar{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:var(--s2);
+  margin-top:var(--s3)}
+.vaka{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-lg);
+  padding:var(--s3);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px}
+.vaka .kod{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;color:var(--ink)}
+.vaka .kur{font-size:var(--fs-xs);color:var(--ink-3);margin-top:-6px}
+.vaka .mek{font-size:var(--fs-sm);color:var(--ink-2);line-height:1.5;flex:1}
+.vaka .sor{font-size:var(--fs-sm);color:var(--ink);border-top:1px solid var(--rule-soft);
+  padding-top:9px;line-height:1.5}
+.vaka .sor b{color:var(--accent)}
+.sayilar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--s2);
+  margin:var(--s3) 0}
+.s{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-md);
+  padding:var(--s2) var(--s3);box-shadow:var(--shadow)}
+.s .l{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-3)}
+.s .v{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:700;margin-top:4px;
+  line-height:1.1}
+.s .n{font-size:var(--fs-xs);color:var(--ink-3);margin-top:4px;line-height:1.45}
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--r-md);
+  background:var(--surface);box-shadow:var(--shadow);margin:var(--s3) 0}
+table{border-collapse:collapse;width:100%;font-size:var(--fs-sm);min-width:520px}
+th,td{padding:12px 16px;text-align:right;border-bottom:1px solid var(--rule-soft);white-space:nowrap}
+th{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:600;background:var(--surface-2);border-bottom:1.5px solid var(--rule)}
+th:first-child,td:first-child{text-align:left}
+td{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:none}
+.pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+.muted{color:var(--ink-3)}
+.kutu{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--accent);
+  border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--shadow);margin:var(--s3) 0;
+  max-width:72ch}
+.kutu.uy{border-left-color:var(--uyari)}
+.kutu.ne{border-left-color:var(--neg)}
+.kutu .bl{font-family:"Archivo";font-weight:700;font-size:var(--fs-sm);margin-bottom:7px}
+.kutu p{font-size:var(--fs-sm);color:var(--ink-2);margin-bottom:var(--s1)}
+.kutu p:last-child{margin-bottom:0}
+.hata{border-top:1px solid var(--rule);padding:var(--s3) 0;display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:var(--s3);align-items:start}
+.hata:last-of-type{border-bottom:1px solid var(--rule)}
+.hata .ne{font-weight:600;font-size:var(--fs-sm);line-height:1.5}
+.hata .ne span{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--neg);font-weight:600;margin-bottom:5px}
+.hata .nas{font-size:var(--fs-sm);color:var(--ink-2);line-height:1.55}
+ul{margin:0 0 var(--s2);padding-left:20px} li{margin-bottom:7px}
+.bag{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s3)}
+.bag a{display:flex;flex-direction:column;gap:3px;background:var(--surface);border:1px solid var(--rule);
+  border-radius:var(--r-md);padding:14px 20px;text-decoration:none;box-shadow:var(--shadow);
+  min-width:210px}
+.bag a:hover{border-color:var(--accent)}
+.bag .t{font-weight:700;font-size:var(--fs-sm);color:var(--ink)}
+.bag .a{font-size:var(--fs-xs);color:var(--ink-3)}
+footer{margin-top:var(--s7);padding-top:var(--s3);border-top:1px solid var(--rule);
+  font-size:var(--fs-xs);color:var(--ink-3);max-width:80ch;line-height:1.6}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:680px){
+  .wrap{padding:var(--s5) 18px var(--s6)}
+  .hata{grid-template-columns:1fr;gap:var(--s1)}
+  section{margin-top:var(--s6)}
+}
+/*__ORTAK_CSS__*/
+</style>
+
+<!--__NAV__-->
+<div class="wrap" lang="tr">
+<main id="ana">
+<div class="tape"></div>
+<div class="kicker">TEFAS · serbest fon evreni · proje özeti</div>
+<h1>Sayı Değil, Soru</h1>
+<p class="dek">İki fonu incelemek için başladı; 1.209 fonluk bir tarayıcıya, altı vaka incelemesine ve her iş günü kendini yenileyen bir boru hattına dönüştü. Ortaya çıkan asıl bulgu tek tek fonlar değil, <strong>bir fonun rakamlarının o fon hakkında ne kadar az şey söylediği</strong> oldu.</p>
+<div class="kunye">
+  <span class="rozet">Veri kesimi <b>04.09.2026</b></span>
+  <span class="rozet">Evren <b>1.209 serbest fon</b></span>
+  <span class="rozet">Kod <b>2.680 satır Python</b></span>
+  <span class="rozet">Test <b>24</b></span>
+  <span class="rozet">Bağımlılık <b>yok</b></span>
+</div>
+
+<section>
+  <div class="bas"><span class="no">01</span><h2>Nereden başladı, nereye geldi</h2></div>
+  <div class="kol">
+    <p>Soru basitti: TLY ve DFI adlı iki serbest fon, aynı kategoride, neredeyse aynı oynaklıkta ve olağanüstü getirilerle duruyordu. Bu getiri nereden geliyor?</p>
+    <p>Cevabı bulmak için kurulan yöntem — <em>getiriyi parçalarına ayır, kaç güne bağlı olduğuna bak, oynaklığın yönünü ölç, sonra portföyün içine bak</em> — iki fon için yazılmıştı. Sonra aynı yöntem evrenin tamamına uygulandı. Bugün elde üç şey var:</p>
+    <ul>
+      <li><strong>Rapor</strong> — altı fonun ayrıntılı incelemesi, KAP bildirimleri ve portföy dağılım raporlarıyla doğrulanmış.</li>
+      <li><strong>Tarayıcı</strong> — 1.209 fonun tamamı; eşikleri kullanıcı oynatıyor, kurucu bazında dağılım, fon karşılaştırma, portföy ve öngörülebilirlik sekmeleri.</li>
+      <li><strong>Boru hattı</strong> — her iş günü 09:03'te TEFAS'tan veriyi tazeleyen, tahminleri puanlayan ve sayfaları yeniden yayınlayan zamanlanmış görev.</li>
+    </ul>
+    <p>Baştan sona tek bir kural korundu: <strong>araç hüküm vermez, soru üretir.</strong> Hiçbir ölçüt tek başına bir kusur kanıtı değil; liste yalnızca "bunu neden böyle?" diye sorulacak fonları daraltıyor. Cevap her zaman fonun KAP bildirimlerinde ve portföy raporlarında — tabloda değil.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">02</span><h2>Altı vaka, altı ayrı mekanizma</h2></div>
+  <div class="kol">
+    <p>Tarayıcının "sessiz yükseliş" ölçütü — 6 ayda getiri ≥%30, oynaklık ≤%25, günlerin ≤%20'si eksi — 12 fon buldu. En uçtakiler tek tek incelendi. Hepsi aynı sinyali veriyordu; <strong>hiçbirinin sebebi aynı değildi.</strong></p>
+  </div>
+  <div class="vakalar">
+    <div class="vaka">
+      <div class="kod">DFI</div><div class="kur">Atlas Portföy</div>
+      <div class="mek">Getirisinin ağırlığı tek bir hissede: IEYHO, fonun %55'i. Fon doğru değerliyor; olağandışı olan hissenin kendi borsa fiyatı. IEYHO'nun fiili dolaşım oranı Aralık 2025'te <span class="num">%69</span>'dan <span class="num">%33</span>'e düştü ve fiyatı aynı ay karakter değiştirdi.</div>
+      <div class="sor"><b>Soru:</b> Serbest dolaşımı incelmiş bir payın borsa fiyatı, fonun net varlık değeri için ne kadar bağımsız bir referans?</div>
+    </div>
+    <div class="vaka">
+      <div class="kod">TLY</div><div class="kur">Tera Portföy</div>
+      <div class="mek">Beş şirkette kontrol büyüklüğünde pay, toplam <span class="num">%67,9</span>; üçü grup içi. Grubun aracı kurumu ve üç fonu birlikte TRHOL'ün <span class="num">%73,30</span>'ünü tutuyor.</div>
+      <div class="sor"><b>Soru:</b> Bir şirketin paylarının dörtte üçü tek bir grubun elindeyse, kalan dolaşımda oluşan fiyat neyi ölçer?</div>
+    </div>
+    <div class="vaka">
+      <div class="kod">TMV</div><div class="kur">Tera Portföy</div>
+      <div class="mek">49 hisse ve türevlerle kısa vadeli algoritmik işlem. Tanı ölçütlerinin hiçbirine takılmıyor: yumuşatma imzası yok, getirisi geniş tabana yayılmış. Aralık 2025'te oynaklığı <em>yükselmiş</em> &mdash; DFI'nin tam tersi.</div>
+      <div class="sor"><b>Not:</b> %5 eşiğini aşan tek bildirimi yine grup holdingi TRHOL'de: fonun %12,4'ü.</div>
+    </div>
+    <div class="vaka">
+      <div class="kod">PBE</div><div class="kur">Pusula Portföy</div>
+      <div class="mek">Varlık dağılımı iki satır: <span class="num">+%544</span> VDMK, <span class="num">−%444</span> repo. 5,4 kat kaldıraçlı taşıma. 168 günde <strong>3 eksi gün</strong>. Pürüzsüzlük anomali değil &mdash; VDMK borsada işlem görmez, tahakkukla değerlenir.</div>
+      <div class="sor"><b>Soru:</b> Günlük oynaklıkta görünmeyen kaldıraç riski nerede görünür? Fonlama kesildiğinde, bir anda.</div>
+    </div>
+    <div class="vaka">
+      <div class="kod">PHN &amp; PKZ</div><div class="kur">Pusula Portföy</div>
+      <div class="mek">PBE'nin kardeşleri ve tam zıddı: yıllık oynaklık <span class="num">%100</span>, evrenin 1. ve 2. sırası. Bu yazı yazılırken dört günde <span class="num neg">−%61</span> ve <span class="num neg">−%34</span> kaybettiler; BIST 100 aynı günlerde <span class="num">−%1,5</span>. PKZ'nin düşüşü dört gün üst üste tam işlem marjında.</div>
+      <div class="sor"><b>Soru:</b> 710 payın yalnızca dördü aynı dört günde taban fiyattaydı. Hangileri tutuluyor? <b>Cevaplayamadık.</b></div>
+    </div>
+    <div class="vaka" style="background:var(--accent-soft);border-color:var(--accent)">
+      <div class="kod">Ortak sonuç</div><div class="kur">altı vakanın söylediği</div>
+      <div class="mek">Aynı kategori, aynı sinyal, aynı olağanüstü rakamlar &mdash; ve birbiriyle alakasız yapılar: bir hisse anomalisi, kontrol payları, algoritmik işlem, kaldıraçlı taşıma, yoğun hisse bahisleri.</div>
+      <div class="sor"><b>Metrik yapıyı göstermez.</b> Yapıyı görmek için portföye bakmak gerekir.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">03</span><h2>Asıl bulgu tek tek fonlarda değildi</h2></div>
+  <div class="kol">
+    <p>Bir fonun künyesinde "son 1 yıllık kategori derecesi: <span class="num">2 / 1.333</span>" yazar. Tek başına okununca bu bir başarı belgesidir. Aynı kurucunun diğer fonlarıyla birlikte okununca başka bir şey söyler.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Kurucu</th><th>Serbest fon</th><th>En iyi</th><th>En kötü</th><th>Yayılım</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Kurucu">Pusula</td><td data-l="Serbest fon">12</td><td data-l="En iyi" class="pos">+2.990%</td><td data-l="En kötü" class="neg">−89%</td><td data-l="Yayılım"><strong>1.909%</strong></td></tr>
+        <tr><td data-l="Kurucu">Tera</td><td data-l="Serbest fon">6</td><td data-l="En iyi" class="pos">+690%</td><td data-l="En kötü" class="neg">−78%</td><td data-l="Yayılım"><strong>584%</strong></td></tr>
+        <tr><td data-l="Kurucu">Atlas</td><td data-l="Serbest fon">21</td><td data-l="En iyi" class="pos">+1.026%</td><td data-l="En kötü" class="neg">−58%</td><td data-l="Yayılım"><strong>447%</strong></td></tr>
+        <tr><td data-l="Kurucu">Pardus</td><td data-l="Serbest fon">51</td><td data-l="En iyi" class="pos">+1.146%</td><td data-l="En kötü" class="neg">−100%</td><td data-l="Yayılım"><strong>299%</strong></td></tr>
+        <tr><td data-l="Kurucu" class="muted">Sektör ortancası <span class="muted">44 kurucu</span></td><td data-l="Serbest fon" class="muted">—</td><td data-l="En iyi" class="muted">—</td><td data-l="En kötü" class="muted">—</td><td data-l="Yayılım" class="muted">47%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kol">
+    <p>Çok sayıda yoğun ve birbirinden bağımsız bahis yapan bir ev, <strong>hiçbir beceri olmasa bile</strong> listenin hem tepesinde hem dibinde fon bulundurur. Tepedeki fonu tek başına görmek, listenin geri kalanını görmemektir.</p>
+    <p>Bunu test etmek için Pardus'un <strong>51 serbest fonunun tamamı</strong> incelendi. Fonlar farklı tarihlerde kurulduğu için doğrudan kıyaslanamaz &mdash; ama aynı hafta açılanlar kıyaslanabilir. 2025 Temmuz'unda 13 gün içinde altı fon açılmış: sonuçları <span class="num pos">+%2.623</span> ile <span class="num neg">−%99</span> arasında.</p>
+  </div>
+  <div class="sayilar">
+    <div class="s"><div class="l">Nakdi geçen</div><div class="v neg">19 / 51</div><div class="n">Pardus fonlarının %63'ü, kendi ömrü boyunca para piyasası fonunun altında kaldı</div></div>
+    <div class="s"><div class="l">Medyan yıllık</div><div class="v">%39</div><div class="n">aynı pencerelerde nakit %49</div></div>
+    <div class="s"><div class="l">Zirvesinin yarısından aşağıda</div><div class="v neg">22 / 51</div><div class="n">bugün itibarıyla</div></div>
+    <div class="s"><div class="l">Bugünkü büyüklükle</div><div class="v pos">+716%</div><div class="n">aynı 51 fon</div></div>
+    <div class="s"><div class="l">Başlangıç büyüklüğüyle</div><div class="v neg">−54%</div><div class="n">aynı 51 fon <em>(kaba tahmin)</em></div></div>
+  </div>
+  <div class="kutu uy">
+    <div class="bl">Son iki rakamın farkı hile değil, mekanik</div>
+    <p>Kaybeden fonlar küçüldüğü için <strong>bugünkü ağırlıkta neredeyse hiç yer kaplamıyor.</strong> Bugüne bakan biri <span class="num">+%716</span> görür; paranın girdiği andaki büyüklüğe bakan biri eksi görür.</p>
+    <p>İkinci rakam kaba bir tahmindir (fona giriş-çıkış olmadığını varsayar) ve bilinen iki yanlılığın ikisi de onu <strong>iyimser</strong> tarafa iter: kazanan fonların bugünkü büyüklüğünün önemli kısmı sonradan gelen paradır, <span class="num">−%100</span>'e giden iki fon ise hesabın tamamen dışında kalır.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">04</span><h2>Ertesi günü tahmin denemesi ve dürüst cevabı</h2></div>
+  <div class="kol">
+    <p>Dört şeffaf model &mdash; hep artı, dünü tekrarla, AR(1), 20 gün ortalaması &mdash; evrenin tamamında, ileriye bakmayan yürüyen testle denendi. Ölçü ham isabet değil <strong>beceri = isabet − taban oran</strong>: günlerinin %98'i artı olan bir fonda "hep artı de" demek %98 tutturur ve sıfır bilgi taşır.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Beceri dağılımı</th><th>Gözlem</th><th>Rastgele model</th><th></th></tr></thead>
+      <tbody>
+        <tr><td data-l="Beceri dağılımı">%90'lık dilim</td><td data-l="Gözlem">+2,5%</td><td data-l="Rastgele model">+2,5%</td><td data-l="" class="muted">ayırt edilemiyor</td></tr>
+        <tr><td data-l="Beceri dağılımı">%95'lik dilim</td><td data-l="Gözlem">+5,0%</td><td data-l="Rastgele model">+5,0%</td><td data-l="" class="muted">ayırt edilemiyor</td></tr>
+        <tr><td data-l="Beceri dağılımı">beceri &gt; +%5 olan fon</td><td data-l="Gözlem">60</td><td data-l="Rastgele model">61</td><td data-l="" class="muted">şansla açıklanıyor</td></tr>
+        <tr><td data-l="Beceri dağılımı">beceri &gt; +%10 olan fon</td><td data-l="Gözlem">18</td><td data-l="Rastgele model">2</td><td data-l="" class="neg">şanstan fazla</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="kol">
+    <p><strong>Yön tahmininde sistematik beceri yok.</strong> Orta dilimlerde gözlemlenen dağılım, aynı fonlara rastgele tahmin yapan modellerin ürettiğiyle üst üste biniyor. Uç kuyruktaki fazlalık gizlenmiyor &mdash; ama o da "model çalışıyor" demek değil; o fonların fiyat serisinin kendi içinde mekanik bir örüntü taşıdığı demek.</p>
+    <p>Denemenin asıl çıktısı beklenmedik bir yerden geldi: <strong>taban oranın kendisi bir teşhis.</strong> Bir fonun günlerinin ne kadarının artı olduğu, o fonun canlı bir piyasaya göre işaretlenip işaretlenmediğini söylüyor.</p>
+  </div>
+  <div class="sayilar">
+    <div class="s"><div class="l">BIST 100 endeks fonu</div><div class="v">%51</div><div class="n">yazı tura — olması gerektiği gibi</div></div>
+    <div class="s"><div class="l">Evren medyanı</div><div class="v">%72</div><div class="n">1.170 serbest fon</div></div>
+    <div class="s"><div class="l">Günlerinin ≥%90'ı artı</div><div class="v" style="color:var(--uyari)">220 fon</div><div class="n">12 aylık pencerede</div></div>
+    <div class="s"><div class="l">Hiç eksi günü yok</div><div class="v neg">89 fon</div><div class="n">12 ayda tek bir eksi gün bile değil</div></div>
+    <div class="s"><div class="l">Oynak ama artı</div><div class="v neg">9 fon</div><div class="n">oynaklığı ≥%15 olduğu hâlde günlerinin ≥%85'i artı</div></div>
+  </div>
+  <div class="kol">
+    <p>Son satır asıl soruyu taşıyor. Para piyasası fonlarının her gün artı yapması olağan; tahakkukla değerleniyorlar. Ama <strong>yıllık %38 oynaklığa sahip olup günlerinin %94'ünde artı yapan bir hisse fonu</strong> (DFI), hisse fiyatlarının yapmadığı bir şey yapıyor demektir.</p>
+    <p>Bugünden itibaren ileriye dönük bir sicil de tutuluyor: her iş günü, piyasa kapalıyken 1.170 fon için ertesi gün tahmini yazılıyor ve bir sonraki gün gerçekleşenle puanlanıyor. Tahminler yazıldıktan sonra değiştirilmiyor. Geriye dönük test "hiçbir model taban oranı geçemiyor" diyor; sicil bunu ya doğrulayacak ya çürütecek.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">05</span><h2>Yöntemin kendi sicili</h2></div>
+  <div class="kol">
+    <p>Bu bölüm çoğu analizde bulunmaz, ama en çok bilgi taşıyan bölüm o. Proje boyunca <strong>yanlış sonuçlara varıldı ve düzeltildi.</strong> Aşağıda on iki kayıt var; her biri, <em>nasıl yakalandığıyla</em> birlikte. Yakalanma biçimi en az hatanın kendisi kadar önemli: bir kısmı bakarak, bir kısmı ancak test yazılınca görüldü.</p>
+  </div>
+
+  <div class="hata">
+    <div class="ne"><span>ilk sonuç</span>"DFI piyasanın tersine konumlanmış"</div>
+    <div class="nas">Tam dönem yakalama oranlarının ikisi de pozitifti; çöküş alt penceresi ayrı hesaplanınca yükseliş yakalaması <span class="num">−%38</span>, düşüş yakalaması <span class="num">+%94</span> çıktı. <strong>Alt pencereyi ayrı hesaplamamak.</strong></div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>ilk sonuç</span>DFI'nin rejim değişimi Mayıs 2023'te</div>
+    <div class="nas">Maksimum düşüşün dip tarihi "düşmeyi bıraktı" ile "karakter değiştirdi"yi karıştırıyordu. Yıl yıl yakalama tablosu çıkarılınca dönüşün <strong>2025'te</strong> olduğu görüldü. Rapora ayrı bir düzeltme kutusu eklendi.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>ilk sonuç</span>Tera'nın TRHOL payı %11,33</div>
+    <div class="nas">Ortaklık tablosunda negatif nominalli ikinci bir satır gözden kaçmıştı. Net pay <span class="num">%8,06</span>. Aynı kontrolde DSTKF'nin aslında daha büyük olduğu ortaya çıktı.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>eksik</span>TLY'nin en büyük pozisyonu atlandı</div>
+    <div class="nas">Yalnızca 31.12.2025 denetlenmiş raporuna bakılmıştı. OZATD 2026'da alınmış ve fonun <span class="num">%26,4</span>'ü &mdash; yani en büyük kalemi. Tek bir tarihe bakmanın maliyeti.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>yanlış pencere</span>Taban oranı 120 günden, oynaklığı 12 aydan</div>
+    <div class="nas">İkisi aynı satırda gösterilince olmayan bir çelişki üretiliyordu. Listenin başındaki fonun "%100 artı ama %49 oynaklık" anomalisi bu yüzden sahteydi. İkisi de 12 aya çekildi.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>yanlış okuma</span>−%48'lik gün kayıp sanıldı</div>
+    <div class="nas">Kâr payı dağıtan fonlarda büyük tek günlük düşüş <strong>dağıtımdır</strong>, kayıp değil. Tabloya "en kötü gün" sütunu ve bu konuda bir uyarı eklendi; artık kendiliğinden görünüyor.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>yöntem farkı</span>Rapor ile tarayıcı aynı sayıyı farklı hesaplıyordu</div>
+    <div class="nas">Rapor, bölünme işaretli fonları yayılım hesabından tamamen atıyordu &mdash; bu kaybedenleri de eleyip dağılımı yapay olarak daraltıyordu. İkisi de artık düzeltilmiş getiriyi kullanıyor.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>test edildi, çürütüldü</span>"PHN kardeş fonları tutuyor olabilir"</div>
+    <div class="nas">PHN varlıklarının <span class="num">%104,6</span>'sını başka fonlarda tutuyor; akla gelen ilk açıklama kardeş fonlardı. Günlük getiri korelasyonu <span class="num">r = 0,26</span> çıktı. Veri desteklemedi; <strong>açık soru olarak bırakıldı.</strong></div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>ölçüm hatası</span>Kendi ölçümlerim iki kez yanlış çıktı</div>
+    <div class="nas">Bir kez tarayıcı penceresi sıfır genişlikteyken "yatay taşma var" denildi; bir kez sayaç sıfırlama düğmesine basıldıktan sonra okundu. İkisi de yeniden ölçülüp düzeltildi.</div>
+  </div>
+
+  <div class="hata">
+    <div class="ne"><span>sessiz ölçüm hatası</span>Düz seride korelasyon 1,0 dönüyordu</div>
+    <div class="nas">Sıfır varyans koruması <span class="num">if not varyans</span> biçimindeydi; neredeyse sabit bir seride kayan nokta gürültüsü varyansı sıfır yerine <span class="num">1e-36</span> yapıyor ve <span class="num">1e-36 / 1e-36 = 1,0</span> veriyordu. Para piyasası benzeri düz bir fona <strong>sahte bir "mükemmel yumuşatma" imzası</strong> takabilirdi. Bağıl eşikle düzeltildi; gerçek fonların ρ değerleri değişmedi, yani hata yayında hiç tetiklenmemişti.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>sessiz ölçüm hatası</span>Sıfır fiyat ayıklanmıyordu</div>
+    <div class="nas">TEFAS bazı fonların ilk gününü <span class="num">0</span> döner ve tek bir sıfır tüm getiri zincirini bozar. Veri katmanı ayıklıyordu ama ölçüm katmanının kendi koruması yoktu &mdash; yani ayıklama bir gün atlansa hata sessizce geçerdi.</div>
+  </div>
+  <div class="hata">
+    <div class="ne"><span>yayında kırık</span>"İncelendi" rozetleri hiçbir yere gitmiyordu</div>
+    <div class="nas">Rapor bağlantısı yapılandırmada eksikti; rozetin <span class="num">href</span>'i boş temelle üretilince tarayıcının kendi içinde var olmayan bir bağlantıya işaret ediyordu. Günlerce yayında kaldı ve fark edilmedi &mdash; çünkü kendi ürettiğim çıktıya tıklayarak bakmamıştım.</div>
+  </div>
+
+  <div class="kutu">
+    <div class="bl">Bu üçünün ortak dersi: bakmak yetmiyor</div>
+    <p>Yukarıdaki hataların çoğu <strong>bakarak</strong> bulundu &mdash; bir grafiği açıp, bir tabloyu okuyup, bir sayıyı ikinci kez hesaplayarak. Son üçü öyle bulunmadı. İlk ikisi, ölçüm katmanı için <strong>test yazıldığında</strong> ortaya çıktı; ikisi de gerçek veride hiç tetiklenmemişti, yani hiçbir grafiğe bakarak görülemezdi. Üçüncüsü, kendi yayınladığım sayfanın bağlantısına tıklanarak.</p>
+    <p style="margin-bottom:0">Sessiz hata, nicel bir işte en tehlikeli hata türüdür: yanlış sayı üretip doğru görünür. Bu yüzden ölçüm katmanı artık <strong>24 testle</strong> korunuyor ve günlük boru hattı, testler geçmeden yayın yapmıyor.</p>
+  </div>
+
+  <div class="kutu ne">
+    <div class="bl">En pahalı ders: veri kalitesi</div>
+    <p>TEFAS fiyatları pay bölünmesi gibi kurumsal işlemlere göre düzeltilmiyor. Bu, getirileri <strong>yanıltıcı biçimde iyi</strong> gösteriyor: bir fon ham veride <span class="num neg">−%58</span> görünürken, bir günde <span class="num">×9,5</span>'lik bölünme ayıklandığında gerçek kaybı <span class="num neg">−%99</span> çıktı. Aynı düzeltme dört fonda daha kaybı büyüttü.</p>
+    <p>Ham seriye güvenen bir tarama, çöken fonların ne kadar çöktüğünü sistematik olarak eksik ölçer. Bu yüzden tarayıcıda bölünme işaretli fonlar ayrı gösteriliyor ve satır açıldığında düzeltilmiş getiri de veriliyor.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">06</span><h2>Bu araç ne yapamaz</h2></div>
+  <div class="kol">
+    <ul>
+      <li><strong>Portföy içeriğini göremez.</strong> Tarama yalnızca fiyat serisine bakar; kaldıracı, ücret yapısını, gerçek pozisyonları görmez. Vakalarda bunlar elle, KAP ve portföy dağılım raporlarından doğrulandı &mdash; 1.209 fon için bu yapılmadı.</li>
+      <li><strong>Hangi hissenin tutulduğunu söyleyemez.</strong> PKZ'de 710 payın tamamı tarandı, aritmetik eşleşti, ama tek bir isim verilemedi. En yüksek korelasyon <span class="num">R² 0,10</span>. Bu tür sorular yalnızca KAP portföy raporlarıyla kapanır.</li>
+      <li><strong>Geleceği tahmin edemez.</strong> Bölüm 04'ün tamamı bunun ölçüsü.</li>
+      <li><strong>Yatırım tavsiyesi vermez ve veremez.</strong> Hangi fonun alınacağına dair hiçbir çıktısı yok; portföy sekmesi bile elinizdekinin <em>ne olduğunu</em> gösterir, ne almanız gerektiğini değil.</li>
+      <li><strong>Usulsüzlük iddiası taşımaz.</strong> Buradaki her yapı kayıtlı, kamuya açıklanmış ve TEFAS'ta yayımlanıyor. Sorulan tek şey, açıklanmış bir yapının rakamlara nasıl yansıdığı.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="bas"><span class="no">07</span><h2>Nasıl çalışıyor</h2></div>
+  <div class="kol">
+    <p>Saf Python, dış bağımlılık yok, <span class="num">2.311</span> satır. TEFAS'ın açık JSON ucundan fiyat serileri, İş Yatırım'dan BIST kapanışları, KAP'tan portföy ve ortaklık bilgileri. Poppler olmadığı için PDF okuyucu da elle yazıldı: sıkıştırılmış akışları açıp yazı tipi eşlemelerini çözerek KAP raporlarından metin çıkarıyor.</p>
+    <p>Metrik tarafında pandas yok &mdash; CAGR, oynaklık, Sharpe/Sortino, maksimum düşüş, VaR/CVaR, yakalama oranları, yoğunlaşma testi, kayan pencereler, Getmansky-Lo-Makarov yumuşatma tespiti ve Geltner tersine-yumuşatma düzeltmesi doğrudan yazıldı. Renk paleti bile bir doğrulayıcıdan geçiyor: renk körlüğü ayrımı, kontrast ve açıklık bandı ölçülüyor.</p>
+    <p>Her iş günü 09:03'te zamanlanmış görev evreni tazeliyor, tahminleri puanlayıp yenilerini yazıyor ve tarayıcıyı yeniden yayınlıyor; rapor pazartesileri güncelleniyor. Bir veri kaynağı erişilemezse eski veriyle yayın yapılmıyor.</p>
+  </div>
+  <div class="bag">
+    <a href="https://claude.ai/code/artifact/10fe73cc-5153-4697-8fcb-3381f8cc008d" target="_blank" rel="noopener">
+      <span class="t">Rapor ↗</span><span class="a">Altı vakanın ayrıntılı incelemesi</span></a>
+    <a href="https://claude.ai/code/artifact/bbf84a7a-8da6-4bcf-af2b-9d9579decd42" target="_blank" rel="noopener">
+      <span class="t">Tarayıcı ↗</span><span class="a">1.209 fon · beş sekme</span></a>
+  </div>
+</section>
+
+<footer>
+  <p><strong>Veri kesimi 04.09.2026.</strong> Rakamlar TEFAS'ın <span class="num">fonFiyatBilgiGetir</span> ucundan ve İş Yatırım'ın açık günlük kapanış ucundan alındı; portföy dağılımları ve ortaklık yapıları KAP bildirimleriyle ve kurucu portföy dağılım raporlarıyla doğrulandı. Bu sayfadaki sayılar o tarihe aittir ve sonraki koşularla değişebilir &mdash; canlı rakamlar için tarayıcıya bakın.</p>
+  <p>Bu bir yatırım tavsiyesi değildir, herhangi bir fon veya menkul kıymet için alım-satım önerisi içermez ve hiçbir kişi veya kurum hakkında usulsüzlük iddiası taşımaz. Geçmiş performans gelecek için bağlayıcı değildir. Analizler kamuya açık verilere dayanır ve hata içerebilir; nitekim yukarıdaki <em>Yöntemin kendi sicili</em> bölümü, bu çalışma sırasında bulunup düzeltilen hataların kaydıdır.</p>
+</footer>
+</main>
+</div>
