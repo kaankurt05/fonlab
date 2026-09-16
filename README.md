@@ -26,14 +26,18 @@ python3 -m fonlab kunye TLY
 | `ara "PARA PİYASASI"` | Ada göre fon kodu arar |
 | `ozet TLY DFI` | Hızlı risk/getiri tablosu |
 | `rapor [--taze]` | Veri paketi + rapor HTML'i üretir |
-| `tara` | Tüm serbest fon evrenini tarar → `tarama.json` |
+| `tara [--tahmin]` | Tüm evreni tarar → `tarama.json`; `--tahmin` sicili de işler |
 | `tarayici` | Taramadan etkileşimli sayfa üretir |
 | `tahmin` | Bekleyen tahminleri puanlar, ertesi gün için yenilerini yazar |
-| `ozet` | Proje özeti sayfasını üretir |
+| `ozetsayfa` | Proje özeti sayfasını üretir |
 | `renk "#a,#b" --mode light` | Palet doğrular (renk körlüğü, kontrast, açıklık) |
 | `belge rapor.pdf` | KAP/PDR PDF'inden metin çıkarır |
 
-Günlük akış: `tara` → `tahmin` → `tarayici`. Rapor haftalık.
+Günlük akış: `tara --tahmin` → `tarayici`. Rapor haftalık.
+
+İstekler eş zamanlı atılır; işçi sayısı `FONLAB_ISCI` ile ayarlanır (varsayılan 8).
+`FONLAB_KAYIT` tahmin sicilinin yolunu değiştirir — deneme koşularının gerçek
+sicili bozmaması için. `FONLAB_TTL` önbellek ömrü (saniye, varsayılan 6 saat).
 
 ## Modüller
 

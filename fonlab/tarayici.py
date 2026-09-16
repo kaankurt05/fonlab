@@ -71,8 +71,11 @@ def _sicil(yol=None):
     o = k.get('ozet') or {}
     if not o.get('adet'):
         return {'adet': 0, 'bekleyen': o.get('bekleyen', 0)}
+    # 'naif' = o gun ayni fonlar icin "hep arti" diyen modelin isabeti.
+    # Eski kayitlarda bu alan yok; None birakiliyor, uydurulmuyor.
     gun = [{'tarih': g['tarih'], 'n': g['n'],
-            'isabet': g['dogru'] / g['n'] if g['n'] else None}
+            'isabet': g['dogru'] / g['n'] if g['n'] else None,
+            'naif': (g['arti'] / g['n']) if g.get('arti') is not None and g['n'] else None}
            for g in k.get('gunluk', [])][-40:]
     return {**o, 'gunluk': gun}
 

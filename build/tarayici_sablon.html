@@ -814,9 +814,17 @@ function sicilCiz(){
     gr.innerHTML='<div class="pf-uyari">Sicil <b>bugün başlıyor</b>. İlk puanlanmış sonuçlar bir sonraki işlem gününde görünecek; anlamlı bir isabet oranı için birkaç haftalık birikim gerekir. O zamana kadar yukarıdaki geriye dönük teste bakın.</div>';
     return;
   }
+  const fark = (S.naif!=null && S.naif_isabet!=null) ? S.naif_isabet-S.naif : null;
   k.innerHTML=
     kut('Puanlanmış tahmin', S.adet.toLocaleString('tr-TR'), S.fon+' fon · '+S.gun+' gün')+
-    kut('İsabet', pct(S.isabet,1), S.ilk+' → '+S.son)+
+    kut('Model isabeti', pct(S.isabet,1), S.ilk+' → '+S.son)+
+    (S.naif!=null
+      ? kut('Aynı günlerde "hep artı"', pct(S.naif,1),
+            S.naif_gun+' gün · hiçbir şey bilmeyen model')+
+        kut('Fark', (fark>=0?'+':'−')+pct(Math.abs(fark),1),
+            fark>=0?'model naif modelin üstünde':'model naif modelin <b>altında</b>',
+            fark>=0?'var(--pos)':'var(--neg)')
+      : kut('Naif karşılaştırma', '—', 'bu günler için kaydedilmemiş'))+
     kut('Ort. mutlak hata', pct(S.mae,2), 'tahmin ile gerçek arasındaki fark')+
     kut('Bekleyen', S.bekleyen.toLocaleString('tr-TR'), 'henüz puanlanmadı');
   const g=(S.gunluk||[]).filter(x=>x.isabet!=null);
@@ -830,12 +838,21 @@ function sicilCiz(){
        '<text x="'+(M.l-9)+'" y="'+(+y+4)+'" text-anchor="end" font-size="12" fill="var(--ink-3)" '+
        'font-family="IBM Plex Mono, monospace">'+pct(v)+'</text>';});
   const yol=g.map((x,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(x.isabet).toFixed(1)).join(' ');
+  // naif cizgi: ayni gun, ayni fonlar, "hep arti" diyen model
+  const nv=g.map((x,i)=>[i,x.naif]).filter(p2=>p2[1]!=null);
+  if(nv.length>1){
+    const ny=nv.map((p2,j)=>(j?'L':'M')+X(p2[0]).toFixed(1)+' '+Y(p2[1]).toFixed(1)).join(' ');
+    h+='<path d="'+ny+'" fill="none" stroke="var(--ink-3)" stroke-width="2" '+
+       'stroke-dasharray="5 4" stroke-linejoin="round"/>';
+  }
   h+='<path d="'+yol+'" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>';
   h+='<text x="'+M.l+'" y="'+(H-6)+'" font-size="12" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">'+g[0].tarih+'</text>';
   h+='<text x="'+(W-M.r)+'" y="'+(H-6)+'" text-anchor="end" font-size="12" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">'+g[g.length-1].tarih+'</text>';
   h+='</svg>';
   gr.innerHTML='<div class="kars-graf"><h3>Gün gün isabet</h3>'+
-    '<p class="alt">Her nokta o gün puanlanan tüm tahminlerin isabet oranı. Taban oran evren medyanında %68 &mdash; bu çizginin oranın belirgin üstünde kalması gerekir ki modelin bir katkısı olsun.</p>'+h+'</div>';
+    '<p class="alt">Düz çizgi: o gün puanlanan tahminlerin isabet oranı. Kesikli çizgi: <b>aynı gün, aynı fonlar</b> için hiçbir şey bilmeden &laquo;hep artı&raquo; diyen modelin isabeti. Modelin bir katkısı olduğunu söyleyebilmek için düz çizginin kesikli çizginin <b>belirgin üstünde</b> kalması gerekir.</p>'+h+
+    '<div class="gost"><span><i style="background:var(--accent)"></i>model</span>'+
+    '<span><i style="background:var(--ink-3)"></i>&laquo;hep artı&raquo; (naif)</span></div></div>';
 }
 
 /* ---------- ongorulebilirlik ---------- */

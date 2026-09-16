@@ -5,10 +5,10 @@
   python3 -m fonlab ara "PARA PİYASASI"  fon kodu ara
   python3 -m fonlab ozet TLY DFI         hizli risk/getiri tablosu
   python3 -m fonlab rapor [--taze]       veri paketi + HTML uret
-  python3 -m fonlab tara                 tum serbest fon evrenini tara
+  python3 -m fonlab tara [--tahmin]      tum evreni tara (+ tahmin sicilini isle)
   python3 -m fonlab tarayici             tarama sonucundan etkilesimli sayfa uret
   python3 -m fonlab tahmin               dunku tahminleri puanla, yarininkini yaz
-  python3 -m fonlab ozet                 proje ozeti sayfasini uret
+  python3 -m fonlab ozetsayfa            proje ozeti sayfasini uret
   python3 -m fonlab renk "#a,#b" --mode light   palet dogrula
   python3 -m fonlab belge rapor.pdf Mevduat      KAP/PDR pdf'inden metin cikar
 """
@@ -68,16 +68,58 @@ def cmd_rapor(args):
                   f"fon {yp(d['fon_getiri'],1)} endeks {yp(d['endeks_getiri'],1)}")
 
 
+def _izleme(fonlar):
+    """Ayrintili kayit tutulacak fonlar: raporda incelenenler + en az eksi
+    gunu olan oynak fonlar."""
+    from fonlab.tarayici import incelenen
+    return set(incelenen()) | {
+        x['kod'] for x in sorted(
+            (y for y in fonlar if not y.get('supheli') and y.get('vol', 0) >= 0.15),
+            key=lambda y: y.get('eksi_oran', 1))[:25]}
+
+
+def _sicil_yaz(ozet):
+    print('\nileriye dönük sicil:')
+    if ozet['adet']:
+        print(f"  puanlanmış tahmin : {ozet['adet']:,}  ({ozet['fon']} fon, {ozet['gun']} gün)")
+        print(f"  dönem             : {ozet['ilk']} -> {ozet['son']}")
+        print(f"  isabet            : {ozet['isabet']:.1%}")
+        if ozet.get('naif') is not None:
+            fark = ozet['naif_isabet'] - ozet['naif']
+            print(f"  aynı günlerde naif: {ozet['naif']:.1%}  "
+                  f"(model {ozet['naif_isabet']:.1%}, fark {fark:+.1%}, "
+                  f"{ozet['naif_gun']} gün)")
+        print(f"  ort. mutlak hata  : {ozet['mae']:.3%}")
+    else:
+        print('  henüz puanlanmış tahmin yok - ilk koşu, yarın puanlanacak')
+    print(f"  bekleyen tahmin   : {ozet['bekleyen']:,}")
+
+
 def cmd_tara(args):
-    """Serbest fon evrenini tara: python3 -m fonlab tara [--limit N]"""
-    from fonlab import tara as T
-    limit = None
-    if '--limit' in args:
-        limit = int(args[args.index('--limit') + 1])
-    v = T.tara(limit=limit)
+    """Evreni tara: python3 -m fonlab tara [--limit N] [--isci N] [--tahmin]
+
+    --tahmin verilirse tahmin sicili ayni adimda islenir. Tarama zaten her
+    fonun serisini cekiyor ve yuruyen testi hesapliyor; ayri bir `tahmin`
+    kosusu ayni isi bastan yapiyordu.
+    """
+    from fonlab import tara as T, tahmin
+    limit = int(args[args.index('--limit') + 1]) if '--limit' in args else None
+    isci = int(args[args.index('--isci') + 1]) if '--isci' in args else None
+    sicil = '--tahmin' in args
+
+    cikti = T.tara(limit=limit, isci=isci, seri_tut=sicil)
+    v, seriler = cikti if sicil else (cikti, {})
     yol = T.yaz(v)
     print(f"\n{v['islenen']}/{v['evren']} fon işlendi, {v['atlanan']} atlandı, "
-          f"{len(v['hatalar'])} hata -> {yol}")
+          f"{len(v['hatalar'])} hata, {v['saniye']:.0f} sn ({v['isci']} işçi) -> {yol}")
+
+    if sicil:
+        kodlar = [x['kod'] for x in v['fonlar'] if not x.get('supheli')]
+        hazir = {x['kod']: {'model': x.get('t_model'), 'getiri': x.get('t_yarin')}
+                 for x in v['fonlar']}
+        ozet = tahmin.puanla_ve_tahmin(kodlar, seriler,
+                                       izleme=_izleme(v['fonlar']), hazir=hazir)
+        _sicil_yaz(ozet)
 
 
 def cmd_tarayici(args):
@@ -100,7 +142,9 @@ def cmd_belge(args):
             print(' ', s2[:300])
 
 
-def cmd_ozet(args):
+def cmd_ozetsayfa(args):
+    """Proje ozeti sayfasini uret. (Adi 'ozet' idi; risk tablosu komutuyla
+    cakisip onu golgeliyordu - ikinci def birinciyi eziyordu.)"""
     from fonlab import rapor
     print('üretildi:', rapor.ozet_yaz())
     return 0
@@ -115,7 +159,6 @@ def cmd_tahmin(args):
     """
     import json, os
     from fonlab import tahmin, tefas, metrik
-    from fonlab.tarayici import incelenen
     from fonlab.yapilandirma import AYAR
 
     kok = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -127,10 +170,7 @@ def cmd_tahmin(args):
         t = json.load(f)
 
     kodlar = [x['kod'] for x in t['fonlar'] if not x.get('supheli')]
-    izleme = set(incelenen()) | {
-        x['kod'] for x in sorted(
-            (y for y in t['fonlar'] if not y.get('supheli') and y.get('vol', 0) >= 0.15),
-            key=lambda y: y.get('eksi_oran', 1))[:25]}
+    izleme = _izleme(t['fonlar'])
 
     seriler, hata = {}, 0
     for i, kod in enumerate(kodlar, 1):
@@ -142,16 +182,12 @@ def cmd_tahmin(args):
         if i % 250 == 0:
             print(f'  {i}/{len(kodlar)} seri yuklendi', flush=True)
 
-    ozet = tahmin.puanla_ve_tahmin(kodlar, seriler, izleme=izleme)
-    print(f"\nileriye donuk sicil ({hata} fon veri hatasi):")
-    if ozet['adet']:
-        print(f"  puanlanmis tahmin : {ozet['adet']:,}  ({ozet['fon']} fon, {ozet['gun']} gun)")
-        print(f"  donem             : {ozet['ilk']} -> {ozet['son']}")
-        print(f"  isabet            : {ozet['isabet']:.1%}")
-        print(f"  ortalama mutlak hata: {ozet['mae']:.3%}")
-    else:
-        print('  henuz puanlanmis tahmin yok - ilk kosu, yarin puanlanacak')
-    print(f"  bekleyen tahmin   : {ozet['bekleyen']:,}")
+    hazir = {x['kod']: {'model': x.get('t_model'), 'getiri': x.get('t_yarin')}
+             for x in t['fonlar']}
+    ozet = tahmin.puanla_ve_tahmin(kodlar, seriler, izleme=izleme, hazir=hazir)
+    if hata:
+        print(f'  ({hata} fon veri hatası)')
+    _sicil_yaz(ozet)
     return 0
 
 
@@ -161,8 +197,9 @@ def cmd_renk(args):
 
 
 KOMUTLAR = {'kunye': cmd_kunye, 'ara': cmd_ara, 'ozet': cmd_ozet,
-            'rapor': cmd_rapor, 'renk': cmd_renk, 'belge': cmd_belge, 'tara': cmd_tara, 'tarayici': cmd_tarayici,
-            'tahmin': cmd_tahmin, 'ozet': cmd_ozet}
+            'rapor': cmd_rapor, 'renk': cmd_renk, 'belge': cmd_belge,
+            'tara': cmd_tara, 'tarayici': cmd_tarayici,
+            'tahmin': cmd_tahmin, 'ozetsayfa': cmd_ozetsayfa}
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] not in KOMUTLAR:

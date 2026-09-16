@@ -5,6 +5,7 @@ TEFAS 2026'da yeni siteye gecti. Eski `/api/DB/BindHistoryInfo` ucu kapatildi;
 calisan uc `/api/funds/fonFiyatBilgiGetir`. HTML sayfalari F5/Shape bot
 korumasi arkasinda ama /api/* yollari korumasiz, duz HTTP ile calisiyor.
 """
+import http.client
 import json, os, time, urllib.request, urllib.error
 
 BASE = 'https://www.tefas.gov.tr/api/funds/'
@@ -14,6 +15,13 @@ CACHE_DIR = os.environ.get('FONLAB_CACHE',
                            os.path.join(os.path.dirname(os.path.abspath(__file__)), '.onbellek'))
 CACHE_TTL = int(os.environ.get('FONLAB_TTL', 6 * 3600))   # saniye
 MAX_PERIYOD = 60                                          # TEFAS ay tavani (5 yil)
+
+
+# Es zamanli istekte sunucu baglantiyi kapatabiliyor. RemoteDisconnected
+# ne URLError ne de TimeoutError'dur; dar bir demetle yakalanmayip fonu
+# tamamen dusuruyordu. OSError + HTTPException ikisini de kapsiyor.
+AG_HATASI = (urllib.error.URLError, TimeoutError, json.JSONDecodeError,
+             http.client.HTTPException, OSError)
 
 
 class TefasHata(RuntimeError):
@@ -56,7 +64,7 @@ def cagir(uc, govde, referer_kod=None, deneme=3):
             if j.get('errorMessage'):
                 raise TefasHata(f'{uc}: {j["errorMessage"]}')
             return j
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
+        except AG_HATASI as e:
             son = e
             time.sleep(1.5 * (i + 1))
     raise TefasHata(f'{uc} basarisiz: {son}')

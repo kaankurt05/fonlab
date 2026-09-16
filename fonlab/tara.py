@@ -5,10 +5,13 @@ Iki fonda ise yarayan yontemi (deger_tanisi, yogunlasma, yakalama) 1.300+ fona
 uygular. Amac hukum vermek degil **soru uretmek**: hangi fonlarin fiyat serisi,
 tuttugu varliklarla acikladigimizdan farkli davraniyor?
 
-  python3 -m fonlab tara            # tam evren -> tarama.json
-  python3 -m fonlab tara --limit 40 # deneme
+  python3 -m fonlab tara             # tam evren -> tarama.json
+  python3 -m fonlab tara --tahmin    # tarama + tahmin sicilini tek adimda isle
+  python3 -m fonlab tara --limit 40  # deneme
 """
 import json, math, os, re, sys, time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 from . import tefas, metrik, tahmin
 
 BURASI = os.path.dirname(os.path.abspath(__file__))
@@ -16,6 +19,11 @@ KOK = os.path.dirname(BURASI)
 CIKTI = os.path.join(KOK, 'tarama.json')
 PERIYOD = 12          # TEFAS yalnizca 12 ve 60'i kabul ediyor; 12 = ~252 gun
 ASGARI_GUN = 200      # bir yillik tani icin gereken en az gozlem
+# Tarama ag-bagimli: fon basina iki istek (fiyat serisi + kunye), 1.300 fon.
+# Sirayla ~yarim saat suruyordu ve zamanlanmis kosu o pencerede kesiliyordu.
+# Es zamanli istekle birkac dakikaya iniyor. Istek hizini abartmamak icin
+# varsayilan 8; FONLAB_ISCI ile degistirilebilir.
+ISCI = max(1, int(os.environ.get('FONLAB_ISCI', '8')))
 
 
 def serbest_fonlar(ozel_dahil=True):
@@ -33,10 +41,12 @@ def serbest_fonlar(ozel_dahil=True):
     return out
 
 
-def _fon_metrikleri(kod, rf, gecikme):
+def _fon_metrikleri(kod, rf):
+    """(metrikler, Seri) doner. Seri'yi burada kuruyoruz; cagiran tarafin
+    ayni veriyi ikinci kez cekmesine gerek kalmasin."""
     rows = tefas.fiyat_serisi(kod, PERIYOD)
     if len(rows) < ASGARI_GUN:
-        return None
+        return None, None
     ds = [d for d, _ in rows]; v = [p for _, p in rows]
     rs = metrik.getiriler(v)
     rho, un, carpan = metrik.tersine_yumusat(rs)
@@ -109,7 +119,7 @@ def _fon_metrikleri(kod, rf, gecikme):
         'en_uzun_seri': seri, 'mdd': mdd, 'sharpe': sharpe, 'x10': x10,
         'en_kotu': min(rs), 'medyan_mutlak': sorted(abs(r) for r in rs)[len(rs) // 2],
         **_tahmin_alanlari(rs),
-    }
+    }, s_obj
 
 
 def _tahmin_alanlari(rs):
@@ -132,37 +142,58 @@ def _tahmin_alanlari(rs):
             't_yarin': ileri['getiri']}
 
 
-def tara(limit=None, gecikme=0.08, ozel_dahil=True, ilerleme=True):
+def _bir_fon(kod, ad, rf):
+    """Tek fonun tum isi. Is parcaciginda calisiyor; disariya istisna sizdirmaz."""
+    m, s_obj = _fon_metrikleri(kod, rf)
+    if m is None:
+        return kod, None, None
+    m['ad'] = ad
+    try:
+        k = tefas.kunye(kod)
+        m['buyukluk'] = k.get('portBuyukluk')
+        m['yatirimci'] = k.get('yatirimciSayi')
+        m['derece'] = k.get('kategoriDerece')
+    except Exception:
+        m['buyukluk'] = m['yatirimci'] = m['derece'] = None
+    # Seri nesnesi tahmin sicili icin geri veriliyor: ayni veriyi ikinci kez
+    # cekmeye/cozmeye gerek kalmiyor.
+    return kod, m, s_obj
+
+
+def tara(limit=None, isci=None, ozel_dahil=True, ilerleme=True, seri_tut=False):
+    """Evreni tara. seri_tut=True ise (veri, {kod: Seri}) doner."""
     evren = serbest_fonlar(ozel_dahil)
     kodlar = sorted(evren)[:limit] if limit else sorted(evren)
     rf = metrik.Seri('ALE', tefas.fiyat_serisi('ALE', PERIYOD))
-    sonuc, hata, atlanan = [], [], 0
+    isci = isci or ISCI
+    sonuc, hata, atlanan, seriler = [], [], 0, {}
     t0 = time.time()
-    for i, kod in enumerate(kodlar, 1):
-        try:
-            m = _fon_metrikleri(kod, rf, gecikme)
-            if m is None:
-                atlanan += 1
-            else:
-                m['ad'] = evren[kod]
-                try:
-                    k = tefas.kunye(kod)
-                    m['buyukluk'] = k.get('portBuyukluk')
-                    m['yatirimci'] = k.get('yatirimciSayi')
-                    m['derece'] = k.get('kategoriDerece')
-                except Exception:
-                    m['buyukluk'] = m['yatirimci'] = m['derece'] = None
-                sonuc.append(m)
-        except Exception as e:
-            hata.append((kod, str(e)[:70]))
-        time.sleep(gecikme)
-        if ilerleme and i % 50 == 0:
-            gecen = time.time() - t0
-            print(f'  {i}/{len(kodlar)}  ok={len(sonuc)} atlanan={atlanan} hata={len(hata)} '
-                  f'{gecen:.0f}sn (kalan ~{gecen/i*(len(kodlar)-i):.0f}sn)', flush=True)
-    return {'olusturma': time.strftime('%Y-%m-%d %H:%M'), 'periyod_ay': PERIYOD,
+    with ThreadPoolExecutor(max_workers=isci) as ex:
+        gelecek = {ex.submit(_bir_fon, kod, evren[kod], rf): kod for kod in kodlar}
+        for i, f in enumerate(as_completed(gelecek), 1):
+            kod = gelecek[f]
+            try:
+                _, m, s_obj = f.result()
+                if m is None:
+                    atlanan += 1
+                else:
+                    sonuc.append(m)
+                    if seri_tut and s_obj is not None:
+                        seriler[kod] = s_obj
+            except Exception as e:
+                hata.append((kod, str(e)[:70]))
+            if ilerleme and i % 100 == 0:
+                gecen = time.time() - t0
+                print(f'  {i}/{len(kodlar)}  ok={len(sonuc)} atlanan={atlanan} '
+                      f'hata={len(hata)} {gecen:.0f}sn '
+                      f'(kalan ~{gecen/i*(len(kodlar)-i):.0f}sn)', flush=True)
+    # as_completed sirasi rastgele; cikti kararli olsun
+    sonuc.sort(key=lambda m: m['kod'])
+    veri = {'olusturma': time.strftime('%Y-%m-%d %H:%M'), 'periyod_ay': PERIYOD,
             'evren': len(kodlar), 'islenen': len(sonuc), 'atlanan': atlanan,
+            'isci': isci, 'saniye': round(time.time() - t0, 1),
             'hatalar': hata[:40], 'fonlar': sonuc}
+    return (veri, seriler) if seri_tut else veri
 
 
 def yaz(veri, yol=CIKTI):
