@@ -5,6 +5,7 @@ fonlab/.onbellek/
 tarama.json
 rapor_veri.json
 tahmin_kayit.json
+hisse_tani.json
 
 # Kayitlar ve gecici dosyalar
 *.log

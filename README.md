@@ -30,10 +30,11 @@ python3 -m fonlab kunye TLY
 | `tarayici` | Taramadan etkileşimli sayfa üretir |
 | `tahmin` | Bekleyen tahminleri puanlar, ertesi gün için yenilerini yazar |
 | `ozetsayfa` | Proje özeti sayfasını üretir |
+| `hisse [KOD ...]` | İzlenen BIST hisseleri için tanı paketi → `hisse_tani.json` |
 | `renk "#a,#b" --mode light` | Palet doğrular (renk körlüğü, kontrast, açıklık) |
 | `belge rapor.pdf` | KAP/PDR PDF'inden metin çıkarır |
 
-Günlük akış: `tara --tahmin` → `tarayici`. Rapor haftalık.
+Günlük akış: `tara --tahmin` → `hisse` → `tarayici`. Rapor haftalık.
 
 İstekler eş zamanlı atılır; işçi sayısı `FONLAB_ISCI` ile ayarlanır (varsayılan 8).
 `FONLAB_KAYIT` tahmin sicilinin yolunu değiştirir — deneme koşularının gerçek
@@ -52,6 +53,9 @@ kurucu.py     Kurucu düzeyinde dağılım analizi
 tahmin.py     Ertesi gün tahmini + dürüst isabet ölçümü
 belge.py      PDF metin çıkarıcı (poppler'sız: FlateDecode + ToUnicode CMap)
 renk.py       Palet doğrulayıcı
+hisse_tani.py BIST hisseleri için tanı katmanı: yoğunlaşma, beta (gecikme
+              düzeltmeli), limit günleri, şirket kartı (halka açıklık, piyasa
+              değeri, net borç)
 kabuk.py      Üç sayfanın ortak kabuğu (gezinme + mobil tablo düzeni)
 rapor.py      Rapor + özet HTML üretimi
 tarayici.py   Tarayıcı HTML üretimi
@@ -64,9 +68,10 @@ yapilandirma.py  Tek yapılandırma dosyası
 python3 -m fonlab.test_metrik
 ```
 
-24 test. Ölçüm katmanı elle hesaplanmış değerlere ve uç durumlara karşı
+30 test. Ölçüm katmanı elle hesaplanmış değerlere ve uç durumlara karşı
 doğrulanır: sabit seri, tek günlük seri, sıfır fiyat, toparlanmayan düşüş,
-pay bölünmesi, kaldıraçlı beta, kısa seri.
+pay bölünmesi, kaldıraçlı beta, kısa seri, ve hisse tarafında gecikme
+düzeltmesinin bilinen bir betayı geri kazanması.
 
 Bu testler yazıldığında **iki sessiz hata** ortaya çıktı; ikisi de gerçek veride
 hiç tetiklenmemişti, yani hiçbir grafiğe bakarak görülemezdi. Nicel bir işte en
@@ -89,6 +94,14 @@ Bu araç üzerinde çalışırken bulunan ve kod içinde ele alınan tuzaklar:
   "mükemmel yumuşatılmış" gösterir. Bağıl eşik kullanılır.
 - **Yeni fonlarda ilk gün fiyatı 0 gelebilir.** Tek bir sıfır tüm getiri
   zincirini bozar; hem veri hem ölçüm katmanında ayıklanır.
+- **TEFAS fon fiyatı piyasanın bir gün gerisinde.** Hisse serisiyle fon serisini
+  doğrudan hizalamak ilişkiyi yok ediyor: BIST 30 hisselerinde ham beta −0,06 ile
+  +0,04 arasında çıkıyordu (imkânsız), bir gün kaydırılınca 0,87–1,22 (beklenen
+  aralık). Fon-fon karşılaştırmasında gecikme iki tarafta da aynı olduğu için
+  sadeleşir; sorun yalnızca **hisse-fon** kıyasında ortaya çıkar. `hisse_tani.py`
+  bu kaydırmayı uygular ve ham değeri de saklar.
+- **CSS grid taşması.** `repeat(auto-fit,minmax(340px,1fr))` kapsayıcı tabandan
+  darsa sabit 340px'lik ray üretip taşar. `minmax(min(340px,100%),1fr)` gerekiyor.
 - TEFAS `periyod` ay cinsindendir ve **yalnızca 12 ile 60** kabul eder.
 - `dagilimSiraliGetirT` ucu çalışmıyor; varlık dağılımı fon detay sayfasından
   okunur ve yapılandırmaya elle girilir.

@@ -81,7 +81,7 @@ SEKME_CSS = """
     flex-wrap:nowrap}
   .sekmeler::-webkit-scrollbar{display:none}
   .sekme{flex:none;padding:10px 13px;font-size:13.5px}
-  .figs,.pf-ozet,.sayilar,.funds{grid-template-columns:1fr!important}
+  .figs,.pf-ozet,.sayilar,.funds,.hs-grid,.vakalar{grid-template-columns:1fr!important}
   .chart-holder{overflow-x:auto}
 }
 """

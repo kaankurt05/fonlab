@@ -53,6 +53,11 @@ AYAR = {
         ['tarayici', 'Tarayıcı', 'https://claude.ai/code/artifact/bbf84a7a-8da6-4bcf-af2b-9d9579decd42'],
     ],
 
+    # Hisse analiz sekmesinde izlenen kodlar. Rapordaki 'hisseler' vaka
+    # incelemesine ait; bu ayri bir liste - kullanicinin baktigi hisseler.
+    'hisse_izleme': ['TUPRS', 'THYAO', 'SASA', 'AKBNK'],
+    'hisse_izleme_bas': '2023-01-02',
+
     'hisseler': ['IEYHO', 'ISKPL', 'DSTKF'],
     'hisse_bas': '2023-01-02',   # hisse serilerinde cok yilli karsilastirma penceresi
     'hisse_ad': {'IEYHO': 'IEYHO — Işıklar Enerji ve Yapı Holding',

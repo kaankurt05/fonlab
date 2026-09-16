@@ -53,6 +53,22 @@ def _yuvarla(v, n):
     return None if v is None else round(v, n)
 
 
+def _hisse(yol=None):
+    """hisse_tani.json -> sayfaya gomulecek hisse blogu.
+
+    Ayri bir komutla (`python3 -m fonlab hisse`) uretiliyor ki tarayici
+    uretimi aga bagimli olmasin; dosya yoksa sekme gosterilmiyor.
+    """
+    yol = yol or os.path.join(KOK, 'hisse_tani.json')
+    if not os.path.exists(yol):
+        return None
+    try:
+        with open(yol, encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
 def _sicil(yol=None):
     """Ileriye donuk tahmin sicilinin ozeti (tahmin_kayit.json).
 
@@ -210,7 +226,7 @@ def paket(tarama_yolu=None):
             'bit': t['fonlar'][0]['bit'] if t['fonlar'] else '',
             'alanlar': ALANLAR, 'satir': satirlar,
             'ev': evler(t['fonlar']), 'tahmin': tahmin_ozeti(t['fonlar']),
-            'sicil': _sicil()}
+            'sicil': _sicil(), 'hisse': _hisse()}
 
 
 def yaz(sablon=None, cikti=None, tarama_yolu=None):

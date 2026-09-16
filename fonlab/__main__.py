@@ -9,6 +9,7 @@
   python3 -m fonlab tarayici             tarama sonucundan etkilesimli sayfa uret
   python3 -m fonlab tahmin               dunku tahminleri puanla, yarininkini yaz
   python3 -m fonlab ozetsayfa            proje ozeti sayfasini uret
+  python3 -m fonlab hisse [KOD ...]      hisse tani paketi uret
   python3 -m fonlab renk "#a,#b" --mode light   palet dogrula
   python3 -m fonlab belge rapor.pdf Mevduat      KAP/PDR pdf'inden metin cikar
 """
@@ -191,6 +192,26 @@ def cmd_tahmin(args):
     return 0
 
 
+def cmd_hisse(args):
+    """Izlenen hisseler icin tani paketi uret: python3 -m fonlab hisse [KOD ...]"""
+    import json, time
+    from fonlab import hisse_tani
+    kodlar = [a.upper() for a in args if not a.startswith('--')] or AYAR['hisse_izleme']
+    bas = AYAR.get('hisse_izleme_bas', '2023-01-02')
+    bit = time.strftime('%Y-%m-%d')
+    p = hisse_tani.paket(kodlar, bas, bit)
+    yol = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                       'hisse_tani.json')
+    with open(yol, 'w', encoding='utf-8') as f:
+        json.dump(p, f, ensure_ascii=False, separators=(',', ':'), default=float)
+    print(f'üretildi: {yol} ({os.path.getsize(yol):,} bayt)')
+    for h in p['hisseler']:
+        t, y = h['tam'], h['yogunlasma']
+        print(f"  {h['kod']:<7} {t['toplam']:>+7.0%}  vol {t['vol']:>4.0%}  "
+              f"zirveden {t['zirveden']:>5.0%}  en iyi 10 gün hariç {y['x10']:>+6.0%}")
+    return 0
+
+
 def cmd_renk(args):
     from fonlab import renk
     return renk.main(['renk'] + args)
@@ -199,7 +220,8 @@ def cmd_renk(args):
 KOMUTLAR = {'kunye': cmd_kunye, 'ara': cmd_ara, 'ozet': cmd_ozet,
             'rapor': cmd_rapor, 'renk': cmd_renk, 'belge': cmd_belge,
             'tara': cmd_tara, 'tarayici': cmd_tarayici,
-            'tahmin': cmd_tahmin, 'ozetsayfa': cmd_ozetsayfa}
+            'tahmin': cmd_tahmin, 'ozetsayfa': cmd_ozetsayfa,
+            'hisse': cmd_hisse}
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] not in KOMUTLAR:

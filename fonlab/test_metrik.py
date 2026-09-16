@@ -11,7 +11,7 @@ Dis bagimlilik yok; unittest yeterli.
 import math
 import unittest
 
-from . import metrik, tahmin, kurucu
+from . import metrik, tahmin, kurucu, hisse_tani
 
 
 def seri(kod, ciftler):
@@ -192,6 +192,76 @@ class UcDurumlar(unittest.TestCase):
         s = seri('A', [('2026-01-01', 0), ('2026-01-02', 100), ('2026-01-03', 110)])
         v = [s.px[d] for d in s.tarihler]
         self.assertNotIn(0, v)
+
+
+class HisseTani(unittest.TestCase):
+    """Gecikme duzeltmesi: cipa bir gun geride oldugunda beta geri kazanilmali."""
+
+    def _seriler(self, beta=2.0, n=200):
+        # m[i]: piyasanin i. gunku gercek hareketi.
+        # Tohumlu rastgele: testere disi gibi duzenli bir dizi kendi icinde
+        # gecikme-1 otokorelasyonu tasir ve kaydirmasiz regresyon bile
+        # iliskiyi yakalar - o zaman test, olcmek istedigi seyi olcmez.
+        import random
+        rnd = random.Random(7)
+        m = [rnd.gauss(0, 0.012) for _ in range(n)]
+        from datetime import date, timedelta
+        d = date(2026, 1, 1)
+        tar = []
+        for _ in range(n + 1):
+            tar.append(d.isoformat()); d += timedelta(days=1)
+        # hisse i. gun beta*m[i] yapiyor
+        hp = [100.0]
+        for i in range(n):
+            hp.append(hp[-1] * (1 + beta * m[i]))
+        # cipa ayni hareketi BIR GUN SONRA gosteriyor
+        xp = [100.0, 100.0]
+        for i in range(n - 1):
+            xp.append(xp[-1] * (1 + m[i]))
+        s = metrik.Seri('HIS', list(zip(tar, hp)))
+        ex = metrik.Seri('CIPA', list(zip(tar, xp)))
+        return s, ex
+
+    def test_kaydirma_betayi_geri_kazaniyor(self):
+        s, ex = self._seriler(beta=2.0)
+        q = hisse_tani.piyasa_iliskisi(s, ex, s.bas, s.bit, kaydir=1)
+        self.assertAlmostEqual(q['beta'], 2.0, places=6)
+        self.assertGreater(q['r2'], 0.99)
+
+    def test_kaydirmasiz_hesap_iliskiyi_kaciriyor(self):
+        """Duzeltme olmadan beta sifira yakin cikiyor - sahadaki belirti buydu."""
+        s, ex = self._seriler(beta=2.0)
+        q = hisse_tani.piyasa_iliskisi(s, ex, s.bas, s.bit, kaydir=1)
+        self.assertLess(abs(q['ham_beta']), 0.5)
+        self.assertLess(q['ham_r2'], 0.1)
+
+    def test_kisa_seri_none(self):
+        s, ex = self._seriler(n=20)
+        self.assertIsNone(hisse_tani.piyasa_iliskisi(s, ex, s.bas, s.bit))
+
+    def test_kivilcim_alfabede_ve_uclar_dogru(self):
+        v = [100, 120, 90, 150, 110, 130]
+        t, lo, hi = hisse_tani.kivilcim(v)
+        self.assertTrue(all(c in hisse_tani.KV_ALFABE for c in t))
+        self.assertLess(lo, hi)
+        # en dusuk nokta 0, en yuksek 63 olmali
+        d = [hisse_tani.KV_ALFABE.index(c) for c in t]
+        self.assertEqual(min(d), 0)
+        self.assertEqual(max(d), 63)
+
+    def test_kivilcim_kisa_seri_bos(self):
+        self.assertEqual(hisse_tani.kivilcim([100, 101]), ('', None, None))
+
+    def test_limit_gun_sayimi(self):
+        from datetime import date, timedelta
+        d = date(2026, 1, 1); tar = []; px = [100.0]
+        for r in [0.11, 0.0, -0.10, 0.02, 0.0] * 6:      # 12 limit gunu
+            px.append(px[-1] * (1 + r))
+        for _ in range(len(px)):
+            tar.append(d.isoformat()); d += timedelta(days=1)
+        s = metrik.Seri('L', list(zip(tar, px)))
+        p = hisse_tani._pencere(s, s.bas, s.bit)
+        self.assertEqual(p['limit_gun'], 12)
 
 
 if __name__ == '__main__':

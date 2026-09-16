@@ -227,6 +227,28 @@ mark{background:var(--accent-soft);color:var(--ink);border-radius:3px;padding:0 
   .arac{gap:var(--s2)} .sepet{padding:10px 14px}
   .pf-form .alan,.pf-form input{width:100%} .pf-form{gap:var(--s2)}
   #pfKod,#pfTutar{width:100%} .pf-form .alan{flex:1 1 100%}}
+
+/* ---- hisse sekmesi ---- */
+.hs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:var(--s3)}
+.hs{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r-md);
+  box-shadow:var(--shadow);padding:var(--s3);display:flex;flex-direction:column;gap:var(--s2)}
+.hs-bas{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.hs-kod{font-family:"IBM Plex Mono",monospace;font-size:21px;font-weight:700}
+.hs-fiyat{font-family:"IBM Plex Mono",monospace;font-size:var(--fs-sm);color:var(--ink-2)}
+.hs-kv{margin-left:auto}
+.hs-sat{display:flex;justify-content:space-between;gap:var(--s2);font-size:var(--fs-sm);
+  padding:4px 0;border-bottom:1px solid var(--rule-soft)}
+.hs-sat:last-child{border-bottom:none}
+.hs-sat b{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.hs-et{color:var(--ink-3)}
+.hs-bl{margin-top:var(--s1)}
+.hs-bl .kicker{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
+.hs-not{font-size:var(--fs-xs);color:var(--ink-3);line-height:1.5}
+.hs-cubuk{display:flex;gap:2px;align-items:flex-end;height:46px;margin-top:6px}
+.hs-cubuk i{flex:1;border-radius:2px 2px 0 0;min-height:2px}
+.hs-kov{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-3);
+  font-family:"IBM Plex Mono",monospace;margin-top:3px}
 /*__ORTAK_CSS__*/
 </style>
 
@@ -248,6 +270,7 @@ mark{background:var(--accent-soft);color:var(--ink);border-radius:3px;padding:0 
   <button class="sekme" id="sk-kars" role="tab" aria-selected="false" aria-controls="p-kars">Karşılaştırma<span class="adet" id="sk-kars-n"></span></button>
   <button class="sekme" id="sk-pf" role="tab" aria-selected="false" aria-controls="p-pf">Portföy<span class="adet" id="sk-pf-n"></span></button>
   <button class="sekme" id="sk-tah" role="tab" aria-selected="false" aria-controls="p-tah">Öngörülebilirlik</button>
+  <button class="sekme" id="sk-hs" role="tab" aria-selected="false" aria-controls="p-hs">Hisse<span class="adet" id="sk-hs-n"></span></button>
 </div>
 
 <div id="p-fon" role="tabpanel" aria-labelledby="sk-fon">
@@ -305,6 +328,16 @@ mark{background:var(--accent-soft);color:var(--ink);border-radius:3px;padding:0 
   <p class="dek">Seçilen fonlar aynı 12 aylık pencerede, aynı eksende. Her satırda en iyi ve en kötü değer işaretli &mdash; ama <b>"en iyi" burada yalnızca o satırdaki sayı demek</b>, fonun daha iyi olduğu anlamına gelmez. Yüksek getiri düşük oynaklıkla birlikte geliyorsa sorulacak soru artar, azalmaz.</p>
   <div id="karsIcerik"></div>
   <div class="kars-bos" id="karsBos">Sepet boş. <b>Fonlar</b> sekmesinde satırların solundaki kutucuklarla en az iki fon seçin.</div>
+</div>
+
+<div id="p-hs" role="tabpanel" aria-labelledby="sk-hs" hidden>
+  <h2>Hisse analizi</h2>
+  <p class="dek">Fon tarayıcısındaki tanı yöntemi, izlenen BIST hisselerine uygulandı. <b>Bu sekme hangi hisseyi alacağını söylemez</b> ve bir sıralama üretmez; fiyat serisinin nasıl davrandığını ve sorulması gereken şeyleri gösterir. Karar, bu tablonun göremediği şeyleri de (finansallar, sektör, KAP bildirimleri, senin vaden) tartmayı gerektirir.</p>
+  <div class="uyari-kutu">
+    <p><b>Neden tavsiye yok.</b> Bu projenin kendi ölçümü, ertesi günün yönünün öngörülemediğini gösteriyor: 1.209 fon ve dört model üzerinde yapılan ileriye bakmayan testte hiçbir model taban oranı geçemedi, "becerili" görünenlerin sayısı şansın üreteceğiyle aynı çıktı. Aynı mantık hisse için de geçerli. Burada gördüğün her sayı <b>geçmişin tarifi</b>, geleceğin tahmini değil. Yatırım tavsiyesi değildir.</p>
+  </div>
+  <div class="hs-grid" id="hsGrid"></div>
+  <div id="hsSorular"></div>
 </div>
 
 <div id="p-tah" role="tabpanel" aria-labelledby="sk-tah" hidden>
@@ -801,6 +834,120 @@ function karsCiz(){
   $('karsIcerik').innerHTML=h;
 }
 
+/* ---------- hisse analizi ---------- */
+function hsKv(t){
+  if(!t||t.length<4) return '';
+  const d=kvCoz(t), W=120,H=30,lo=0,hi=63;
+  const X=i=>i/(d.length-1)*W, Y=v=>H-2-((v-lo)/hi)*(H-4);
+  const yol=d.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+  return '<svg class="kv hs-kv" viewBox="0 0 '+W+' '+H+'" aria-hidden="true">'+
+    '<path d="'+yol+'" fill="none" stroke-width="1.8" stroke-linejoin="round" stroke="'+
+    (d[d.length-1]>=d[0]?'var(--pos)':'var(--neg)')+'"/></svg>';
+}
+
+// Rozetler fon tarafiyla ayni mantikta: hukum degil, sorulacak sey.
+const HS_TANI=[
+  {ad:'yoğun', sinif:'t-yogun',
+   ne:'Dönem getirisinin çok büyük kısmı birkaç güne bağlı: en iyi 10 gün çıkarılınca geriye çok az kalıyor ya da işaret değişiyor. O günlerde pozisyonda olmamak sonucu tamamen değiştirirdi.',
+   test:h=>{const y=h.yogunlasma; return y.tam>0 && (y.x10<0 || y.x10 < y.tam/3);}},
+  {ad:'zirveden uzak', sinif:'t-zirve',
+   ne:'Bugün dönem zirvesinin %25\'inden fazla altında. Geçmiş getirisi iyi görünse de fiyat tepe değerinin epey aşağısında.',
+   test:h=>h.tam.zirveden<=-0.25},
+  {ad:'limit günleri', sinif:'t-bolun',
+   ne:'Günlük fiyat marjına (±%10) yapışan gün sayısı yüksek. Tabana/tavana sık gitmek, fiyatın dar bir işlem hacminde oluştuğuna işaret edebilir.',
+   test:h=>h.tam.limit_gun>=10},
+  {ad:'endeksten bağımsız', sinif:'t-yumusak',
+   ne:'BIST 100 ile açıklanan varyans %25\'in altında; fiyat büyük ölçüde kendi hikâyesiyle hareket ediyor. Bu iyi ya da kötü değil, ama endeks yönünü bilmek bu hisse için az şey söyler.',
+   test:h=>h.piyasa && h.piyasa.r2<0.25},
+  {ad:'yüksek beta', sinif:'t-dar',
+   ne:'Endeks %1 oynadığında bu hisse ortalama %1,2\'den fazla oynuyor. Düşüşte de aynı çarpan geçerli.',
+   test:h=>h.piyasa && h.piyasa.beta>=1.2},
+  {ad:'dar halka açıklık', sinif:'t-dar',
+   ne:'Halka açıklık oranı %35\'in altında. Serbest dolaşım inceldikçe borsa fiyatının ne kadar bağımsız bir referans olduğu sorusu büyür.',
+   test:h=>h.kart && h.kart.halka_acik!=null && h.kart.halka_acik<35},
+];
+function hsRozet(h){
+  const t=HS_TANI.filter(x=>{try{return x.test(h);}catch(e){return false;}});
+  if(!t.length) return '<span class="muted" style="font-size:var(--fs-xs)">otomatik ölçütlerin hiçbirine takılmıyor</span>';
+  return '<span class="tani">'+t.map(x=>'<span class="t '+x.sinif+'" title="'+
+    x.ne.replace(/"/g,'&quot;')+'">'+x.ad+'</span>').join('')+'</span>';
+}
+
+function hisseCiz(){
+  const H=T.hisse;
+  if(!H||!H.hisseler||!H.hisseler.length){ $('sk-hs').hidden=true; return; }
+  $('sk-hs-n').textContent=H.hisseler.length;
+  const sat=(e,v,n)=>'<div class="hs-sat"><span class="hs-et">'+e+'</span><b>'+v+'</b></div>'+
+    (n?'<div class="hs-not">'+n+'</div>':'');
+
+  $('hsGrid').innerHTML=H.hisseler.map(h=>{
+    const t=h.tam, s12=h.son12, pi=h.piyasa, k=h.kart||{}, y=h.yogunlasma;
+    let g='<div class="hs"><div class="hs-bas"><span class="hs-kod">'+h.kod+'</span>'+
+      '<span class="hs-fiyat">'+nf(h.son_fiyat,2)+' TL</span>'+hsKv(h.kivilcim)+'</div>';
+    g+='<div>'+hsRozet(h)+'</div>';
+    g+='<div class="hs-bl"><div class="kicker">'+t.bas+' → '+t.bit+'</div>'+
+      sat('Dönem getirisi', sinifla(t.toplam))+
+      sat('Yıllık oynaklık', pct(t.vol))+
+      sat('Maksimum düşüş', '<span class="neg">'+pc(t.mdd,0)+'</span>')+
+      sat('Bugün zirveden', '<span class="'+(t.zirveden<=-0.2?'neg':'muted')+'">'+pc(t.zirveden,0)+'</span>')+
+      sat('Limit günü (±%10)', t.limit_gun+' / '+t.gun)+'</div>';
+    g+='<div class="hs-bl"><div class="kicker">son 12 ay</div>'+
+      sat('Getiri', sinifla(s12.toplam))+
+      sat('Oynaklık', pct(s12.vol))+
+      sat('Artı gün oranı', pct(s12.arti_oran))+
+      sat('Oto-korelasyon ρ', nf(s12.rho,2).replace('-','−'))+'</div>';
+    if(pi) g+='<div class="hs-bl"><div class="kicker">BIST 100 ile ilişki</div>'+
+      sat('Beta', nf(pi.beta,2))+
+      sat('R²', nf(pi.r2,2))+
+      '<div class="hs-not">Çıpa BIST 100 endeks fonu (DZE). Fon fiyatı piyasanın '+
+      'bir gün gerisinde olduğu için seriler <b>'+pi.kaydir+' gün kaydırılarak</b> hizalandı; '+
+      'kaydırmasız hesap beta '+nf(pi.ham_beta,2).replace('-','−')+' / R² '+nf(pi.ham_r2,2)+
+      ' veriyordu — açıkça yanlış.</div></div>';
+    g+='<div class="hs-bl"><div class="kicker">yoğunlaşma</div>'+
+      sat('Tüm günler', sinifla(y.tam))+
+      sat('En iyi 10 gün hariç', sinifla(y.x10))+
+      sat('En iyi 20 gün hariç', sinifla(y.x20))+
+      '<div class="hs-not">Getirinin ne kadarı birkaç güne bağlı. İşaret değişiyorsa, '+
+      'o günlerde pozisyonda olmamak sonucu tersine çevirirdi.</div></div>';
+    if(h.kovalar&&h.kovalar.length){
+      const enb=Math.max(...h.kovalar.map(b=>b.n))||1;
+      g+='<div class="hs-bl"><div class="kicker">son 12 ay günlük getiri dağılımı</div>'+
+        '<div class="hs-cubuk">'+h.kovalar.map(b=>'<i title="'+b.ad+': '+b.n+' gün" style="height:'+
+          Math.max(4,b.n/enb*100)+'%;background:'+(b.ad.indexOf('−')===0||b.ad.indexOf('<')===0?
+          'var(--neg)':'var(--pos)')+'"></i>').join('')+'</div>'+
+        '<div class="hs-kov"><span>eksi</span><span>artı</span></div></div>';
+    }
+    if(h.yillik&&h.yillik.length){
+      g+='<div class="hs-bl"><div class="kicker">yıl yıl</div>'+
+        h.yillik.map(v=>sat(v.yil, sinifla(v.toplam,0)+' <span class="muted">vol '+pct(v.vol)+'</span>')).join('')+'</div>';
+    }
+    g+='<div class="hs-bl"><div class="kicker">şirket</div>'+
+      sat('Halka açıklık', k.halka_acik!=null?pct(k.halka_acik/100):'—')+
+      sat('Piyasa değeri', k.piyasa_degeri_mn!=null?mlr(k.piyasa_degeri_mn*1e6)+' TL':'—')+
+      (k.net_borc_mn!=null?sat('Net borç', mlr(k.net_borc_mn*1e6)+' TL'):'')+'</div>';
+    return g+'</div>';
+  }).join('');
+
+  $('hsSorular').innerHTML=
+    '<h2>Almadan önce sorulacaklar</h2>'+
+    '<div class="uyari-kutu"><p>Bu liste bir onay kutusu dizisi değil; yukarıdaki '+
+    'sayıların <b>hangi soruyu doğurduğunu</b> gösteriyor. Cevaplar bu tabloda değil, '+
+    'şirketin finansallarında, KAP bildirimlerinde ve senin kendi vadendedir.</p>'+
+    '<ul style="margin:var(--s2) 0 0;padding-left:20px;font-size:var(--fs-sm);color:var(--ink-2)">'+
+    '<li><b>Getiri kaç güne bağlı?</b> "En iyi 10 gün hariç" satırı işaret değiştiriyorsa, '+
+    'o hissenin geçmiş kazancı birkaç sıçramadan ibaret demektir. O günleri önceden bilemezsin.</li>'+
+    '<li><b>Bugün zirveden ne kadar uzakta?</b> Dönem getirisi yüksek ama fiyat tepeden çok '+
+    'aşağıdaysa, o getiri artık senin giriş fiyatında değil.</li>'+
+    '<li><b>Endeksle mi hareket ediyor, kendi başına mı?</b> R² düşükse endeks görüşün bu '+
+    'hisse için az şey söyler; yüksek betada ise düşüşte de aynı çarpan çalışır.</li>'+
+    '<li><b>Fiyat nerede oluşuyor?</b> Halka açıklık düşük ya da limit günü çoksa, '+
+    'ekrandaki fiyatın ne kadar derin bir işlemi temsil ettiği ayrı bir soru.</li>'+
+    '<li><b>Bu tablonun göremedikleri:</b> kâr, borç, nakit akışı, sektör, yönetim, '+
+    'değerleme çarpanları, temettü, ve en önemlisi senin ne kadar süre tutacağın ve '+
+    'ne kadar düşüşe dayanabileceğin.</li>'+
+    '</ul></div>';
+}
+
 /* ---------- ileriye donuk sicil ---------- */
 function sicilCiz(){
   const S=T.sicil, k=$('sicilOzet'), gr=$('sicilGraf');
@@ -1094,7 +1241,7 @@ function pfGrafik(h){
 /* ---------- sekmeler ---------- */
 function sekmeAc(k){
   sekme=k;
-  [['fon','p-fon'],['ev','p-ev'],['kars','p-kars'],['pf','p-pf'],['tah','p-tah']].forEach(([n,p])=>{
+  [['fon','p-fon'],['ev','p-ev'],['kars','p-kars'],['pf','p-pf'],['tah','p-tah'],['hs','p-hs']].forEach(([n,p])=>{
     $('sk-'+n).setAttribute('aria-selected',String(k===n));
     $(p).hidden=(k!==n);
   });
@@ -1105,6 +1252,7 @@ $('sk-ev').addEventListener('click',()=>sekmeAc('ev'));
 $('sk-kars').addEventListener('click',()=>sekmeAc('kars'));
 $('sk-pf').addEventListener('click',()=>sekmeAc('pf'));
 $('sk-tah').addEventListener('click',()=>sekmeAc('tah'));
+$('sk-hs').addEventListener('click',()=>sekmeAc('hs'));
 $('pfEkle').addEventListener('click',()=>{
   pfEkle($('pfKod').value, parseFloat($('pfTutar').value));
   $('pfKod').value=''; $('pfTutar').value=''; $('pfKod').focus();
@@ -1178,8 +1326,8 @@ const acilis=urlOku();
 $('supheliGoster').checked=supheli; $('ara').value=aranan; esitleGirdiler();
 document.getElementById('fonListesi').innerHTML=
   T.satir.map(r=>'<option value="'+r[A.kod]+'">'+r[A.ad].slice(0,60)+'</option>').join('');
-evCiz(); tahCiz(); sicilCiz(); sepetCiz(); karsCiz(); pfYukle(); pfCiz(); ciz();
-sekmeAc(['ev','kars','tah'].includes(acilis)?acilis:'fon');
+evCiz(); tahCiz(); sicilCiz(); hisseCiz(); sepetCiz(); karsCiz(); pfYukle(); pfCiz(); ciz();
+sekmeAc(['ev','kars','tah','hs'].includes(acilis)?acilis:'fon');
 // tema degisince sepet renkleri de degisiyor
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{sepetCiz(); karsCiz();});
 </script>
