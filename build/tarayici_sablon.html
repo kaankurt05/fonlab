@@ -374,8 +374,8 @@ mark{background:var(--accent-soft);color:var(--ink);border-radius:3px;padding:0 
   </div>
 
   <div class="pf-form">
-    <div class="alan"><label for="pfKod">Fon kodu</label>
-      <input id="pfKod" list="fonListesi" placeholder="örn. TLY" autocomplete="off" maxlength="6"></div>
+    <div class="alan"><label for="pfKod">Fon veya hisse kodu</label>
+      <input id="pfKod" list="fonListesi" placeholder="örn. TLY veya TUPRS" autocomplete="off" maxlength="6"></div>
     <div class="alan"><label for="pfTutar">Tutar (TL)</label>
       <input id="pfTutar" type="number" min="0" step="1000" placeholder="100000"></div>
     <button class="btn btn-ana" id="pfEkle">portföye ekle</button>
@@ -1084,12 +1084,32 @@ function tahCiz(){
 /* ---------- portfoy ----------
    Tutarlar yalnizca localStorage'da. Sunucuya, sayfanin yazarina veya
    Claude'a gitmiyor; paylasilabilir baglantiya da eklenmiyor. */
+// Portfoy hem fon hem hisse tutabiliyor. Ikisi farkli veri bloklarindan
+// geliyor; burada tek bir normallestirilmis kayda cevriliyor ki hesap ve
+// tablo tek kod yolundan gecsin.
+function varlikBul(kod){
+  kod=(kod||'').trim().toUpperCase();
+  const f=fonBul(kod);
+  if(f) return {tip:'fon', kod, ad:f[A.ad],
+    seri:()=>seriyiAc(f), toplam:f[A.toplam], vol:f[A.vol],
+    zirveden:f[A.zirveden], ev:f[A.ev], rozet:()=>taniHtml(f)};
+  const h=((T.hisse&&T.hisse.hisseler)||[]).find(x=>x.kod===kod);
+  if(h) return {tip:'hisse', kod, ad:h.kod+' \u00b7 BIST',
+    // 12 aylik kivilcim: fon serileriyle ayni pencere
+    seri:()=>{ const t=h.kv12, lo=h.kv12_lo, hi=h.kv12_hi;
+      if(!t||lo==null||hi==null) return null;
+      const ar=(hi-lo)||1; return kvCoz(t).map(v=>lo+v/63*ar); },
+    toplam:h.son12.toplam, vol:h.son12.vol,
+    zirveden:h.tam.zirveden, ev:null, rozet:()=>hsRozet(h)};
+  return null;
+}
+
 const PF_ANAHTAR='fonlab.portfoy.v1';
 let pf=[];
 function pfYukle(){
   try{ pf=JSON.parse(localStorage.getItem(PF_ANAHTAR)||'[]'); }catch(e){ pf=[]; }
   if(!Array.isArray(pf)) pf=[];
-  pf=pf.filter(x=>x&&fonBul(x.kod)&&x.tutar>0);
+  pf=pf.filter(x=>x&&varlikBul(x.kod)&&x.tutar>0);
 }
 function pfKaydet(){
   try{ localStorage.setItem(PF_ANAHTAR, JSON.stringify(pf)); }
@@ -1101,7 +1121,7 @@ function pfHata(m){
 function pfEkle(kod,tutar){
   kod=(kod||'').trim().toUpperCase();
   if(!kod) return pfHata('Fon kodu girin.');
-  if(!fonBul(kod)) return pfHata('"'+kod+'" bu taramada yok. 12 aydan kısa geçmişi olan fonlar dışarıda kalıyor.');
+  if(!varlikBul(kod)) return pfHata('"'+kod+'" bulunamadı. Fon kodu ya da izlenen BIST hisselerinden biri olmalı (12 aydan kısa geçmişi olan fonlar taramaya girmiyor).');
   if(!(tutar>0)) return pfHata('Sıfırdan büyük bir tutar girin.');
   const v=pf.find(x=>x.kod===kod);
   if(v) v.tutar+=tutar; else pf.push({kod, tutar});
@@ -1111,18 +1131,24 @@ function pfSil(kod){ pf=pf.filter(x=>x.kod!==kod); pfKaydet(); pfCiz(); }
 
 /* haftalik seriden portfoy serisi + olculer */
 function pfHesap(){
-  const kalem=pf.map(x=>({...x, r:fonBul(x.kod)})).filter(x=>x.r);
+  const kalem=pf.map(x=>({...x, r:varlikBul(x.kod)})).filter(x=>x.r);
   const top=kalem.reduce((t,x)=>t+x.tutar,0);
   if(!kalem.length||!top) return null;
-  const seri=kalem.map(x=>seriyiAc(x.r));
+  const seri=kalem.map(x=>x.r.seri());
   const n=Math.min(...seri.map(s2=>s2?s2.length:0));
   let pfs=null;
   if(n>=8&&seri.every(Boolean)){
     // her fon 100 tabanli; agirlikli birlestir (yeniden dengeleme yok)
+    // Seriler ayni 12 aylik pencereyi kapsiyor ama ornekleme sikliklari farkli
+    // (fon ~53 nokta, hisse ~66). Son n noktayi alip indeksle eslestirmek zamani
+    // sikistirip gerer; onun yerine her seri ortak n noktaya oransal yeniden
+    // orneklenip oyle birlestiriliyor. Tek tur varlikta bu islem kimlik.
     pfs=[];
     for(let i=0;i<n;i++){
       let v=0;
-      kalem.forEach((x,j)=>{ const s2=seri[j]; v += (x.tutar/top) * s2[s2.length-n+i]; });
+      kalem.forEach((x,j)=>{ const s2=seri[j];
+        const k=(n<2)?s2.length-1:Math.round(i*(s2.length-1)/(n-1));
+        v += (x.tutar/top) * s2[k]; });
       pfs.push(v);
     }
   }
@@ -1136,15 +1162,14 @@ function pfHesap(){
     pfs.forEach(v=>{ if(v>z)z=v; mdd=Math.min(mdd, v/z-1); });
   }
   const agirlik=kalem.map(x=>({...x, w:x.tutar/top})).sort((a,b)=>b.w-a.w);
-  const evPay={};
-  agirlik.forEach(x=>{ const e=x.r[A.ev]; evPay[e]=(evPay[e]||0)+x.w; });
+  // Kurucu yogunlasmasi yalnizca fonlar icin anlamli; hisseler haric tutulup
+  // kendi agirliklari ayrica gosteriliyor.
+  const evPay={}; let fonTop=0, hisseTop=0;
+  agirlik.forEach(x=>{ if(x.r.tip==='fon'){ fonTop+=x.w;
+      evPay[x.r.ev]=(evPay[x.r.ev]||0)+x.w; } else hisseTop+=x.w; });
   const evler=Object.entries(evPay).sort((a,b)=>b[1]-a[1]);
-  const rozet={};
-  agirlik.forEach(x=>taniLar(x.r).forEach(t=>{
-    rozet[t.ad]=rozet[t.ad]||{n:0,w:0,ne:t.ne,sinif:t.sinif};
-    rozet[t.ad].n++; rozet[t.ad].w+=x.w;
-  }));
-  return {kalem:agirlik, top, getiri, vol, mdd, pfs, evler, rozet, hafta:n};
+  return {kalem:agirlik, top, getiri, vol, mdd, pfs, evler, hafta:n,
+          fonTop, hisseTop};
 }
 
 function pfCiz(){
@@ -1156,7 +1181,9 @@ function pfCiz(){
     '<div class="v"'+(renk?' style="color:'+renk+'"':'')+'>'+v+'</div>'+
     (n?'<div class="n">'+n+'</div>':'')+'</div>';
   let g='<div class="pf-ozet">';
-  g+=kut('Toplam', mlr(h.top)+' TL', h.kalem.length+' fon');
+  const nf_=h.kalem.filter(x=>x.r.tip==='fon').length, nh_=h.kalem.length-nf_;
+  g+=kut('Toplam', mlr(h.top)+' TL',
+         [nf_?nf_+' fon':'', nh_?nh_+' hisse':''].filter(Boolean).join(' · '));
   g+=kut('Son 12 ay', h.getiri==null?'—':pc(h.getiri,0),
          'bugünkü ağırlıklarla, geriye dönük',
          h.getiri==null?null:(h.getiri>=0?'var(--pos)':'var(--neg)'));
@@ -1164,10 +1191,12 @@ function pfCiz(){
   g+=kut('Maks. düşüş', h.mdd==null?'—':pc(h.mdd,1), 'haftalık veriyle', 'var(--neg)');
   g+=kut('En büyük kalem', pct(h.kalem[0].w)+' <span class="muted">'+h.kalem[0].kod+'</span>',
          h.kalem.length>2?('ilk üç: '+pct(h.kalem.slice(0,3).reduce((t,x)=>t+x.w,0))):'');
-  const enEv=h.evler[0];
-  g+=kut('En büyük kurucu', pct(enEv[1])+' <span class="muted">'+enEv[0]+'</span>',
-         h.evler.length+' kurucuya dağılmış',
-         enEv[1]>=0.5?'var(--uyari)':null);
+  const enEv=h.evler.length?h.evler[0]:null;
+  g+=enEv
+    ? kut('En büyük kurucu', pct(enEv[1])+' <span class="muted">'+enEv[0]+'</span>',
+          h.evler.length+' kurucu · fonlar portföyün '+pct(h.fonTop)+'ı',
+          enEv[1]>=0.5?'var(--uyari)':null)
+    : kut('Dağılım', pct(h.hisseTop)+' hisse', 'portföyde fon yok');
   g+='</div>';
 
   if(h.pfs) g+=pfGrafik(h);
@@ -1176,25 +1205,19 @@ function pfCiz(){
      '<th>12 ay getiri</th><th>Oynaklık</th><th>Zirvesinden</th><th>Kurucu</th><th></th></tr></thead><tbody>';
   h.kalem.forEach(x=>{
     const r=x.r;
-    g+='<tr><td style="text-align:left"><span class="fon-kod">'+r[A.kod]+'</span>'+taniHtml(r)+
-       '<span class="fon-ad">'+r[A.ad]+'</span></td>'+
+    g+='<tr><td style="text-align:left"><span class="fon-kod">'+r.kod+'</span>'+r.rozet()+
+       '<span class="fon-ad">'+r.ad+'</span></td>'+
+       '<td><span class="muted">'+(r.tip==='fon'?'fon':'hisse')+'</span></td>'+
        '<td>'+mlr(x.tutar)+'</td>'+
        '<td>'+pct(x.w)+'<div class="pay"><i style="width:'+(x.w*100).toFixed(0)+'%"></i></div></td>'+
-       '<td>'+sinifla(r[A.toplam])+'</td><td>'+pct(r[A.vol])+'</td>'+
-       '<td><span class="'+(r[A.zirveden]<=-0.2?'neg':'muted')+'">'+pc(r[A.zirveden],0)+'</span></td>'+
-       '<td>'+r[A.ev]+'</td>'+
-       '<td><button class="sil" data-kod="'+r[A.kod]+'" aria-label="'+r[A.kod]+' kalemini sil" title="sil">×</button></td></tr>';
+       '<td>'+sinifla(r.toplam)+'</td><td>'+pct(r.vol)+'</td>'+
+       '<td><span class="'+(r.zirveden<=-0.2?'neg':'muted')+'">'+pc(r.zirveden,0)+'</span></td>'+
+       '<td>'+(r.ev||'<span class="muted">—</span>')+'</td>'+
+       '<td><button class="sil" data-kod="'+r.kod+'" aria-label="'+r.kod+' kalemini sil" title="sil">×</button></td></tr>';
   });
   g+='</tbody></table></div>';
 
-  const roz=Object.entries(h.rozet).sort((a,b)=>b[1].w-a[1].w);
-  if(roz.length){
-    g+='<h2>Portföyünüz hangi soruları taşıyor?</h2><div class="pf-ozet">';
-    roz.forEach(([ad,v])=>{ g+=kut(ad, pct(v.w)+' <span class="muted">ağırlık</span>',
-      v.n+' fon · '+v.ne.slice(0,96)+'…'); });
-    g+='</div>';
-  }
-  if(enEv[1]>=0.5){
+  if(enEv && enEv[1]>=0.5){
     const ev=(T.ev||[]).find(e=>e.ev===enEv[0]);
     g+='<div class="pf-uyari"><b>Portföyünüzün '+pct(enEv[1])+"'i tek bir kurucuda: "+enEv[0]+'.</b> '+
        (ev?('Bu evin '+ev.fon+' serbest fonunun 12 aylık getirileri '+pc(ev.en_kotu,0)+' ile '+
@@ -1325,6 +1348,7 @@ kurFiltreler(); kurSorular();
 const acilis=urlOku();
 $('supheliGoster').checked=supheli; $('ara').value=aranan; esitleGirdiler();
 document.getElementById('fonListesi').innerHTML=
+  ((T.hisse&&T.hisse.hisseler)||[]).map(h=>'<option value="'+h.kod+'">BIST hissesi</option>').join('')+
   T.satir.map(r=>'<option value="'+r[A.kod]+'">'+r[A.ad].slice(0,60)+'</option>').join('');
 evCiz(); tahCiz(); sicilCiz(); hisseCiz(); sepetCiz(); karsCiz(); pfYukle(); pfCiz(); ciz();
 sekmeAc(['ev','kars','tah','hs'].includes(acilis)?acilis:'fon');

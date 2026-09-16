@@ -133,7 +133,13 @@ def tani(kod, ex, bas, bit, son12_bas):
     s = metrik.Seri(kod, hisse.fiyat_serisi(kod, bas, bit))
     ds, v = s.dilim(bas, bit)
     kv, lo, hi = kivilcim(v)
+    # Ayrica 12 aylik pencere icin ikinci bir kivilcim: portfoy sekmesi fon
+    # serileriyle (hepsi 12 aylik) ayni zaman izgarasinda birlestirmek zorunda.
+    # Tam donem serisiyle karistirmak agirlikli seriyi anlamsiz yapardi.
+    v12 = s.dilim(son12_bas, bit)[1]
+    kv12, lo12, hi12 = kivilcim(v12)
     out = {'kod': kod, 'son_fiyat': v[-1], 'kivilcim': kv, 'kv_lo': lo, 'kv_hi': hi,
+           'kv12': kv12, 'kv12_lo': lo12, 'kv12_hi': hi12,
            'tam': _pencere(s, bas, bit),
            'son12': _pencere(s, son12_bas, bit),
            'piyasa': piyasa_iliskisi(s, ex, bas, bit),
